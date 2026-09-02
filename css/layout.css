@@ -1,0 +1,332 @@
+/* Layout Geral da Wiki */
+body {
+    overflow-x: hidden;
+}
+
+.wiki-container {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    border-right: 1px solid var(--glass-border);
+    backdrop-filter: blur(15px);
+    z-index: 50;
+}
+
+.sidebar .logo {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2rem;
+}
+
+.nav-links {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+}
+
+.nav-btn {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text-color);
+    padding: 12px 15px;
+    text-align: left;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.nav-btn:hover:not(:disabled) {
+    background: var(--glass-bg);
+    border-color: var(--glass-border);
+}
+
+.nav-btn.active {
+    background: var(--btn-bg);
+    border-color: var(--glass-border);
+    font-weight: 700;
+}
+
+.nav-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.sidebar-footer {
+    display: flex;
+    justify-content: center;
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    gap: 20px;
+    max-width: calc(100% - 250px);
+}
+
+/* Header Buscador */
+.content-header {
+    padding: 20px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.search-form {
+    display: flex;
+    gap: 15px;
+}
+
+.search-form .input-select {
+    width: 250px;
+}
+
+.search-input-wrapper {
+    flex: 1;
+    display: flex;
+    gap: 10px;
+}
+
+/* Sections */
+.view-section {
+    display: none;
+    animation: fadeIn 0.4s ease;
+}
+
+.view-section.active {
+    display: block;
+}
+
+.section-panel {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 25px;
+    backdrop-filter: blur(10px);
+    margin-bottom: 20px;
+}
+
+.row-panel {
+    display: flex;
+    gap: 20px;
+}
+
+.panel-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Dashboard Pokedex Grid */
+#pokedex-grid {
+    margin-top: 20px;
+}
+
+/* Perfil do Pokemon (Header) */
+.pokemon-profile {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.profile-left {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.pokemon-info-grid {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.pokemon-info-grid .info-item {
+    background: var(--stat-bar-bg);
+    padding: 10px 15px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-center {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.profile-center img {
+    height: 180px;
+    filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.5));
+}
+
+.profile-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 20px;
+    text-align: right;
+}
+
+.image-controls {
+    flex-direction: row;
+    position: relative;
+}
+
+/* Tabelas (Moveset) */
+.moves-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.moves-tabs-header {
+    display: flex;
+    gap: 10px;
+    border-bottom: 2px solid var(--glass-border);
+    padding-bottom: 5px;
+}
+
+.move-tab-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-color);
+    padding: 10px 15px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: 0.3s;
+    border-radius: 10px 10px 0 0;
+}
+
+.move-tab-btn:hover {
+    opacity: 1;
+    background: var(--glass-bg);
+}
+
+.move-tab-btn.active {
+    opacity: 1;
+    background: var(--btn-bg);
+    border-bottom: 3px solid var(--text-color);
+}
+
+.move-section {
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+.move-section.active {
+    display: block;
+}
+
+.moves-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--glass-bg);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.moves-table th, .moves-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.moves-table th {
+    background: var(--stat-bar-bg);
+    font-weight: 700;
+}
+
+.moves-table tbody tr:hover {
+    background: var(--btn-bg);
+}
+
+/* Encounters / Localização */
+.encounters-container {
+    max-height: 250px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.encounter-item {
+    background: var(--stat-bar-bg);
+    padding: 10px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+}
+
+/* Tooltip de Ataques */
+[data-tooltip] {
+    position: relative;
+    cursor: help;
+}
+
+[data-tooltip]::before {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-10px);
+    background: rgba(0, 0, 0, 0.9);
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 6px;
+    white-space: normal;
+    min-width: 200px;
+    font-size: 0.85rem;
+    font-weight: normal;
+    text-align: center;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.3s;
+    z-index: 100;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+
+[data-tooltip]:hover::before,
+[data-tooltip]:active::before {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* Responsividade Básica */
+@media (max-width: 900px) {
+    .wiki-container { flex-direction: column; }
+    .sidebar { width: 100%; height: auto; position: relative; flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between; padding: 10px 20px; }
+    .sidebar .logo { margin-bottom: 0; }
+    .nav-links { flex-direction: row; width: 100%; }
+    .main-content { max-width: 100%; }
+    .row-panel { flex-direction: column; }
+    .pokemon-profile { flex-direction: column; text-align: center; gap: 20px; }
+    .profile-right { text-align: center; align-items: center; }
+    .search-form { flex-direction: column; }
+    .search-form .input-select { width: 100%; }
+}
