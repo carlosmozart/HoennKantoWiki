@@ -23,7 +23,8 @@ const app = {
         team: JSON.parse(localStorage.getItem('wiki-team') || '[]'),
         versionGroup: 'emerald', // ruby-sapphire, firered-leafgreen
         isShiny: false,
-        lang: 'pt'
+        lang: 'pt',
+        isCompactMode: localStorage.getItem('wiki-compact') ? localStorage.getItem('wiki-compact') === 'true' : window.innerWidth <= 768
     },
     dom: {
         navBtns: document.querySelectorAll('.nav-btn'),
@@ -55,11 +56,20 @@ const app = {
         btnShiny: document.getElementById('btn-shiny'),
         btnCry: document.getElementById('btn-cry'),
         btnPrev: document.getElementById('btn-prev'),
-        btnNext: document.getElementById('btn-next')
+        btnNext: document.getElementById('btn-next'),
+        btnLayout: document.getElementById('btn-layout')
     },
 
     init() {
         this.initLang();
+        if (this.state.isCompactMode) {
+            this.dom.gridContainer.classList.add('compact');
+            this.dom.btnLayout.textContent = '💻';
+            this.dom.btnLayout.title = "Alternar para Modo Padrão";
+        } else {
+            this.dom.btnLayout.textContent = '📱';
+            this.dom.btnLayout.title = "Alternar para Modo Compacto";
+        }
         this.bindEvents();
         this.initTheme();
         this.renderTypeFilters();
@@ -196,9 +206,38 @@ const app = {
                 this.state.favorites.splice(idx, 1);
             } else {
                 this.state.favorites.push(id);
+                this.dom.btnFav.classList.add('active');
             }
             localStorage.setItem('wiki-favs', JSON.stringify(this.state.favorites));
-            this.updateFavBtn(id);
+        });
+
+        // Alternar Layout Compacto
+        this.dom.btnLayout.addEventListener('click', () => {
+            playClickSound();
+            this.state.isCompactMode = !this.state.isCompactMode;
+            localStorage.setItem('wiki-compact', this.state.isCompactMode);
+            
+            if (this.state.isCompactMode) {
+                this.dom.gridContainer.classList.add('compact');
+                this.dom.btnLayout.textContent = '💻';
+                this.dom.btnLayout.title = "Alternar para Modo Padrão";
+            } else {
+                this.dom.gridContainer.classList.remove('compact');
+                this.dom.btnLayout.textContent = '📱';
+                this.dom.btnLayout.title = "Alternar para Modo Compacto";
+            }
+            
+            // Atualiza as imagens já carregadas
+            const loadedCards = document.querySelectorAll('.grid-card[data-loaded="true"]');
+            loadedCards.forEach(card => {
+                const id = card.dataset.id;
+                const img = card.querySelector('img');
+                if (this.state.isCompactMode) {
+                    img.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-viii/icons/${id}.png`;
+                } else {
+                    img.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
+                }
+            });
         });
 
         this.dom.btnTeam.addEventListener('click', () => {
@@ -528,7 +567,12 @@ const app = {
                     const card = entry.target;
                     const id = card.dataset.id;
                     if (!card.dataset.loaded) {
-                        card.querySelector('img').src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
+                        const isCompact = document.getElementById('pokedex-grid').classList.contains('compact');
+                        if (isCompact) {
+                            card.querySelector('img').src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-viii/icons/${id}.png`;
+                        } else {
+                            card.querySelector('img').src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
+                        }
                         card.dataset.loaded = 'true';
                     }
                     observer.unobserve(card);

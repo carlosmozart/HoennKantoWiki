@@ -518,3 +518,25 @@ body {
 
 /* Favorite State */
 .btn-fav.active { color: #ff4757; text-shadow: 0 0 10px rgba(255, 71, 87, 0.8); }
+
+/* Compact Mode */
+.grid-container.compact {
+    grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+    gap: 8px;
+}
+.grid-container.compact .grid-card {
+    padding: 5px;
+    height: 70px;
+    justify-content: center;
+}
+.grid-container.compact .grid-card img {
+    width: 40px;
+    height: 40px;
+    image-rendering: pixelated;
+}
+.grid-container.compact .grid-card-name {
+    display: none;
+}
+.grid-container.compact .grid-card-id {
+    font-size: 0.7rem;
+}
