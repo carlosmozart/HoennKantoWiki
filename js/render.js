@@ -96,15 +96,24 @@ const parseEvolutionLinks = (node) => {
             if (det.trigger.name === 'use-item' && det.item) {
                 const itemName = det.item.name.replace(/[-]/g, ' ');
                 let itemDisplay = `<span style="text-transform: capitalize;">${itemName}</span>`;
-                // Tenta pegar a localização do item no dicionário
+                let locText = "";
+                
+                // Tenta pegar a localização do item no dicionário usando app.state.versionGroup
                 if (window.TRANSLATIONS && window.TRANSLATIONS.item_locations && window.TRANSLATIONS.item_locations[det.item.name]) {
                     let locObj = window.TRANSLATIONS.item_locations[det.item.name];
-                    let locText = typeof locObj === 'object' ? (locObj[versionGroup] || locObj["emerald"]) : locObj;
-                    if (locText && locText.trim() !== "") {
-                        itemDisplay += `<br><span style="font-size:0.6rem; color:var(--text-muted);">(${locText})</span>`;
-                    }
+                    const vGroup = typeof app !== 'undefined' ? app.state.versionGroup : 'emerald';
+                    locText = typeof locObj === 'object' ? (locObj[vGroup] || locObj["emerald"]) : locObj;
                 }
-                const itemImg = `<img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${det.item.name}.png" style="width:20px; vertical-align:middle;">`;
+                
+                let itemImg = `<img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${det.item.name}.png" style="width:20px; vertical-align:middle;">`;
+                
+                if (locText && locText.trim() !== "") {
+                    itemImg = `<div class="tooltip-container" style="position:relative; display:inline-block; cursor:help;">
+                        ${itemImg}
+                        <span class="tooltip-bubble">${locText}</span>
+                    </div>`;
+                }
+                
                 method = `Item ${itemImg} <br>${itemDisplay}`;
             } else if (det.trigger.name === 'trade') {
                 if (det.held_item) {
@@ -174,6 +183,49 @@ const renderEvolutions = async (chainUrl) => {
 // ==========================================
 // ENCOUNTERS (Locais)
 // ==========================================
+// Helper para traduzir áreas dinamicamente
+const formatLocationName = (rawName) => {
+    let parts = rawName.split('-');
+    let mainParts = [];
+    let prefix = '';
+    let suffix = [];
+
+    parts.forEach(part => {
+        let p = part.toLowerCase();
+        if (p === 'outside') prefix = 'Do lado de fora de ';
+        else if (p === 'inside') prefix = 'Dentro de ';
+        else if (p === 'fishing') prefix = 'Pescando em ';
+        else if (p === 'surfing') prefix = 'Surfando em ';
+        else if (p === 'water') suffix.push('(Água)');
+        else if (p === 'area') { /* ignore */ }
+        else if (p === '1f') suffix.push('- 1º Andar');
+        else if (p === '2f') suffix.push('- 2º Andar');
+        else if (p === '3f') suffix.push('- 3º Andar');
+        else if (p === '4f') suffix.push('- 4º Andar');
+        else if (p === '5f') suffix.push('- 5º Andar');
+        else if (p === '6f') suffix.push('- 6º Andar');
+        else if (p === '7f') suffix.push('- 7º Andar');
+        else if (p === 'b1f') suffix.push('- Subsolo 1');
+        else if (p === 'b2f') suffix.push('- Subsolo 2');
+        else if (p === 'b3f') suffix.push('- Subsolo 3');
+        else if (p === 'b4f') suffix.push('- Subsolo 4');
+        else if (p === 'route') mainParts.push('Rota');
+        else {
+            mainParts.push(part.charAt(0).toUpperCase() + part.slice(1));
+        }
+    });
+
+    let mainName = mainParts.join(' ');
+    let result = prefix + mainName;
+    if (suffix.length > 0) result += ' ' + suffix.join(' ');
+    
+    // Ajustes de preposição e gramática
+    result = result.replace('de Rota', 'da Rota');
+    result = result.replace('em Rota', 'na Rota');
+    
+    return result.trim();
+};
+
 const renderEncounters = async (id, versionGroup) => {
     DOM.encountersContainer.innerHTML = '<div class="spinner"></div>';
     const encData = await API.getEncounters(id);
@@ -198,15 +250,15 @@ const renderEncounters = async (id, versionGroup) => {
 
     let html = '';
     validEncounters.forEach(enc => {
-        const locName = enc.location_area.name.replace(/-/g, ' ');
+        const locName = formatLocationName(enc.location_area.name);
         // Pega detalhes da versão correta
         let vDetail = enc.version_details.find(v => v.version.name === versionGroup);
         if(!vDetail) vDetail = enc.version_details[0]; // fallback seguro
 
         html += `
             <div class="encounter-item">
-                <span style="text-transform: capitalize;">${locName}</span>
-                <span>Max chance: ${vDetail.max_chance}%</span>
+                <span>${locName}</span>
+                <span>Chance máxima: ${vDetail.max_chance}%</span>
             </div>
         `;
     });

@@ -24,7 +24,10 @@
     
     <!-- Scripts (com ?v= anti-cache) -->
     <script defer src="./js/translations.js?v=1.0.1"></script>
+    <script defer src="./js/translations_pt.js?v=1.0.1"></script>
+    <script defer src="./js/gyms.js?v=1.0.1"></script>
     <script defer src="./js/api.js?v=1.0.1"></script>
+    <script defer src="./js/tms.js?v=1.0.1"></script>
     <script defer src="./js/render.js?v=1.0.1"></script>
     <script defer src="./js/app.js?v=1.0.1"></script>
     <script>
@@ -46,11 +49,12 @@
             <h1 class="logo">WikiGen3</h1>
             <nav class="nav-links">
                 <button class="nav-btn active" data-view="pokedex">Pokédex</button>
-                <button class="nav-btn" data-view="items" disabled title="Em breve">Itens (Em breve)</button>
-                <button class="nav-btn" data-view="gyms" disabled title="Em breve">Líderes (Em breve)</button>
-                <button class="nav-btn" data-view="tms" disabled title="Em breve">TM / HM (Em breve)</button>
+                <button class="nav-btn" data-view="team">Equipe</button>
+                <button class="nav-btn" data-view="gyms">Líderes</button>
+                <button class="nav-btn" data-view="tms">TM / HM</button>
             </nav>
             <div class="sidebar-footer">
+                <button id="lang-toggle" class="btn-icon" title="Alternar Idioma">🇧🇷</button>
                 <button id="theme-toggle" class="btn-icon" aria-label="Alternar Tema" title="Modo Claro/Escuro">☀️</button>
             </div>
         </aside>
@@ -83,8 +87,44 @@
                 <div class="glass section-panel">
                     <h2>Pokédex (Gen 1 a 3)</h2>
                     <p>Selecione um Pokémon abaixo ou use a barra de busca acima.</p>
+                    
+                    <div id="type-filters" class="type-filters-container">
+                        <!-- Botões de filtro de tipo injetados via JS -->
+                    </div>
+
                     <div class="grid-container" id="pokedex-grid">
                         <!-- Preenchido via JS (Lazy Load) -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Team Builder -->
+            <section id="view-team" class="view-section hidden">
+                <div class="glass section-panel">
+                    <h2>Montador de Equipes</h2>
+                    <p>Monte sua equipe dos sonhos (até 6 Pokémon) e veja as fraquezas combinadas!</p>
+                    
+                    <div class="team-grid" id="team-grid">
+                        <!-- Slots da equipe injetados via JS -->
+                    </div>
+                </div>
+
+                <div class="glass section-panel mt-3" style="margin-top: 20px;">
+                    <h3>Análise de Fraquezas da Equipe</h3>
+                    <p class="text-muted" style="margin-bottom: 10px;">Mostra o número de Pokémon na equipe vulneráveis a cada tipo.</p>
+                    <div class="team-analysis" id="team-analysis">
+                        <!-- Matchups da equipe injetados via JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Gym Leaders -->
+            <section id="view-gyms" class="view-section hidden">
+                <div class="glass section-panel">
+                    <h2>Líderes de Ginásio</h2>
+                    <p>Conheça os líderes da região selecionada e suas equipes.</p>
+                    <div class="gyms-container" id="gyms-container">
+                        <!-- Injetado via JS -->
                     </div>
                 </div>
             </section>
@@ -92,112 +132,139 @@
             <!-- Página Detalhada do Pokémon -->
             <section id="view-pokemon" class="view-section hidden">
                 
-                <!-- Cabeçalho do Pokémon -->
-                <div class="glass pokemon-profile">
-                    <div class="profile-left">
+                <!-- Bento Grid do Pokémon -->
+                <div class="bento-grid">
+                    
+                    <!-- Hero Box -->
+                    <div class="bento-item bento-hero" style="position: relative;">
+
+                        
+                        <div class="image-controls">
+                            <button id="btn-fav" class="btn-icon btn-fav" title="Favoritar">🤍</button>
+                            <button id="btn-team" class="btn-icon" title="Adicionar à Equipe">➕</button>
+                            <button id="btn-shiny" class="btn-icon" title="Alternar Shiny">✨</button>
+                            <button id="btn-cry" class="btn-icon" title="Tocar Cry">🔊</button>
+                        </div>
                         <span class="pokemon-number">#000</span>
-                        <h2 class="pokemon-name">Pokémon</h2>
+                        <div class="name-nav-wrapper" style="display: flex; align-items: center; justify-content: center; gap: 15px; margin: 5px 0;">
+                            <button id="btn-prev" class="btn-icon" title="Anterior" style="min-width: 35px; height: 35px; font-size: 1rem;">◀</button>
+                            <h2 class="pokemon-name" style="margin: 0;">Pokémon</h2>
+                            <button id="btn-next" class="btn-icon" title="Próximo" style="min-width: 35px; height: 35px; font-size: 1rem;">▶</button>
+                        </div>
                         <div class="pokemon-category">Categoria</div>
+                        <img src="./images/miss.png" alt="pokemon" class="pokemon-image">
                         <div class="pokemon-types">
                             <span class="pokemon-type-badge badge1">Tipo</span>
                             <span class="pokemon-type-badge badge2">Tipo</span>
                         </div>
-                        <div class="pokemon-info-grid">
-                            <div class="info-item"><span>Altura</span><strong class="pokemon-height">--</strong></div>
-                            <div class="info-item"><span>Peso</span><strong class="pokemon-weight">--</strong></div>
-                            <div class="info-item"><span>Habilidades</span><strong class="pokemon-ability">--</strong></div>
-                        </div>
                     </div>
-                    <div class="profile-center">
-                        <img src="./images/miss.png" alt="pokemon" class="pokemon-image">
-                    </div>
-                    <div class="profile-right">
-                        <div class="image-controls">
-                            <button id="btn-fav" class="btn-icon btn-fav" title="Favoritar">🤍</button>
-                            <button id="btn-shiny" class="btn-icon" title="Alternar Shiny">✨</button>
-                            <button id="btn-cry" class="btn-icon" title="Tocar Cry">🔊</button>
-                        </div>
-                        <div class="pokemon-description">Descrição da PokéAPI</div>
-                    </div>
-                </div>
 
-                <!-- Painel de Stats e Fraquezas -->
-                <div class="glass section-panel row-panel">
-                    <div class="panel-col">
+                    <!-- Desc Box -->
+                    <div class="bento-item bento-desc">
+                        <h3>Descrição</h3>
+                        <p class="pokemon-description">Descrição da PokéAPI</p>
+                    </div>
+
+                    <!-- Info Box -->
+                    <div class="bento-item bento-info">
+                        <h3>Informações</h3>
+                        <div class="info-grid">
+                            <div class="info-cell"><span>Altura</span><strong class="pokemon-height">--</strong></div>
+                            <div class="info-cell"><span>Peso</span><strong class="pokemon-weight">--</strong></div>
+                            <div class="info-cell"><span>Hab.</span><strong class="pokemon-ability">--</strong></div>
+                            <div class="info-cell"><span>EV</span><strong class="pokemon-evs">--</strong></div>
+                        </div>
+                    </div>
+
+                    <!-- Stats Box -->
+                    <div class="bento-item bento-stats">
                         <h3>Status Base</h3>
                         <div class="pokemon-stats">
                             <!-- Preenchido via JS -->
                         </div>
                     </div>
-                    <div class="panel-col">
+
+                    <!-- Matchups Box -->
+                    <div class="bento-item bento-matchups">
                         <h3>Fraquezas e Vantagens</h3>
                         <div class="matchups-container">
                             <!-- Preenchido via JS -->
                         </div>
                     </div>
-                </div>
 
-                <!-- Painel de Evolução e Localização -->
-                <div class="glass section-panel row-panel">
-                    <div class="panel-col">
+                    <!-- Evolutions Box -->
+                    <div class="bento-item bento-evolutions">
                         <h3>Cadeia Evolutiva</h3>
                         <div class="evolution-container">
                             <!-- Preenchido via JS -->
                         </div>
                     </div>
-                    <div class="panel-col">
-                        <h3>Onde Encontrar (Localização)</h3>
+
+                    <!-- Locations Box -->
+                    <div class="bento-item bento-locations">
+                        <h3>Onde Encontrar</h3>
                         <div class="encounters-container">
                             <!-- Preenchido via JS -->
                         </div>
                     </div>
+
+                    <!-- Moves Box -->
+                    <div class="bento-item bento-moves">
+                        <h3>Ataques (Moveset Geração 3)</h3>
+                        <p class="text-muted">Ataques aprendidos nas versões Ruby, Sapphire, Emerald, FireRed e LeafGreen.</p>
+                        
+                        <div class="moves-container tabs-container">
+                            <div class="moves-tabs-header">
+                                <button class="move-tab-btn active" data-target="move-tab-level">Nível</button>
+                                <button class="move-tab-btn" data-target="move-tab-machine">TM / HM</button>
+                                <button class="move-tab-btn" data-target="move-tab-egg">Cruzamento</button>
+                                <button class="move-tab-btn" data-target="move-tab-tutor">Tutor</button>
+                            </div>
+                            <div class="moves-tabs-body">
+                                <!-- Tabela Level Up -->
+                                <div id="move-tab-level" class="move-section active">
+                                    <table class="moves-table" id="table-moves-level">
+                                        <thead><tr><th>Nvl</th><th>Ataque</th><th>Tipo</th><th>Cat</th><th>Poder</th><th>Prec</th><th>PP</th></tr></thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+
+                                <!-- Tabela Machine (TM/HM) -->
+                                <div id="move-tab-machine" class="move-section hidden">
+                                    <table class="moves-table" id="table-moves-machine">
+                                        <thead><tr><th>Ataque</th><th>Tipo</th><th>Cat</th><th>Poder</th><th>Prec</th><th>PP</th><th>Onde Encontrar</th></tr></thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+
+                                <!-- Tabela Egg Moves -->
+                                <div id="move-tab-egg" class="move-section hidden">
+                                    <table class="moves-table" id="table-moves-egg">
+                                        <thead><tr><th>Ataque</th><th>Tipo</th><th>Cat</th><th>Poder</th><th>Prec</th><th>PP</th></tr></thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                                
+                                <!-- Tabela Tutor -->
+                                <div id="move-tab-tutor" class="move-section hidden">
+                                    <table class="moves-table" id="table-moves-tutor">
+                                        <thead><tr><th>Ataque</th><th>Tipo</th><th>Cat</th><th>Poder</th><th>Prec</th><th>PP</th><th>Onde Encontrar</th></tr></thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+            </section>
 
-                <!-- Painel de Ataques (Moveset) -->
+            <!-- TM / HM -->
+            <section id="view-tms" class="view-section hidden">
                 <div class="glass section-panel">
-                    <h3>Ataques (Moveset Geração 3)</h3>
-                    <p class="text-muted">Ataques aprendidos nas versões Ruby, Sapphire, Emerald, FireRed e LeafGreen.</p>
-                    
-                    <div class="moves-container tabs-container">
-                        <div class="moves-tabs-header">
-                            <button class="move-tab-btn active" data-target="move-tab-level">Nível</button>
-                            <button class="move-tab-btn" data-target="move-tab-machine">TM / HM</button>
-                            <button class="move-tab-btn" data-target="move-tab-egg">Cruzamento</button>
-                            <button class="move-tab-btn" data-target="move-tab-tutor">Tutor</button>
-                        </div>
-                        <div class="moves-tabs-body">
-                            <!-- Tabela Level Up -->
-                            <div id="move-tab-level" class="move-section active">
-                                <table class="moves-table" id="table-moves-level">
-                                    <thead><tr><th>Nvl</th><th>Ataque</th><th>Tipo</th><th>Cat</th><th>Poder</th><th>Prec</th><th>PP</th></tr></thead>
-                                    <tbody></tbody>
-                                </table>
-                            </div>
-
-                            <!-- Tabela Machine (TM/HM) -->
-                            <div id="move-tab-machine" class="move-section hidden">
-                                <table class="moves-table" id="table-moves-machine">
-                                    <thead><tr><th>Ataque</th><th>Tipo</th><th>Cat</th><th>Poder</th><th>Prec</th><th>PP</th><th>Onde Encontrar</th></tr></thead>
-                                    <tbody></tbody>
-                                </table>
-                            </div>
-
-                            <!-- Tabela Egg Moves -->
-                            <div id="move-tab-egg" class="move-section hidden">
-                                <table class="moves-table" id="table-moves-egg">
-                                    <thead><tr><th>Ataque</th><th>Tipo</th><th>Cat</th><th>Poder</th><th>Prec</th><th>PP</th></tr></thead>
-                                    <tbody></tbody>
-                                </table>
-                            </div>
-                            
-                            <!-- Tabela Tutor -->
-                            <div id="move-tab-tutor" class="move-section hidden">
-                                <table class="moves-table" id="table-moves-tutor">
-                                    <thead><tr><th>Ataque</th><th>Tipo</th><th>Cat</th><th>Poder</th><th>Prec</th><th>PP</th><th>Onde Encontrar</th></tr></thead>
-                                    <tbody></tbody>
-                                </table>
-                            </div>
-                        </div>
+                    <h2>Máquinas Técnicas e Ocultas (TM / HM)</h2>
+                    <p>Lista completa das 58 máquinas da Geração 3.</p>
+                    <div class="grid-container" id="tms-grid">
+                        <!-- Preenchido via JS -->
                     </div>
                 </div>
             </section>

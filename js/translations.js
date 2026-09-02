@@ -4,7 +4,7 @@
   Se deixar vazio, o site usará o texto original em inglês da PokéAPI.
 */
 
-window.TRANSLATIONS = {
+window.TRANSLATIONS_EN = {
     pokedex: {
         "1": "", // Descrição do Pokémon ID #1
         "2": "", // Descrição do Pokémon ID #2
@@ -752,6 +752,14 @@ window.TRANSLATIONS = {
     abilities: {
         // Ex: "blaze": "Aumenta o dano de ataques de Fogo quando o HP está baixo."
     },
+    item_locations: {
+        "water-stone": { "emerald": "Abandoned Ship / Treasure Hunter", "ruby-sapphire": "Abandoned Ship / Treasure Hunter", "firered-leafgreen": "Celadon Dept. Store" },
+        "fire-stone": { "emerald": "Fiery Path / Treasure Hunter", "ruby-sapphire": "Fiery Path / Treasure Hunter", "firered-leafgreen": "Celadon Dept. Store" },
+        "thunder-stone": { "emerald": "New Mauville / Treasure Hunter", "ruby-sapphire": "New Mauville / Treasure Hunter", "firered-leafgreen": "Celadon Dept. Store" },
+        "leaf-stone": { "emerald": "Route 119 / Treasure Hunter", "ruby-sapphire": "Route 119 / Treasure Hunter", "firered-leafgreen": "Celadon Dept. Store" },
+        "moon-stone": { "emerald": "Meteor Falls", "ruby-sapphire": "Meteor Falls", "firered-leafgreen": "Mt. Moon" },
+        "sun-stone": { "emerald": "Mossdeep City", "ruby-sapphire": "Mossdeep City", "firered-leafgreen": "Ruin Valley" }
+    },
     tm_locations: {
         "focus punch": {
             "emerald": "Route 115",
@@ -1120,14 +1128,6 @@ window.TRANSLATIONS = {
             "emerald": "Battle Frontier",
             "ruby-sapphire": "Battle Frontier",
             "firered-leafgreen": "Seven Island"
-        }
-    },
-    item_locations: {
-        // Ex:
-        "water stone": {
-            "emerald": "Abandoned Ship (Treasure Hunter)",
-            "ruby-sapphire": "Abandoned Ship (Treasure Hunter)",
-            "firered-leafgreen": "Celadon City Dept. Store"
         }
     }
 };

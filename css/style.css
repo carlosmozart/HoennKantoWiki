@@ -2,14 +2,15 @@
 
 :root {
     /* Tema Claro Padrão */
+    --bg-color: #f4f5f7; /* Um cinza-azulado muito claro e suave, melhor aos olhos */
     --text-color: #333333;
     --text-muted: #666666;
-    --glass-bg: rgba(255, 255, 255, 0.4);
-    --glass-border: rgba(255, 255, 255, 0.5);
-    --input-bg: rgba(255, 255, 255, 0.7);
-    --btn-bg: rgba(255, 255, 255, 0.8);
-    --btn-hover: rgba(255, 255, 255, 1);
-    --stat-bar-bg: rgba(0, 0, 0, 0.1);
+    --glass-bg: rgba(255, 255, 255, 0.85);
+    --glass-border: rgba(0, 0, 0, 0.08);
+    --input-bg: rgba(255, 255, 255, 1);
+    --btn-bg: rgba(255, 255, 255, 1);
+    --btn-hover: #e2e6ea;
+    --stat-bar-bg: rgba(0, 0, 0, 0.08);
     
     /* Cores de Tipos (Background) */
     --type-normal: #A8A77A;
@@ -34,6 +35,7 @@
 
 [data-theme="dark"] {
     /* Tema Escuro */
+    --bg-color: #121212; /* Cor de fundo padrão preta/escura */
     --text-color: #ffffff;
     --text-muted: #dddddd;
     --glass-bg: rgba(0, 0, 0, 0.5);
@@ -68,9 +70,9 @@ body {
     height: 100%;
     z-index: -1;
     transition: background-color 0.8s ease-in-out;
-    /* Começa neutro ou normal */
-    background-color: var(--type-normal);
+    opacity: 1; /* Cor sólida como solicitado */
 }
+.bg-default { background-color: var(--bg-color) !important; }
 
 /* App Container */
 .app-container {
@@ -106,8 +108,8 @@ body {
 .logo {
     font-size: 2.5rem;
     font-weight: 800;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-    color: #fff; /* Fixo para contraste */
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    color: var(--text-color);
 }
 
 /* Forms e Inputs */
@@ -159,9 +161,11 @@ body {
     padding: 0 20px;
 }
 .btn-icon {
-    width: 45px;
+    min-width: 45px;
+    padding: 0 10px;
     height: 45px;
     font-size: 1.5rem;
+    white-space: nowrap;
 }
 .btn-icon:hover, .btn-search:hover, .btn-nav:hover {
     background: var(--btn-hover);
@@ -276,6 +280,7 @@ body {
     text-transform: uppercase;
     text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
     box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    border: 2px solid rgba(255, 255, 255, 0.85); /* Contorno para destacar do fundo */
     display: none;
     letter-spacing: 1px;
 }
@@ -427,12 +432,84 @@ body {
 .matchup-item { display: flex; justify-content: space-between; align-items: center; padding: 5px 15px; border-radius: 10px; font-weight: 700; font-size: 0.8rem; color: #fff; text-shadow: 1px 1px 2px rgba(0,0,0,0.6); }
 .matchup-mult { background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 5px; }
 
+/* Type Filters na Home */
+.type-filters-container { display: flex; flex-wrap: wrap; gap: 8px; margin: 15px 0; justify-content: center; }
+.type-filter-btn { padding: 5px 10px; border: none; border-radius: 15px; font-size: 0.8rem; font-weight: bold; cursor: pointer; color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.6); opacity: 0.5; transition: 0.3s; }
+.type-filter-btn:hover, .type-filter-btn.active { opacity: 1; transform: scale(1.1); box-shadow: 0 2px 5px rgba(0,0,0,0.4); }
+
+/* Team Builder */
+.team-grid { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; margin-top: 15px; }
+.team-slot { width: 120px; height: 120px; border: 2px dashed rgba(255,255,255,0.3); border-radius: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; cursor: pointer; transition: 0.3s; background: rgba(0,0,0,0.2); text-decoration: none;}
+.team-slot:hover { border-color: rgba(255,255,255,0.8); background: rgba(255,255,255,0.1); }
+.team-slot img { max-width: 80px; max-height: 80px; }
+.team-slot .team-name { font-size: 0.75rem; text-transform: capitalize; color: white; margin-top: 5px; font-weight: bold; }
+.team-slot .remove-btn { position: absolute; top: -5px; right: -5px; background: #e74c3c; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; font-weight: bold; display: none; }
+.team-slot:hover .remove-btn { display: flex; align-items: center; justify-content: center; }
+.team-slot.empty::after { content: "+"; font-size: 2rem; color: rgba(255,255,255,0.3); }
+
+.team-analysis { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; margin-top: 15px; }
+.team-analysis-item { display: flex; justify-content: space-between; align-items: center; padding: 5px 15px; border-radius: 10px; font-weight: bold; font-size: 0.8rem; background: rgba(0,0,0,0.3); color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.6); }
+.team-analysis-item.weakness-high { box-shadow: inset 0 0 10px rgba(255,0,0,0.6); border: 1px solid rgba(255,0,0,0.8); }
+.team-analysis-item.resist-high { box-shadow: inset 0 0 10px rgba(0,255,0,0.4); border: 1px solid rgba(0,255,0,0.5); }
+.team-analysis-count { font-size: 1rem; background: rgba(0,0,0,0.5); padding: 2px 8px; border-radius: 5px; }
+
+/* Gym Leaders */
+.gyms-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-top: 15px; }
+.gym-card { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); border-radius: 15px; padding: 15px; text-align: center; color: white; display: flex; flex-direction: column; align-items: center; }
+.gym-card h3 { margin: 0; font-size: 1.2rem; }
+.gym-card .gym-city { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px; }
+.gym-badge { font-weight: bold; padding: 3px 10px; border-radius: 10px; font-size: 0.8rem; margin-bottom: 10px; display: inline-block; color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.6); }
+.gym-sprite { height: 100px; object-fit: contain; margin-bottom: 15px; }
+.gym-team { display: flex; gap: 5px; flex-wrap: wrap; justify-content: center; width: 100%; }
+.gym-poke { display: flex; flex-direction: column; align-items: center; background: rgba(0,0,0,0.4); padding: 5px; border-radius: 10px; cursor: pointer; transition: 0.3s; text-decoration: none; color: white; }
+.gym-poke:hover { transform: scale(1.1); background: rgba(255,255,255,0.1); }
+.gym-poke img { width: 40px; height: 40px; }
+.gym-poke span { font-size: 0.7rem; }
+
 /* Grid Modal */
 .grid-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); opacity: 1; transition: opacity 0.3s; }
 .grid-modal.hidden { opacity: 0; pointer-events: none; }
+
+/* Tooltips (Evolução por Item) */
+.tooltip-container .tooltip-bubble {
+    visibility: hidden;
+    width: max-content;
+    max-width: 150px;
+    background-color: var(--glass-border);
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px;
+    position: absolute;
+    z-index: 10;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 0.7rem;
+    pointer-events: none;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+    backdrop-filter: blur(5px);
+}
+.tooltip-container .tooltip-bubble::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: var(--glass-border) transparent transparent transparent;
+}
+.tooltip-container:hover .tooltip-bubble {
+    visibility: visible;
+    opacity: 1;
+}
 .grid-modal-content { width: 90%; max-width: 800px; height: 85%; background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 20px; display: flex; flex-direction: column; overflow: hidden; backdrop-filter: blur(15px); }
 .grid-modal-header { display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid var(--glass-border); }
 .grid-container { padding: 20px; display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 15px; overflow-y: auto; flex: 1; }
+#tms-grid { grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
 .grid-card { background: var(--stat-bar-bg); border-radius: 15px; padding: 10px; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: 0.3s; }
 .grid-card:hover { background: var(--glass-border); transform: translateY(-5px); box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
 .grid-card img { width: 60px; height: 60px; object-fit: contain; }

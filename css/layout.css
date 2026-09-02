@@ -119,86 +119,111 @@ body {
     to { opacity: 1; transform: translateY(0); }
 }
 
-.section-panel {
+/* Bento Grid Layout */
+.bento-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    width: 100%;
+    margin-top: 20px;
+    margin-bottom: 30px;
+}
+
+.bento-item {
     background: var(--glass-bg);
     border: 1px solid var(--glass-border);
     border-radius: 20px;
     padding: 25px;
-    backdrop-filter: blur(10px);
-    margin-bottom: 20px;
-}
-
-.row-panel {
-    display: flex;
-    gap: 20px;
-}
-
-.panel-col {
-    flex: 1;
+    backdrop-filter: blur(15px);
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
-/* Dashboard Pokedex Grid */
-#pokedex-grid {
-    margin-top: 20px;
+.bento-item h3 {
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+    color: var(--text-color);
+    border-bottom: 1px solid var(--glass-border);
+    padding-bottom: 5px;
 }
 
-/* Perfil do Pokemon (Header) */
-.pokemon-profile {
-    display: flex;
+/* Specific Bento Sizes */
+.bento-hero {
+    grid-column: span 1;
+    grid-row: span 2;
     align-items: center;
-    justify-content: space-between;
-    margin-bottom: 20px;
+    text-align: center;
+    justify-content: center;
+    position: relative;
+    padding-top: 40px; /* space for controls */
 }
 
-.profile-left {
-    flex: 1;
+.bento-hero .image-controls {
+    position: absolute;
+    top: 15px;
+    right: 15px;
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-.pokemon-info-grid {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 15px;
-    margin-top: 10px;
+.bento-hero .pokemon-image {
+    height: 180px;
+    filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.5));
+    margin: 15px 0;
 }
 
-.pokemon-info-grid .info-item {
+.bento-desc {
+    grid-column: span 2;
+    grid-row: span 1;
+    justify-content: center;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+.bento-info {
+    grid-column: span 1;
+    grid-row: span 1;
+}
+
+.bento-stats {
+    grid-column: span 1;
+    grid-row: span 1;
+}
+
+.bento-matchups {
+    grid-column: span 2;
+    grid-row: span 1;
+}
+
+.bento-evolutions {
+    grid-column: span 2;
+    grid-row: span 1;
+}
+
+.bento-locations {
+    grid-column: span 1;
+    grid-row: span 1;
+}
+
+.bento-moves {
+    grid-column: span 3;
+}
+
+/* Info Grid */
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+.info-cell {
     background: var(--stat-bar-bg);
     padding: 10px 15px;
     border-radius: 10px;
     display: flex;
     flex-direction: column;
-}
-
-.profile-center {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-}
-
-.profile-center img {
-    height: 180px;
-    filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.5));
-}
-
-.profile-right {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 20px;
-    text-align: right;
-}
-
-.image-controls {
-    flex-direction: row;
-    position: relative;
+    text-align: center;
 }
 
 /* Tabelas (Moveset) */
@@ -301,26 +326,56 @@ body {
     content: attr(data-tooltip);
     position: absolute;
     bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%) translateY(-10px);
-    background: rgba(0, 0, 0, 0.9);
+    left: 0; /* Alinhado à esquerda do elemento para evitar cortes na tela */
+    transform: translateY(-10px);
+    background: rgba(0, 0, 0, 0.95);
     color: #fff;
     padding: 8px 12px;
     border-radius: 6px;
     white-space: normal;
     min-width: 200px;
+    max-width: 85vw; /* Não ultrapassa a largura da tela no celular */
     font-size: 0.85rem;
     font-weight: normal;
-    text-align: center;
+    text-align: left;
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.3s, transform 0.3s;
-    z-index: 100;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    z-index: 9999; /* Garante que fique acima de tudo */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.5);
 }
 
 [data-tooltip]:hover::before,
 [data-tooltip]:active::before {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Tooltip para Itens de Evolução */
+.tooltip-container .tooltip-bubble {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-5px);
+    background: rgba(0, 0, 0, 0.95);
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 6px;
+    white-space: normal;
+    min-width: 150px;
+    max-width: 200px;
+    width: max-content;
+    text-align: center;
+    font-size: 0.75rem;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.3s;
+    z-index: 9999;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.5);
+}
+
+.tooltip-container:hover .tooltip-bubble,
+.tooltip-container:active .tooltip-bubble {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
 }
@@ -334,9 +389,30 @@ body {
     .main-content { max-width: 100%; padding: 10px; }
     .section-panel { padding: 15px; }
     .grid-container { padding: 10px; gap: 10px; }
-    .row-panel { flex-direction: column; }
-    .pokemon-profile { flex-direction: column; text-align: center; gap: 20px; }
-    .profile-right { text-align: center; align-items: center; }
     .search-form { flex-direction: column; }
     .search-form .input-select { width: 100%; }
+
+    /* Bento Grid Tablet */
+    .bento-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .bento-hero { grid-column: span 2; grid-row: auto; }
+    .bento-desc { grid-column: span 2; }
+    .bento-info { grid-column: span 1; }
+    .bento-stats { grid-column: span 1; }
+    .bento-matchups { grid-column: span 2; }
+    .bento-evolutions { grid-column: span 2; }
+    .bento-locations { grid-column: span 2; }
+    .bento-moves { grid-column: span 2; }
+}
+
+@media (max-width: 600px) {
+    /* Bento Grid Mobile */
+    .bento-grid {
+        grid-template-columns: 1fr;
+    }
+    .bento-hero, .bento-desc, .bento-info, .bento-stats, .bento-matchups, .bento-evolutions, .bento-locations, .bento-moves {
+        grid-column: span 1;
+        grid-row: auto;
+    }
 }

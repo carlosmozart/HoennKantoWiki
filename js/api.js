@@ -1,6 +1,23 @@
 // Cache System
 const pokemonCache = new Map();
 
+try {
+    const savedCache = localStorage.getItem('pokeWikiApiCache');
+    if (savedCache) {
+        const parsed = JSON.parse(savedCache);
+        for (const [k, v] of Object.entries(parsed)) {
+            pokemonCache.set(k, v);
+        }
+    }
+} catch(e) {}
+
+const saveCacheToLocal = () => {
+    try {
+        const obj = Object.fromEntries(pokemonCache);
+        localStorage.setItem('pokeWikiApiCache', JSON.stringify(obj));
+    } catch(e) {}
+};
+
 // Fetch util
 const fetchWithCache = async (url, cacheKey) => {
     if (pokemonCache.has(cacheKey)) return pokemonCache.get(cacheKey);
@@ -9,6 +26,7 @@ const fetchWithCache = async (url, cacheKey) => {
         if (!response.ok) throw new Error('Not found');
         const data = await response.json();
         pokemonCache.set(cacheKey, data);
+        saveCacheToLocal();
         return data;
     } catch (error) {
         return null;
