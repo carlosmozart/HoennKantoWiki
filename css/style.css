@@ -437,7 +437,7 @@ body {
 .grid-card:hover { background: var(--glass-border); transform: translateY(-5px); box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
 .grid-card img { width: 60px; height: 60px; object-fit: contain; }
 .grid-card-id { font-size: 0.8rem; font-weight: bold; color: var(--text-muted); }
-.grid-card-name { font-size: 0.9rem; font-weight: 700; text-transform: capitalize; }
+.grid-card-name { font-size: 0.9rem; font-weight: 700; text-transform: capitalize; text-align: center; word-break: break-word; overflow-wrap: break-word; }
 
 /* Favorite State */
 .btn-fav.active { color: #ff4757; text-shadow: 0 0 10px rgba(255, 71, 87, 0.8); }
