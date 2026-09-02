@@ -24,7 +24,7 @@ const app = {
         versionGroup: 'emerald', // ruby-sapphire, firered-leafgreen
         isShiny: false,
         lang: 'pt',
-        isCompactMode: localStorage.getItem('wiki-compact') ? localStorage.getItem('wiki-compact') === 'true' : window.innerWidth <= 768
+        isCompactMode: false
     },
     dom: {
         navBtns: document.querySelectorAll('.nav-btn'),
@@ -62,6 +62,14 @@ const app = {
 
     init() {
         this.initLang();
+        
+        // Evaluate compact mode dynamically
+        if (localStorage.getItem('wiki-compact') !== null) {
+            this.state.isCompactMode = localStorage.getItem('wiki-compact') === 'true';
+        } else {
+            this.state.isCompactMode = window.innerWidth <= 768;
+        }
+        
         if (this.state.isCompactMode) {
             this.dom.gridContainer.classList.add('compact');
             this.dom.btnLayout.textContent = '💻';

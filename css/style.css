@@ -521,22 +521,28 @@ body {
 
 /* Compact Mode */
 .grid-container.compact {
-    grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(65px, 1fr));
     gap: 8px;
 }
 .grid-container.compact .grid-card {
     padding: 5px;
-    height: 70px;
-    justify-content: center;
+    height: 85px;
+    justify-content: flex-start;
 }
 .grid-container.compact .grid-card img {
     width: 40px;
     height: 40px;
     image-rendering: pixelated;
+    margin-bottom: 2px;
 }
 .grid-container.compact .grid-card-name {
-    display: none;
+    display: block;
+    font-size: 0.65rem;
+    line-height: 1.1;
+    word-break: break-all;
+    overflow-wrap: break-word;
 }
 .grid-container.compact .grid-card-id {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
+    margin-bottom: 2px;
 }
