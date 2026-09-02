@@ -13,6 +13,11 @@
     <title>Hoenn & Kanto Wiki - RSE / FRLG</title>
     <link rel="icon" href="./favicons/favicon-16x16.png">
     
+    <!-- PWA -->
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#121212">
+    <link rel="apple-touch-icon" href="./favicons/pokedex.png">
+
     <!-- Estilos (com ?v= anti-cache) -->
     <link rel="stylesheet" href="./css/style.css?v=1.0.1">
     <link rel="stylesheet" href="./css/layout.css?v=1.0.1">
@@ -22,6 +27,15 @@
     <script defer src="./js/api.js?v=1.0.1"></script>
     <script defer src="./js/render.js?v=1.0.1"></script>
     <script defer src="./js/app.js?v=1.0.1"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').catch(err => {
+                    console.log('SW Registration failed: ', err);
+                });
+            });
+        }
+    </script>
 </head>
 <body>
     <div id="dynamic-bg" class="type-normal"></div>

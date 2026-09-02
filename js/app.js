@@ -1,3 +1,21 @@
+// Helper de som retro
+function playClickSound() {
+    try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        oscillator.type = 'square';
+        oscillator.frequency.setValueAtTime(150, audioCtx.currentTime);
+        oscillator.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.05);
+        gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+        oscillator.start();
+        oscillator.stop(audioCtx.currentTime + 0.05);
+    } catch (e) {}
+}
+
 const app = {
     state: {
         currentPokemon: null,
@@ -37,6 +55,22 @@ const app = {
         this.bindEvents();
         this.initTheme();
         this.renderGrid();
+        this.handleRouting();
+    },
+
+    handleRouting() {
+        const hash = window.location.hash.replace('#', '');
+        if (hash.startsWith('pokemon/')) {
+            const id = parseInt(hash.split('/')[1]);
+            if (!isNaN(id)) {
+                this.loadPokemon(id);
+            }
+        } else {
+            this.switchView('pokedex');
+            document.title = 'Hoenn & Kanto Wiki - RSE / FRLG';
+            this.dom.navBtns.forEach(b => b.classList.remove('active'));
+            if (this.dom.navBtns[0]) this.dom.navBtns[0].classList.add('active');
+        }
     },
 
     bindEvents() {
@@ -44,11 +78,12 @@ const app = {
         this.dom.navBtns.forEach(btn => {
             btn.addEventListener('click', (e) => {
                 if (btn.disabled) return;
-                this.dom.navBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                this.switchView(btn.dataset.view);
+                playClickSound();
+                window.location.hash = btn.dataset.view === 'pokedex' ? '' : btn.dataset.view;
             });
         });
+
+        window.addEventListener('hashchange', () => this.handleRouting());
 
         // Abas de Ataques (Moveset)
         document.querySelectorAll('.move-tab-btn').forEach(btn => {
@@ -72,9 +107,7 @@ const app = {
             
             // Força a voltar pra view de dashboard quando começa a digitar
             if (val.length > 0 && !document.getElementById('view-dashboard').classList.contains('active')) {
-                this.switchView('pokedex');
-                this.dom.navBtns.forEach(b => b.classList.remove('active'));
-                this.dom.navBtns[0].classList.add('active'); // Pokedex tab
+                window.location.hash = '';
             }
 
             cards.forEach(card => {
@@ -285,6 +318,8 @@ const app = {
             
             this.dom.pDesc.textContent = descText;
             
+            document.title = `${data.name.toUpperCase()} - Hoenn & Kanto Wiki`; // Dynamic Title
+            
             renderEvolutions(species.evolution_chain.url, this.versionGroup);
         }
 
@@ -337,7 +372,8 @@ const app = {
                 <span class="grid-card-name" style="text-transform: capitalize;">${pName}</span>
             `;
             card.addEventListener('click', () => {
-                this.loadPokemon(i);
+                playClickSound();
+                window.location.hash = `pokemon/${i}`;
                 this.dom.searchInput.value = ''; // Limpa a busca ao entrar num pokemon
                 document.querySelectorAll('.grid-card').forEach(c => c.style.display = 'flex');
             });
