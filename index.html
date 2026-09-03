@@ -62,14 +62,12 @@
                 <button class="nav-btn" data-view="tms">TMs & HMs</button>
                 <button class="nav-btn" data-view="map">Mapa Múndi</button>
                 <button class="nav-btn" data-view="frontier">Battle Frontier</button>
-                <button class="nav-btn" data-view="extras">Emerald Extras</button>
-                <button class="nav-btn" data-view="guides">Guias Práticos</button>
-                <button class="nav-btn" data-view="settings">☁️ Cloud Save</button>
+                <button class="nav-btn" data-view="extras">Extras & Códigos</button>
+                <button class="nav-btn" data-view="guides">Guias de Jogo</button>
+                <button class="nav-btn" data-view="settings">Configurações</button>
             </nav>
             <div class="sidebar-footer">
-                <button id="lang-toggle" class="btn-icon" title="Alternar Idioma">🇧🇷</button>
-                <button id="theme-toggle" class="btn-icon" aria-label="Alternar Tema" title="Modo Claro/Escuro">☀️</button>
-                <button id="btn-install-app" class="btn-icon hidden" title="Instalar Aplicativo" aria-label="Instalar WikiGen3">📲</button>
+                <button id="btn-install-app" class="btn-icon hidden" title="Instalar Aplicativo" aria-label="Instalar WikiGen3">📱</button>
             </div>
         </aside>
 
@@ -361,25 +359,38 @@
                 </div>
             </section>
 
-            <!-- Settings / Cloud Save Section -->
+            <!-- Settings Section -->
             <section id="view-settings" class="view-section hidden">
                 <div class="glass section-panel">
-                    <h2>☁️ Sincronização e Saves</h2>
-                    <p>Salve seu progresso (equipes montadas e TMs marcados) para importar em outro dispositivo.</p>
-                    
-                    <div style="display:flex; flex-wrap:wrap; gap:20px; margin-top:20px;">
-                        <div style="flex:1; min-width:280px; background:var(--glass-bg); padding:20px; border-radius:15px; border:1px solid var(--glass-border);">
-                            <h3 style="color:var(--primary-color); margin-top:0;">Exportar Save</h3>
-                            <p style="font-size:0.85rem; color:var(--text-muted);">Gere um código contendo todo o seu progresso atual.</p>
+                    <h2>Configurações</h2>
+                    <div style="margin-top:20px; display: flex; flex-direction: column; gap: 20px;">
+                        <div class="bento-item" style="padding: 20px;">
+                            <h3>Gerenciar Perfil</h3>
+                            <p style="color:var(--text-muted); font-size: 0.9rem; margin-bottom:10px;">Crie ou troque de perfil. O progresso é salvo separadamente para cada perfil e jogo.</p>
+                            <div style="display: flex; gap: 10px; align-items: center;">
+                                <select id="profile-select" class="custom-select" style="flex:1;">
+                                    <!-- Renderizado via JS -->
+                                </select>
+                                <button id="btn-new-profile" class="btn-primary" style="padding: 10px;">Novo</button>
+                                <button id="btn-delete-profile" class="btn-primary" style="padding: 10px; background: #ff4757; color: white;">Excluir</button>
+                            </div>
+                        </div>
+
+                        <div class="bento-item" style="padding: 20px;">
+                            <h3>Aparência e Idioma</h3>
+                            <div style="display: flex; gap: 15px; margin-top:10px;">
+                                <button id="theme-toggle" class="btn-primary" style="flex:1;">Alternar Tema 🌙</button>
+                                <button id="lang-toggle" class="btn-primary" style="flex:1;">Alternar Idioma 🇧🇷</button>
+                            </div>
+                        </div>
+                        
+                        <div class="bento-item" style="padding: 20px;">
+                            <h3>Cloud Save</h3>
+                            <p style="font-size:0.85rem; color:var(--text-muted);">Salve seu progresso para importar em outro dispositivo.</p>
                             <button id="btn-export-save" class="nav-btn" style="background:var(--primary-color); margin-bottom:15px;">Gerar Código de Save</button>
                             <textarea id="save-export-output" readonly style="width:100%; height:100px; background:rgba(0,0,0,0.3); color:white; border:1px solid var(--glass-border); border-radius:8px; padding:10px; font-family:monospace; font-size:0.8rem; resize:none;" placeholder="Seu código aparecerá aqui..."></textarea>
                             <button id="btn-copy-save" class="nav-btn hidden" style="margin-top:10px; background:var(--btn-bg);">📋 Copiar Código</button>
-                        </div>
-                        
-                        <div style="flex:1; min-width:280px; background:var(--glass-bg); padding:20px; border-radius:15px; border:1px solid var(--glass-border);">
-                            <h3 style="color:var(--type-electric); margin-top:0;">Importar Save</h3>
-                            <p style="font-size:0.85rem; color:var(--text-muted);">Cole um código aqui para restaurar seu progresso.</p>
-                            <textarea id="save-import-input" style="width:100%; height:100px; background:rgba(0,0,0,0.3); color:white; border:1px solid var(--glass-border); border-radius:8px; padding:10px; font-family:monospace; font-size:0.8rem; resize:none; margin-bottom:15px;" placeholder="Cole seu código de save aqui..."></textarea>
+                            <textarea id="save-import-input" style="width:100%; height:100px; background:rgba(0,0,0,0.3); color:white; border:1px solid var(--glass-border); border-radius:8px; padding:10px; font-family:monospace; font-size:0.8rem; resize:none; margin:15px 0;" placeholder="Cole seu código de save aqui..."></textarea>
                             <button id="btn-import-save" class="nav-btn" style="background:var(--type-electric);">Carregar Progresso</button>
                         </div>
                     </div>

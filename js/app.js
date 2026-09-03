@@ -18,9 +18,12 @@ function playClickSound() {
 
 const app = {
     state: {
+        profiles: JSON.parse(localStorage.getItem('wiki-profiles') || '["default"]'),
+        currentProfile: localStorage.getItem('wiki-active-profile') || 'default',
         currentPokemon: null,
-        favorites: JSON.parse(localStorage.getItem('wiki-favs') || '[]'),
-        team: JSON.parse(localStorage.getItem('wiki-team') || '[]'),
+        favorites: [],
+        team: [],
+        captures: [],
         versionGroup: 'emerald', // ruby-sapphire, firered-leafgreen
         isShiny: false,
         lang: 'pt',
@@ -61,18 +64,60 @@ const app = {
         btnLayout: document.getElementById('btn-layout')
     },
 
+    getScopedKey(baseKey) {
+        return `wiki-${this.state.currentProfile}-${this.state.versionGroup}-${baseKey}`;
+    },
+    
+    saveScopedData(baseKey, data) {
+        localStorage.setItem(this.getScopedKey(baseKey), JSON.stringify(data));
+    },
+    
+    loadScopedData(baseKey, defaultVal) {
+        const val = localStorage.getItem(this.getScopedKey(baseKey));
+        return val ? JSON.parse(val) : defaultVal;
+    },
+    
+    loadGlobalProfileData(baseKey, defaultVal) {
+        const val = localStorage.getItem(`wiki-${this.state.currentProfile}-${baseKey}`);
+        return val ? JSON.parse(val) : defaultVal;
+    },
+    
+    saveGlobalProfileData(baseKey, data) {
+        localStorage.setItem(`wiki-${this.state.currentProfile}-${baseKey}`, JSON.stringify(data));
+    },
+    
+    loadProfileState() {
+        this.state.favorites = this.loadGlobalProfileData('favs', []);
+        this.state.team = this.loadScopedData('team', []);
+        this.state.captures = this.loadScopedData('captures', []);
+    },
+
     init() {
-        // Migração de Equipe (de Array de Números para Array de Objetos com EVs)
-        if (this.state.team.length > 0 && typeof this.state.team[0] === 'number') {
-            this.state.team = this.state.team.map(id => ({
-                id: id,
-                nature: 'hardy',
-                evs: { hp: 0, attack: 0, defense: 0, special_attack: 0, special_defense: 0, speed: 0 },
-                ivs: { hp: 31, attack: 31, defense: 31, special_attack: 31, special_defense: 31, speed: 31 }
-            }));
-            localStorage.setItem('wiki-team', JSON.stringify(this.state.team));
+        // Migração de dados antigos para o novo sistema
+        const oldTeamStr = localStorage.getItem('wiki-team');
+        const oldFavsStr = localStorage.getItem('wiki-favs');
+        if (oldTeamStr || oldFavsStr) {
+            let oldTeam = oldTeamStr ? JSON.parse(oldTeamStr) : [];
+            let oldFavs = oldFavsStr ? JSON.parse(oldFavsStr) : [];
+            
+            if (oldTeam.length > 0 && typeof oldTeam[0] !== 'object') {
+                oldTeam = oldTeam.map(id => ({
+                    id: parseInt(id), nature: 'hardy',
+                    evs: { hp: 0, attack: 0, defense: 0, special_attack: 0, special_defense: 0, speed: 0 },
+                    ivs: { hp: 31, attack: 31, defense: 31, special_attack: 31, special_defense: 31, speed: 31 }
+                }));
+            }
+            
+            localStorage.setItem('wiki-default-favs', JSON.stringify(oldFavs));
+            ['emerald', 'ruby-sapphire', 'firered-leafgreen'].forEach(vg => {
+                localStorage.setItem(`wiki-default-${vg}-team`, JSON.stringify(oldTeam));
+            });
+            
+            localStorage.removeItem('wiki-team');
+            localStorage.removeItem('wiki-favs');
         }
 
+        this.loadProfileState();
         this.initLang();
         
         // Evaluate compact mode dynamically
@@ -124,9 +169,10 @@ const app = {
         
         // TM count
         let tmCount = 0;
+        const tmPrefix = this.getScopedKey('tm-');
         for (let i = 0; i < localStorage.length; i++) {
             const k = localStorage.key(i);
-            if (k && k.startsWith('wiki-tm-') && localStorage.getItem(k) === 'true') {
+            if (k && k.startsWith(tmPrefix) && localStorage.getItem(k) === 'true') {
                 tmCount++;
             }
         }
@@ -394,7 +440,21 @@ const app = {
         // Seletor de Versão
         this.dom.versionSelect.addEventListener('change', (e) => {
             this.state.versionGroup = e.target.value;
+            this.loadProfileState(); // Recarrega estado para a nova versão
+            
             this.updateFrontierVisibility();
+            
+            // Re-render components if they are active
+            if (document.getElementById('view-pokedex').classList.contains('active') || document.getElementById('view-dashboard').classList.contains('active')) {
+                this.renderGrid();
+                this.updateDashboardStats();
+            }
+            if (document.getElementById('view-team').classList.contains('active')) {
+                this.renderTeam();
+            }
+            if (document.getElementById('view-tms').classList.contains('active')) {
+                this.renderTMs();
+            }
             if (this.state.currentPokemon) {
                 // Re-render moves and encounters based on new version
                 renderMoves(this.state.currentPokemon.moves, this.state.versionGroup);
@@ -406,10 +466,7 @@ const app = {
             if (document.getElementById('view-gyms').classList.contains('active')) {
                 this.renderGyms();
             }
-            if (document.getElementById('view-tms').classList.contains('active')) {
-                this.renderTMs();
-            }
-            if (document.getElementById('view-extras').classList.contains('active')) {
+            if (document.getElementById('view-extras') && document.getElementById('view-extras').classList.contains('active')) {
                 if (window.renderExtras) window.renderExtras();
             }
             if (document.getElementById('view-guides').classList.contains('active')) {
@@ -441,7 +498,7 @@ const app = {
                 this.state.favorites.push(id);
                 this.dom.btnFav.classList.add('active');
             }
-            localStorage.setItem('wiki-favs', JSON.stringify(this.state.favorites));
+            this.saveGlobalProfileData('favs', this.state.favorites);
         });
 
         // Alternar Layout Compacto
@@ -492,7 +549,7 @@ const app = {
                     ivs: { hp: 31, attack: 31, defense: 31, special_attack: 31, special_defense: 31, speed: 31 }
                 });
             }
-            localStorage.setItem('wiki-team', JSON.stringify(this.state.team));
+            this.saveScopedData('team', this.state.team);
             this.updateTeamBtn(id);
         });
 
@@ -524,27 +581,117 @@ const app = {
                 deferredPrompt = null;
             });
         }
+
+        // Profile Management
+        this.renderProfileSelect();
+        const profileSelect = document.getElementById('profile-select');
+        const btnNewProfile = document.getElementById('btn-new-profile');
+        const btnDeleteProfile = document.getElementById('btn-delete-profile');
+        
+        if (profileSelect) {
+            profileSelect.addEventListener('change', (e) => {
+                this.state.currentProfile = e.target.value;
+                localStorage.setItem('wiki-active-profile', this.state.currentProfile);
+                this.loadProfileState();
+                
+                // Re-render
+                if (document.getElementById('view-pokedex').classList.contains('active') || document.getElementById('view-dashboard').classList.contains('active')) {
+                    this.renderGrid();
+                    this.updateDashboardStats();
+                }
+                if (document.getElementById('view-team').classList.contains('active')) {
+                    this.renderTeam();
+                }
+                if (document.getElementById('view-tms').classList.contains('active')) {
+                    this.renderTMs();
+                }
+            });
+        }
+        
+        if (btnNewProfile) {
+            btnNewProfile.addEventListener('click', () => {
+                const newName = prompt('Digite o nome do novo perfil:');
+                if (newName && newName.trim() !== '') {
+                    const id = newName.trim().toLowerCase().replace(/[^a-z0-9]/g, '-');
+                    if (this.state.profiles.includes(id)) {
+                        alert('Já existe um perfil com esse nome.');
+                        return;
+                    }
+                    this.state.profiles.push(id);
+                    localStorage.setItem('wiki-profiles', JSON.stringify(this.state.profiles));
+                    
+                    this.state.currentProfile = id;
+                    localStorage.setItem('wiki-active-profile', this.state.currentProfile);
+                    
+                    this.renderProfileSelect();
+                    profileSelect.value = id;
+                    profileSelect.dispatchEvent(new Event('change'));
+                }
+            });
+        }
+        
+        if (btnDeleteProfile) {
+            btnDeleteProfile.addEventListener('click', () => {
+                if (this.state.profiles.length <= 1) {
+                    alert('Você não pode excluir o único perfil existente.');
+                    return;
+                }
+                if (confirm(`Tem certeza que deseja excluir o perfil "${this.state.currentProfile}"? Todo o progresso deste perfil será perdido.`)) {
+                    this.state.profiles = this.state.profiles.filter(p => p !== this.state.currentProfile);
+                    localStorage.setItem('wiki-profiles', JSON.stringify(this.state.profiles));
+                    
+                    for (let i = localStorage.length - 1; i >= 0; i--) {
+                        const k = localStorage.key(i);
+                        if (k && k.startsWith(`wiki-${this.state.currentProfile}-`)) {
+                            localStorage.removeItem(k);
+                        }
+                    }
+                    
+                    this.state.currentProfile = this.state.profiles[0];
+                    localStorage.setItem('wiki-active-profile', this.state.currentProfile);
+                    
+                    this.renderProfileSelect();
+                    profileSelect.value = this.state.currentProfile;
+                    profileSelect.dispatchEvent(new Event('change'));
+                }
+            });
+        }
+    },
+
+    renderProfileSelect() {
+        const select = document.getElementById('profile-select');
+        if (!select) return;
+        select.innerHTML = '';
+        this.state.profiles.forEach(p => {
+            const opt = document.createElement('option');
+            opt.value = p;
+            opt.textContent = p === 'default' ? 'Perfil Principal' : p.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+            if (p === this.state.currentProfile) opt.selected = true;
+            select.appendChild(opt);
+        });
     },
 
     initTheme() {
         const t = localStorage.getItem('wiki-theme') || 'dark';
         document.documentElement.setAttribute('data-theme', t);
-        this.dom.themeToggle.textContent = t === 'dark' ? '☀️' : '🌙';
+        if (this.dom.themeToggle) this.dom.themeToggle.textContent = t === 'dark' ? 'Alternar Tema ☀️' : 'Alternar Tema 🌙';
         
-        this.dom.themeToggle.addEventListener('click', () => {
-            playClickSound();
-            const current = document.documentElement.getAttribute('data-theme');
-            const novo = current === 'dark' ? 'light' : 'dark';
-            document.documentElement.setAttribute('data-theme', novo);
-            localStorage.setItem('wiki-theme', novo);
-            this.dom.themeToggle.textContent = novo === 'dark' ? '☀️' : '🌙';
-        });
+        if (this.dom.themeToggle) {
+            this.dom.themeToggle.addEventListener('click', () => {
+                playClickSound();
+                const current = document.documentElement.getAttribute('data-theme');
+                const novo = current === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', novo);
+                localStorage.setItem('wiki-theme', novo);
+                this.dom.themeToggle.textContent = novo === 'dark' ? 'Alternar Tema ☀️' : 'Alternar Tema 🌙';
+            });
+        }
     },
 
     initLang() {
         const lang = localStorage.getItem('wiki-lang') || 'pt';
         this.setLanguage(lang);
-        this.dom.langToggle.addEventListener('click', () => {
+        if (this.dom.langToggle) this.dom.langToggle.addEventListener('click', () => {
             playClickSound();
             const current = this.state.lang;
             this.setLanguage(current === 'pt' ? 'en' : 'pt');
@@ -559,7 +706,7 @@ const app = {
         this.state.lang = lang;
         localStorage.setItem('wiki-lang', lang);
         window.TRANSLATIONS = lang === 'pt' ? window.TRANSLATIONS_PT : window.TRANSLATIONS_EN;
-        this.dom.langToggle.textContent = lang === 'pt' ? '🇧🇷 PT' : '🇺🇸 EN';
+        if (this.dom.langToggle) this.dom.langToggle.textContent = lang === 'pt' ? 'Alternar Idioma USA' : 'Alternar Idioma BRA';
     },
 
     switchView(viewId) {
@@ -620,7 +767,7 @@ const app = {
 
                     const nameCap = machine.move.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
                     
-                    const isChecked = localStorage.getItem(`wiki-tm-${machine.id}`) === 'true' ? 'checked' : '';
+                    const isChecked = this.loadScopedData(`tm-${machine.id}`, false) ? 'checked' : '';
                     const opacity = isChecked ? '0.5' : '1';
                     
                     html += `
@@ -648,7 +795,7 @@ const app = {
             gridTM.querySelectorAll('.tm-checkbox').forEach(chk => {
                 chk.addEventListener('change', (e) => {
                     const tmId = e.target.dataset.tmid;
-                    localStorage.setItem(`wiki-tm-${tmId}`, e.target.checked);
+                    this.saveScopedData(`tm-${tmId}`, e.target.checked);
                     const card = document.querySelector(`.tm-card-${tmId}`);
                     if(card) {
                         card.style.opacity = e.target.checked ? '0.5' : '1';
@@ -945,9 +1092,9 @@ const app = {
                     if (!card.dataset.loaded) {
                         const isCompact = document.getElementById('pokedex-grid').classList.contains('compact');
                         if (isCompact) {
-                            card.querySelector('img').src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-viii/icons/${id}.png`;
+                            card.querySelector('.poke-sprite').src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-viii/icons/${id}.png`;
                         } else {
-                            card.querySelector('img').src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
+                            card.querySelector('.poke-sprite').src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-iii/${app.state.versionGroup}/${id}.png`;
                         }
                         card.dataset.loaded = 'true';
                     }
@@ -964,11 +1111,31 @@ const app = {
             card.className = 'grid-card';
             card.dataset.id = i;
             card.dataset.name = pName;
+            const isCaptured = this.state.captures.includes(i);
             card.innerHTML = `
+                <div class="catch-icon ${isCaptured ? 'captured' : ''}" data-id="${i}" title="Marcar como capturado">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M22 12h-4c0-3-2-4-4-4s-4 1-4 4H2"></path><circle cx="12" cy="12" r="2"></circle></svg>
+                </div>
                 <span class="grid-card-id">#${String(i).padStart(3, '0')}</span>
-                <img src="./images/miss.png" alt="carregando">
+                <img src="./images/miss.png" alt="carregando" class="poke-sprite">
                 <span class="grid-card-name" style="text-transform: capitalize;">${pName}</span>
             `;
+            
+            const catchBtn = card.querySelector('.catch-icon');
+            catchBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                playClickSound();
+                const pokeId = parseInt(catchBtn.dataset.id);
+                if (this.state.captures.includes(pokeId)) {
+                    this.state.captures = this.state.captures.filter(id => id !== pokeId);
+                    catchBtn.classList.remove('captured');
+                } else {
+                    this.state.captures.push(pokeId);
+                    catchBtn.classList.add('captured');
+                }
+                this.saveScopedData('captures', this.state.captures);
+            });
+
             card.addEventListener('click', () => {
                 playClickSound();
                 window.location.hash = `pokemon/${i}`;
@@ -1091,7 +1258,7 @@ const app = {
                 e.stopPropagation();
                 playClickSound();
                 this.state.team = this.state.team.filter(t => t.id !== p.id);
-                localStorage.setItem('wiki-team', JSON.stringify(this.state.team));
+                app.saveScopedData('team', app.state.team);
                 this.renderTeam(); // Re-render
             });
 
