@@ -776,3 +776,22 @@ body {
     }
 }
 
+@media (max-width: 600px) {
+    .frontier-facility-header {
+        flex-direction: column;
+        text-align: center;
+        justify-content: center;
+    }
+    
+    .frontier-facility-title {
+        min-width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .frontier-desc {
+        text-align: center;
+    }
+}
+
