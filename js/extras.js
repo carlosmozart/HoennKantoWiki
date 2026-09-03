@@ -1,4 +1,4 @@
-window.EMERALD_EXTRAS = {
+const EMERALD_EXTRAS = {
     "gifts": [
         {
             "id": 252,
@@ -295,6 +295,64 @@ window.EMERALD_EXTRAS = {
     ]
 };
 
+const FRLG_EXTRAS = {
+    "gifts": [
+        { "id": 1, "name": "Bulbasaur", "types": ["grass", "poison"], "level": 5, "ability": "Overgrow", "desc": "Inicial escolhido no laboratório do Prof. Oak em Pallet Town." },
+        { "id": 4, "name": "Charmander", "types": ["fire"], "level": 5, "ability": "Blaze", "desc": "Inicial escolhido no laboratório do Prof. Oak em Pallet Town." },
+        { "id": 7, "name": "Squirtle", "types": ["water"], "level": 5, "ability": "Torrent", "desc": "Inicial escolhido no laboratório do Prof. Oak em Pallet Town." },
+        { "id": 133, "name": "Eevee", "types": ["normal"], "level": 25, "ability": "Run Away", "desc": "Encontrado no topo da Mansão de Celadon City." },
+        { "id": 131, "name": "Lapras", "types": ["water", "ice"], "level": 25, "ability": "Water Absorb", "desc": "Dado por um funcionário da Silph Co. durante a invasão da Equipe Rocket." },
+        { "id": 106, "name": "Hitmonlee", "types": ["fighting"], "level": 25, "ability": "Limber", "desc": "Recompensa do Karate Master no Fighting Dojo em Saffron City." },
+        { "id": 107, "name": "Hitmonchan", "types": ["fighting"], "level": 25, "ability": "Keen Eye", "desc": "Recompensa do Karate Master no Fighting Dojo em Saffron City." },
+        { "id": 138, "name": "Omanyte", "types": ["rock", "water"], "level": 5, "ability": "Swift Swim", "desc": "Revivido a partir do Helix Fossil (Mt. Moon) no laboratório de Cinnabar." },
+        { "id": 140, "name": "Kabuto", "types": ["rock", "water"], "level": 5, "ability": "Swift Swim", "desc": "Revivido a partir do Dome Fossil (Mt. Moon) no laboratório de Cinnabar." },
+        { "id": 142, "name": "Aerodactyl", "types": ["rock", "flying"], "level": 5, "ability": "Rock Head", "desc": "Revivido do Old Amber (Pewter Museum) no laboratório de Cinnabar." },
+        { "id": 175, "name": "Togepi", "types": ["normal"], "level": 5, "ability": "Hustle", "desc": "Chocado de um Ovo recebido no Water Labyrinth (Five Island)." },
+        { "id": 129, "name": "Magikarp", "types": ["water"], "level": 5, "ability": "Swift Swim", "desc": "Vendido por 500 Pokédollars no Centro Pokémon perto do Mt. Moon." }
+    ],
+    "events": [
+        { "id": 249, "name": "Lugia", "types": ["psychic", "flying"], "level": 70, "desc": "Navel Rock. Requer o <b>MysticTicket</b>." },
+        { "id": 250, "name": "Ho-Oh", "types": ["fire", "flying"], "level": 70, "desc": "Navel Rock. Requer o <b>MysticTicket</b>." },
+        { "id": 386, "name": "Deoxys", "types": ["psychic"], "level": 30, "desc": "Birth Island. Requer o <b>AuroraTicket</b>. Fica na Normal Form (FR) ou Defense Form (LG)." }
+    ],
+    "trades": [
+        { "id": 122, "name": "Mr. Mime (Mimien)", "types": ["psychic", "fairy"], "desc": "Route 2. Entregue um Abra." },
+        { "id": 29, "name": "Nidoran♀ (Ms. Nido)", "types": ["poison"], "desc": "Underground Path (Route 5). Entregue Nidoran♂ (apenas em FireRed)." },
+        { "id": 32, "name": "Nidoran♂ (Mr. Nido)", "types": ["poison"], "desc": "Underground Path (Route 5). Entregue Nidoran♀ (apenas em LeafGreen)." },
+        { "id": 30, "name": "Nidorina (Nina)", "types": ["poison"], "desc": "Route 11. Entregue Nidorino (apenas em FireRed)." },
+        { "id": 33, "name": "Nidorino (Nino)", "types": ["poison"], "desc": "Route 11. Entregue Nidorina (apenas em LeafGreen)." },
+        { "id": 83, "name": "Farfetch'd (Ch'ding)", "types": ["normal", "flying"], "desc": "Vermilion City. Entregue um Spearow." },
+        { "id": 124, "name": "Jynx (Zynx)", "types": ["ice", "psychic"], "desc": "Cerulean City. Entregue um Poliwhirl." },
+        { "id": 108, "name": "Lickitung (Marc)", "types": ["normal"], "desc": "Route 18. Entregue um Golduck (FR) ou Slowbro (LG)." },
+        { "id": 101, "name": "Electrode (Esphere)", "types": ["electric"], "desc": "Cinnabar Island. Entregue um Raichu." },
+        { "id": 114, "name": "Tangela (Tangeny)", "types": ["grass"], "desc": "Cinnabar Island. Entregue um Venonat." },
+        { "id": 86, "name": "Seel (Seelor)", "types": ["water"], "desc": "Cinnabar Island. Entregue um Ponyta." }
+    ],
+    "missing": [
+        { "id": 23, "name": "Ekans / Arbok", "types": ["poison"], "desc": "Exclusivo de FireRed." },
+        { "id": 43, "name": "Oddish line", "types": ["grass", "poison"], "desc": "Exclusivo de FireRed." },
+        { "id": 54, "name": "Psyduck / Golduck", "types": ["water"], "desc": "Exclusivo de FireRed." },
+        { "id": 58, "name": "Growlithe / Arcanine", "types": ["fire"], "desc": "Exclusivo de FireRed." },
+        { "id": 90, "name": "Shellder / Cloyster", "types": ["water", "ice"], "desc": "Exclusivo de FireRed." },
+        { "id": 125, "name": "Electabuzz", "types": ["electric"], "desc": "Exclusivo de FireRed." },
+        { "id": 123, "name": "Scyther", "types": ["bug", "flying"], "desc": "Exclusivo de FireRed." },
+        { "id": 27, "name": "Sandshrew / Sandslash", "types": ["ground"], "desc": "Exclusivo de LeafGreen." },
+        { "id": 37, "name": "Vulpix / Ninetales", "types": ["fire"], "desc": "Exclusivo de LeafGreen." },
+        { "id": 52, "name": "Meowth / Persian", "types": ["normal"], "desc": "Exclusivo de LeafGreen." },
+        { "id": 69, "name": "Bellsprout line", "types": ["grass", "poison"], "desc": "Exclusivo de LeafGreen." },
+        { "id": 79, "name": "Slowpoke / Slowbro", "types": ["water", "psychic"], "desc": "Exclusivo de LeafGreen." },
+        { "id": 126, "name": "Magmar", "types": ["fire"], "desc": "Exclusivo de LeafGreen." },
+        { "id": 127, "name": "Pinsir", "types": ["bug"], "desc": "Exclusivo de LeafGreen." },
+        { "id": 252, "name": "Treecko / Torchic / Mudkip", "types": ["normal"], "desc": "Exclusivos de Hoenn (RSE)." }
+    ]
+};
+
+window.GAME_EXTRAS = {
+    "emerald": EMERALD_EXTRAS,
+    "ruby-sapphire": EMERALD_EXTRAS,
+    "firered-leafgreen": FRLG_EXTRAS
+};
+
 // Listeners para as abas de Extras
 document.addEventListener('DOMContentLoaded', () => {
     const tabs = document.querySelectorAll('.extras-main-tab');
@@ -309,6 +367,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
 window.renderExtras = function() {
     const activeBtn = document.querySelector('.extras-main-tab.active') || document.querySelector('.extras-main-tab');
+    
+    // Atualiza título da seção com base na versão
+    const titleEl = document.querySelector('#view-extras h2');
+    const descEl = document.querySelector('#view-extras p');
+    if (app.state.versionGroup === 'firered-leafgreen') {
+        titleEl.textContent = 'Extras de FireRed & LeafGreen';
+        descEl.textContent = 'Informações detalhadas sobre Pokémon presenteados (Gifts/Eventos), trocas no jogo (In-Game Trades) e exclusivos (Inobtíveis).';
+    } else {
+        titleEl.textContent = 'Extras do Pokémon Emerald';
+        descEl.textContent = 'Informações detalhadas sobre Pokémon presenteados (Gifts/Eventos), trocas no jogo (In-Game Trades) e exclusivos (Inobtíveis).';
+    }
+
     if (activeBtn) {
         renderExtrasTab(activeBtn.dataset.tab);
     }
@@ -320,19 +390,20 @@ function renderExtrasTab(tabName) {
 
     grid.innerHTML = '';
     
-    // Layout similar ao Frontier, usando flexbox para empilhar se necessário, ou mantendo o grid.
-    // Como os cards são para Pokémon individuais, vamos usar grid responsivo.
     grid.style.display = 'grid';
     grid.style.gridTemplateColumns = 'repeat(auto-fit, minmax(280px, 1fr))';
     grid.style.gap = '20px';
 
+    const version = app.state.versionGroup || 'emerald';
+    const EXTRAS_DATA = window.GAME_EXTRAS[version] || window.GAME_EXTRAS['emerald'];
+
     let dataList = [];
     if (tabName === 'gifts') {
-        dataList = window.EMERALD_EXTRAS.gifts.concat(window.EMERALD_EXTRAS.events);
+        dataList = (EXTRAS_DATA.gifts || []).concat(EXTRAS_DATA.events || []);
     } else if (tabName === 'trades') {
-        dataList = window.EMERALD_EXTRAS.trades;
+        dataList = EXTRAS_DATA.trades || [];
     } else if (tabName === 'missing') {
-        dataList = window.EMERALD_EXTRAS.missing;
+        dataList = EXTRAS_DATA.missing || [];
     }
 
     if (!dataList || dataList.length === 0) {

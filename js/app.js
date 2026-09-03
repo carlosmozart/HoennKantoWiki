@@ -141,6 +141,21 @@ const app = {
 
         window.addEventListener('hashchange', () => this.handleRouting());
 
+        // Botão Voltar ao Topo
+        const btnScrollTop = document.getElementById('btn-back-to-top');
+        if (btnScrollTop) {
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    btnScrollTop.classList.add('show');
+                } else {
+                    btnScrollTop.classList.remove('show');
+                }
+            });
+            btnScrollTop.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
+
         if (this.dom.btnPrev) {
             this.dom.btnPrev.addEventListener('click', () => {
                 if (this.state.currentPokemon && this.state.currentPokemon.id > 1) {
@@ -228,6 +243,9 @@ const app = {
             }
             if (document.getElementById('view-tms').classList.contains('active')) {
                 this.renderTMs();
+            }
+            if (document.getElementById('view-extras').classList.contains('active')) {
+                if (window.renderExtras) window.renderExtras();
             }
         });
 
