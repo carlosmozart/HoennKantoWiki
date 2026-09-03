@@ -44,21 +44,21 @@ const renderStats = (stats) => {
 // ==========================================
 // MATCHUPS (Fraquezas)
 // ==========================================
-const renderMatchups = async (types) => {
-    DOM.matchupsContainer.innerHTML = '<div class="spinner"></div>';
-    
-    const typePromises = types.map(t => API.getType(t.type.name));
-    const typeResults = await Promise.all(typePromises);
-    
+const renderMatchups = (types) => {
+    // Usa a tabela fixa da Gen 3 em vez das relações atuais da PokéAPI:
+    // elas trariam o tipo Fada e já não têm as resistências do Metal a
+    // Fantasma/Sombrio, que ainda valiam em RSE/FRLG.
     const multiplierMap = {};
-    Object.keys(TYPE_TRANSLATIONS).forEach(t => multiplierMap[t] = 1);
+    GEN3_TYPES.forEach(t => multiplierMap[t] = 1);
 
-    typeResults.forEach(result => {
-        if (!result) return;
-        const dmg = result.damage_relations;
-        dmg.double_damage_from.forEach(t => multiplierMap[t.name] *= 2);
-        dmg.half_damage_from.forEach(t => multiplierMap[t.name] *= 0.5);
-        dmg.no_damage_from.forEach(t => multiplierMap[t.name] *= 0);
+    types.forEach(t => {
+        // Pokémon reclassificados como Fada eram Normal na Gen 3
+        const defType = t.type.name === 'fairy' ? 'normal' : t.type.name;
+        const relations = TYPE_CHART_GEN3[defType];
+        if (!relations) return;
+        for (const attacker in relations) {
+            multiplierMap[attacker] *= relations[attacker];
+        }
     });
 
     let html = '';
@@ -171,7 +171,7 @@ const renderEvolutions = async (chainUrl) => {
         html += `
             <div style="display:flex; align-items:center; justify-content:center; gap:10px; background:var(--stat-bar-bg); padding:10px; border-radius:10px;">
                 <div class="evo-item" onclick="app.loadPokemon(${link.fromId})">
-                    <img src="${fSprite}" class="evo-img">
+                    <img src="${fSprite}" class="evo-img" alt="" loading="lazy" decoding="async">
                     <span class="evo-name">${link.fromName}</span>
                 </div>
                 <div style="font-size:0.7rem; color:var(--text-muted); text-align:center; font-weight:bold;">
@@ -179,7 +179,7 @@ const renderEvolutions = async (chainUrl) => {
                     <div>${link.method}</div>
                 </div>
                 <div class="evo-item" onclick="app.loadPokemon(${link.toId})">
-                    <img src="${tSprite}" class="evo-img">
+                    <img src="${tSprite}" class="evo-img" alt="" loading="lazy" decoding="async">
                     <span class="evo-name">${link.toName}</span>
                 </div>
             </div>
@@ -372,6 +372,9 @@ const renderMoves = (moves, versionGroup) => {
             fetchWithCache(m.url, `move_${m.name}`).then(moveDetails => {
                 if(!moveDetails) return;
                 const tr = container.children[index];
+                // A tabela pode ter sido reconstruída (troca rápida de Pokémon ou
+                // de versão) enquanto este fetch estava em voo.
+                if (!tr) return;
                 
                 // --- REGRA GEN 3: REVERTER TIPO FADA PARA NORMAL ---
                 let typeName = moveDetails.type.name;

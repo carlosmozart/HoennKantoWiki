@@ -11,34 +11,58 @@
     <meta http-equiv="Expires" content="0">
 
     <title>Hoenn & Kanto Wiki - RSE / FRLG</title>
+    <meta name="description" content="Enciclopédia Pokémon da Geração 3 (Ruby, Sapphire, Emerald, FireRed e LeafGreen): Pokédex completa dos 386, movesets, TMs/HMs, líderes de ginásio, Battle Frontier e guias.">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Hoenn & Kanto Wiki - RSE / FRLG">
+    <meta property="og:description" content="Pokédex completa da Geração 3 com movesets, TMs/HMs, treinadores, Battle Frontier e guias práticos.">
+    <meta property="og:image" content="./favicons/pokedex.png">
+    <meta name="twitter:card" content="summary">
     <link rel="icon" href="./favicons/favicon-16x16.png">
     
     <!-- PWA -->
     <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#121212">
-    <link rel="apple-touch-icon" href="./favicons/pokedex.png">
+    <link rel="apple-touch-icon" href="./favicons/icon-192.png">
 
     <!-- Estilos (com ?v= anti-cache) -->
-    <link rel="stylesheet" href="./css/style.css?v=2">
-    <link rel="stylesheet" href="./css/layout.css?v=1.0.2">
+    <link rel="stylesheet" href="./css/style.css?v=3.3">
+    <link rel="stylesheet" href="./css/layout.css?v=3.3">
     
-    <!-- Scripts (com ?v= anti-cache) -->
-    <script defer src="./js/translations.js?v=1.0.2"></script>
-    <script defer src="./js/translations_pt.js?v=1.0.2"></script>
-    <script defer src="./js/gyms.js?v=1.0.2"></script>
-    <script defer src="./js/api.js?v=1.0.2"></script>
-    <script defer src="./js/tms.js?v=1.0.2"></script>
-    <script defer src="./js/render.js?v=1.0.2"></script>
-    <script defer src="./js/frontier.js?v=1.0.2"></script>
-    <script defer src="./js/extras.js?v=1.0.0"></script>
-    <script defer src="js/tutors.js"></script>
-    <script defer src="js/events.js?v=2.0"></script>
-    <script defer src="js/guides.js?v=2.0"></script>
-    <script defer src="js/map.js?v=2.1"></script>
-    <script defer src="js/training.js?v=1.0"></script>
-    <script defer src="js/items.js?v=1.0"></script>
-    <script defer src="./js/app.js?v=2.0"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script>
+        // Fonte única da versão usada no cache busting (lida por js/api.js).
+        window.ASSET_VERSION = '3.3';
+
+        // O dicionário do idioma salvo é pedido só depois que o app.js roda.
+        // O preload adianta o download e evita essa requisição em cascata.
+        (function () {
+            try {
+                var lang = localStorage.getItem('wiki-lang') || 'pt';
+                var file = lang === 'pt' ? './js/translations_pt.js' : './js/translations.js';
+                var link = document.createElement('link');
+                link.rel = 'preload';
+                link.as = 'script';
+                link.href = file + '?v=' + window.ASSET_VERSION;
+                document.head.appendChild(link);
+            } catch (e) {}
+        })();
+    </script>
+
+    <!-- Scripts (com ?v= anti-cache)
+         translations.js, translations_pt.js e gyms.js NÃO entram aqui:
+         são baixados sob demanda por loadScript() em js/api.js. -->
+    <script defer src="./js/api.js?v=3.3"></script>
+    <script defer src="./js/tms.js?v=3.3"></script>
+    <script defer src="./js/render.js?v=3.3"></script>
+    <script defer src="./js/frontier.js?v=3.3"></script>
+    <script defer src="./js/extras.js?v=3.3"></script>
+    <script defer src="js/tutors.js?v=3.3"></script>
+    <script defer src="js/events.js?v=3.3"></script>
+    <script defer src="js/guides.js?v=3.3"></script>
+    <script defer src="js/map.js?v=3.3"></script>
+    <script defer src="js/training.js?v=3.3"></script>
+    <script defer src="js/items.js?v=3.3"></script>
+    <script defer src="./js/app.js?v=3.3"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -56,7 +80,8 @@
         <!-- Sidebar de Navegação -->
         <aside class="sidebar glass">
             <h1 class="logo">WikiGen3</h1>
-            <nav class="nav-links">
+            <div class="nav-scroller">
+            <nav class="nav-links" aria-label="Seções da wiki">
                 <button class="nav-btn active" data-view="pokedex">Pokédex</button>
                 <button class="nav-btn" data-view="team">Minha Equipe</button>
                 <button class="nav-btn" data-view="gyms">Treinadores</button>
@@ -68,6 +93,7 @@
                 <button class="nav-btn" data-view="guides">Guias de Jogo</button>
                 <button class="nav-btn" data-view="settings">Configurações</button>
             </nav>
+            </div>
             <div class="sidebar-footer" style="display: none;">
             </div>
         </aside>
@@ -83,13 +109,13 @@
                             <option value="ruby-sapphire">Ruby / Sapphire</option>
                             <option value="firered-leafgreen">FireRed / LeafGreen</option>
                         </select>
-                        <button type="button" id="btn-install-app" class="btn-icon hidden" title="Instalar Aplicativo" aria-label="Instalar WikiGen3" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; padding: 0;">📱</button>
+                        <button type="button" id="btn-install-app" class="btn-icon btn-install hidden" title="Instalar Aplicativo" aria-label="Instalar WikiGen3">📱</button>
                     </div>
                     <div class="search-input-wrapper">
                         <input type="search" id="input-search" class="input-search" placeholder="Buscar Pokémon por Nome ou Nº (Gen 1-3)..." required>
-                        <button type="submit" class="btn-search" title="Buscar">🔍</button>
+                        <button type="submit" class="btn-search" title="Buscar" aria-label="Buscar">🔍</button>
+                        <button type="button" id="btn-layout" class="btn-icon" title="Alternar Modo Compacto">📱</button>
                     </div>
-                    <button type="button" id="btn-layout" class="btn-icon" title="Alternar Modo Compacto">📱</button>
                 </form>
             </header>
 
@@ -103,34 +129,44 @@
             <section id="view-dashboard" class="view-section active">
                 <div class="glass section-panel">
                     <h2>Pokédex (Gen 1 a 3)</h2>
-                    <p>Selecione um Pokémon abaixo ou use a barra de busca acima.</p>
+
+                    <!-- Painel do Treinador: recolhido por padrão para que a grade
+                         de Pokémon fique visível já na primeira tela. -->
+                    <details id="trainer-panel" class="collapsible-panel">
+                        <summary class="collapsible-summary">
+                            <span class="collapsible-title">Painel do Treinador</span>
+                            <span id="trainer-panel-digest" class="collapsible-digest"></span>
+                        </summary>
+                        <div class="collapsible-body">
+                            <!-- O relógio de eventos é injetado aqui por js/events.js -->
+                            <div id="live-events-slot"></div>
 
                     <!-- Painel de Conquistas (Estatísticas) -->
-                    <div id="achievements-dashboard" style="display:flex; flex-wrap:wrap; gap:15px; margin-bottom:20px; background:var(--glass-bg); padding:15px; border-radius:12px; border:1px solid var(--glass-border);">
-                        <div style="flex:1; min-width:140px; text-align:center;">
-                            <div style="font-size:0.85rem; color:var(--text-muted); text-transform:uppercase;">Time Ideal</div>
-                            <div id="stat-team-size" style="font-size:1.8rem; font-weight:bold; color:var(--primary-color);">0/6</div>
+                    <div id="achievements-dashboard" class="stats-grid">
+                        <div class="stat-cell">
+                            <div class="stat-cell-label">Equipe</div>
+                            <div id="stat-team-size" class="stat-cell-value" style="color:var(--primary-color);">0/6</div>
                         </div>
-                        <div style="flex:1; min-width:140px; text-align:center; border-left:1px solid rgba(255,255,255,0.1);">
-                            <div style="font-size:0.85rem; color:var(--text-muted); text-transform:uppercase;">Capturados</div>
-                            <div id="stat-catch-count" style="font-size:1.8rem; font-weight:bold; color:#ff4757;">0/386</div>
-                            <div style="width: 100%; height: 5px; background: rgba(255,255,255,0.1); border-radius: 5px; margin-top: 5px; overflow: hidden;">
-                                <div id="stat-catch-bar" style="width: 0%; height: 100%; background: #ff4757; transition: 0.5s;"></div>
+                        <div class="stat-cell">
+                            <div class="stat-cell-label">Capturados</div>
+                            <div id="stat-catch-count" class="stat-cell-value" style="color:var(--stat-catch);">0/386</div>
+                            <div class="stat-cell-track">
+                                <div id="stat-catch-bar" class="stat-cell-fill"></div>
                             </div>
                         </div>
-                        <div style="flex:1; min-width:140px; text-align:center; border-left:1px solid rgba(255,255,255,0.1);">
-                            <div style="font-size:0.85rem; color:var(--text-muted); text-transform:uppercase;">Favoritos</div>
-                            <div id="stat-fav-count" style="font-size:1.8rem; font-weight:bold; color:var(--type-fire);">0</div>
+                        <div class="stat-cell">
+                            <div class="stat-cell-label">Favoritos</div>
+                            <div id="stat-fav-count" class="stat-cell-value" style="color:var(--stat-fav);">0</div>
                         </div>
-                        <div style="flex:1; min-width:140px; text-align:center; border-left:1px solid rgba(255,255,255,0.1);">
-                            <div style="font-size:0.85rem; color:var(--text-muted); text-transform:uppercase;">TMs Encontrados</div>
-                            <div id="stat-tm-count" style="font-size:1.8rem; font-weight:bold; color:var(--type-electric);">0</div>
+                        <div class="stat-cell">
+                            <div class="stat-cell-label">TMs Encontrados</div>
+                            <div id="stat-tm-count" class="stat-cell-value" style="color:var(--stat-tm);">0</div>
                         </div>
                     </div>
-                    
+
                     <!-- Checklist Diário -->
-                    <div id="daily-checklist-container" style="background:rgba(0,0,0,0.2); border-radius:12px; padding:15px; margin-bottom:20px; border:1px solid var(--glass-border);">
-                        <h4 style="margin: 0 0 10px 0; color:var(--type-electric); display:flex; justify-content:space-between;">
+                    <div id="daily-checklist-container" style="background:var(--stat-cell-bg); border-radius:12px; padding:15px; margin-bottom:20px; border:1px solid var(--glass-border);">
+                        <h4 style="margin: 0 0 10px 0; color:var(--stat-tm); display:flex; justify-content:space-between;">
                             <span>⏱️ Eventos Diários (RSE)</span>
                             <span id="daily-reset-timer" style="font-size:0.8rem; color:var(--text-muted); font-weight:normal;">Reseta à meia-noite</span>
                         </h4>
@@ -150,11 +186,14 @@
                         </div>
                     </div>
 
-                    <div class="bento-item" style="margin-bottom: 25px; text-align: center; padding: 20px;">
+                        </div>
+                    </details>
+
+                    <div class="bento-item filters-panel" style="margin-bottom: 25px; text-align: center; padding: 20px;">
                         <h3 style="margin-bottom: 15px; font-size: 1.1rem; color: var(--text-color);">Filtros de Pesquisa</h3>
                         
                         <div style="margin-bottom: 15px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-                            <button class="btn-filter-status active" data-status="all" style="padding: 8px 15px; border-radius: 20px; border: 1px solid var(--glass-border); background: var(--primary-color); color: #fff; cursor: pointer; transition: 0.2s;">Todos</button>
+                            <button class="btn-filter-status active" data-status="all" style="padding: 8px 15px; border-radius: 20px; border: 1px solid var(--glass-border); background: var(--primary-surface); color: var(--primary-on); color: #fff; cursor: pointer; transition: 0.2s;">Todos</button>
                             <button class="btn-filter-status" data-status="caught" style="padding: 8px 15px; border-radius: 20px; border: 1px solid var(--glass-border); background: var(--glass-bg); color: var(--text-color); cursor: pointer; transition: 0.2s;">Capturados</button>
                             <button class="btn-filter-status" data-status="uncaught" style="padding: 8px 15px; border-radius: 20px; border: 1px solid var(--glass-border); background: var(--glass-bg); color: var(--text-color); cursor: pointer; transition: 0.2s;">Não Capturados</button>
                         </div>
@@ -171,7 +210,7 @@
             </section>
 
             <!-- Team Builder -->
-            <section id="view-team" class="view-section hidden">
+            <section id="view-team" class="view-section">
                 <div class="glass section-panel">
                     <h2>Montador de Equipes</h2>
                     <p>Monte sua equipe dos sonhos (até 6 Pokémon) e veja as fraquezas combinadas!</p>
@@ -180,7 +219,7 @@
                         <!-- Slots da equipe injetados via JS -->
                     </div>
                     <div style="text-align:center; margin-top: 20px;">
-                        <button class="nav-btn" id="btn-export-team" style="background:var(--primary-color);">📸 Baixar Imagem da Equipe</button>
+                        <button class="nav-btn" id="btn-export-team" style="background:var(--primary-surface); color:var(--primary-on);">📸 Baixar Imagem da Equipe</button>
                     </div>
                 </div>
 
@@ -194,13 +233,13 @@
             </section>
 
             <!-- Gym Leaders & Elite Four -->
-            <section id="view-gyms" class="view-section hidden">
+            <section id="view-gyms" class="view-section">
                 <div class="glass section-panel">
                     <h2>Treinadores & Batalhas Importantes</h2>
                     <p>Conheça os líderes, a Elite Four, os rivais e os chefes das equipes vilãs.</p>
                     
                     <div class="frontier-tabs" style="display:flex; gap:10px; margin-bottom:20px; justify-content:center; flex-wrap:wrap;">
-                        <button class="nav-btn btn-gym-tab" data-tab="gyms" style="background:var(--primary-color);">Líderes de Ginásio</button>
+                        <button class="nav-btn btn-gym-tab" data-tab="gyms" style="background:var(--primary-surface); color:var(--primary-on);">Líderes de Ginásio</button>
                         <button class="nav-btn btn-gym-tab" data-tab="e4">Elite Four & Campeão</button>
                         <button class="nav-btn btn-gym-tab" data-tab="rivals">Rivais</button>
                         <button class="nav-btn btn-gym-tab" data-tab="villains">Equipes Vilãs</button>
@@ -213,7 +252,7 @@
             </section>
 
             <!-- Página Detalhada do Pokémon -->
-            <section id="view-pokemon" class="view-section hidden">
+            <section id="view-pokemon" class="view-section">
                 
                 <!-- Bento Grid do Pokémon -->
                 <div class="bento-grid">
@@ -233,9 +272,9 @@
                         </div>
                         <span class="pokemon-number">#000</span>
                         <div class="name-nav-wrapper" style="display: flex; align-items: center; justify-content: center; gap: 15px; margin: 5px 0;">
-                            <button id="btn-prev" class="btn-icon" title="Anterior" style="min-width: 35px; height: 35px; font-size: 1rem;">◀</button>
+                            <button id="btn-prev" class="btn-icon btn-poke-nav" title="Anterior" aria-label="Pokémon anterior">◀</button>
                             <h2 class="pokemon-name" style="margin: 0;">Pokémon</h2>
-                            <button id="btn-next" class="btn-icon" title="Próximo" style="min-width: 35px; height: 35px; font-size: 1rem;">▶</button>
+                            <button id="btn-next" class="btn-icon btn-poke-nav" title="Próximo" aria-label="Próximo Pokémon">▶</button>
                         </div>
                         <div class="pokemon-category">Categoria</div>
                         <img src="./images/miss.png" alt="pokemon" class="pokemon-image">
@@ -301,12 +340,25 @@
                     <div class="bento-item bento-moves">
                         <h3>Ataques (Moveset Geração 3)</h3>
                         <p class="text-muted">Ataques aprendidos nas versões Ruby, Sapphire, Emerald, FireRed e LeafGreen.</p>
-                        
+
+                        <div class="moves-container tabs-container">
+                            <div class="moves-tabs-header">
+                                <button class="move-tab-btn active" data-target="move-tab-level">Nível</button>
+                                <button class="move-tab-btn" data-target="move-tab-machine">TM / HM</button>
+                                <button class="move-tab-btn" data-target="move-tab-egg">Cruzamento</button>
+                                <button class="move-tab-btn" data-target="move-tab-tutor">Tutor</button>
+                            </div>
+                            <div class="moves-tabs-body">
+                                <!-- Tabela Level Up -->
+                                <div id="move-tab-level" class="move-section active">
+                                    <table class="moves-table" id="table-moves-level">
+                                        <thead><tr><th>Nvl</th><th>Ataque</th><th>Tipo</th><th>Cat</th><th>Poder</th><th>Prec</th><th>PP</th></tr></thead>
+                                        <tbody></tbody>
                                     </table>
                                 </div>
 
                                 <!-- Tabela Machine (TM/HM) -->
-                                <div id="move-tab-machine" class="move-section hidden">
+                                <div id="move-tab-machine" class="move-section">
                                     <table class="moves-table" id="table-moves-machine">
                                         <thead><tr><th>Ataque</th><th>Tipo</th><th>Cat</th><th>Poder</th><th>Prec</th><th>PP</th><th>Onde Encontrar</th></tr></thead>
                                         <tbody></tbody>
@@ -314,7 +366,7 @@
                                 </div>
 
                                 <!-- Tabela Egg Moves -->
-                                <div id="move-tab-egg" class="move-section hidden">
+                                <div id="move-tab-egg" class="move-section">
                                     <table class="moves-table" id="table-moves-egg">
                                         <thead><tr><th>Ataque</th><th>Tipo</th><th>Cat</th><th>Poder</th><th>Prec</th><th>PP</th></tr></thead>
                                         <tbody></tbody>
@@ -322,7 +374,7 @@
                                 </div>
                                 
                                 <!-- Tabela Tutor -->
-                                <div id="move-tab-tutor" class="move-section hidden">
+                                <div id="move-tab-tutor" class="move-section">
                                     <table class="moves-table" id="table-moves-tutor">
                                         <thead><tr><th>Ataque</th><th>Tipo</th><th>Cat</th><th>Poder</th><th>Prec</th><th>PP</th><th>Onde Encontrar</th></tr></thead>
                                         <tbody></tbody>
@@ -335,13 +387,13 @@
             </section>
 
             <!-- TM / HM -->
-            <section id="view-tms" class="view-section hidden">
+            <section id="view-tms" class="view-section">
                 <div class="glass section-panel">
-                    <h2>Móquinas Técnicas, Ocultas e Tutores</h2>
+                    <h2>Máquinas Técnicas, Ocultas e Tutores</h2>
                     <p>Lista completa das 58 máquinas da Geração 3 e os Tutores de Ataque.</p>
                     
                     <div class="frontier-tabs" style="display:flex; gap:10px; margin-bottom:20px; justify-content:center; flex-wrap:wrap;">
-                        <button class="nav-btn btn-tm-tab" data-tab="tms" style="background:var(--primary-color);">TMs & HMs</button>
+                        <button class="nav-btn btn-tm-tab" data-tab="tms" style="background:var(--primary-surface); color:var(--primary-on);">TMs & HMs</button>
                         <button class="nav-btn btn-tm-tab" data-tab="tutors">Move Tutors</button>
                     </div>
 
@@ -356,7 +408,7 @@
             </section>
 
             <!-- Battle Frontier -->
-            <section id="view-frontier" class="view-section hidden">
+            <section id="view-frontier" class="view-section">
                 <div class="glass section-panel">
                     <h2>Battle Frontier</h2>
                     <p>Guia completo do parque de batalhas em Pokémon Emerald.</p>
@@ -375,15 +427,25 @@
             </section>
 
             <!-- Emerald Extras -->
-            <section id="view-extras" class="view-section hidden">
+            <section id="view-extras" class="view-section">
                 <div class="glass section-panel">
                     <h2>Extras & Códigos (Gen 3)</h2>
-                    <p>Funcionalidade em desenvolvimento.</p>
+                    <p>Informações detalhadas sobre Pokémon presenteados (Gifts/Eventos), trocas no jogo (In-Game Trades) e exclusivos (Inobtíveis).</p>
+
+                    <div class="moves-tabs-header" style="margin: 20px 0;">
+                        <button class="move-tab-btn extras-main-tab active" data-tab="gifts">Presentes / Eventos</button>
+                        <button class="move-tab-btn extras-main-tab" data-tab="trades">Trocas In-Game</button>
+                        <button class="move-tab-btn extras-main-tab" data-tab="missing">Inobtíveis & Exclusivos</button>
+                    </div>
+
+                    <div class="grid-container" id="extras-grid">
+                        <!-- Preenchido via JS -->
+                    </div>
                 </div>
             </section>
 
             <!-- Key Items Section -->
-            <section id="view-items" class="view-section hidden">
+            <section id="view-items" class="view-section">
                 <div class="glass section-panel">
                     <h2>Itens Importantes</h2>
                     <p style="color:var(--text-muted); margin-bottom: 20px;">Localização e métodos de obtenção dos principais itens da sua aventura.</p>
@@ -394,7 +456,7 @@
             </section>
 
             <!-- Settings Section -->
-            <section id="view-settings" class="view-section hidden">
+            <section id="view-settings" class="view-section">
                 <div class="glass section-panel">
                     <h2>Configurações</h2>
                     <div style="margin-top:20px; display: flex; flex-direction: column; gap: 20px;">
@@ -421,7 +483,7 @@
                         <div class="bento-item" style="padding: 20px;">
                             <h3>Cloud Save</h3>
                             <p style="font-size:0.85rem; color:var(--text-muted);">Salve seu progresso para importar em outro dispositivo.</p>
-                            <button id="btn-export-save" class="nav-btn" style="background:var(--primary-color); margin-bottom:15px;">Gerar Código de Save</button>
+                            <button id="btn-export-save" class="nav-btn" style="background:var(--primary-surface); color:var(--primary-on); margin-bottom:15px;">Gerar Código de Save</button>
                             <textarea id="save-export-output" readonly style="width:100%; height:100px; background:rgba(0,0,0,0.3); color:white; border:1px solid var(--glass-border); border-radius:8px; padding:10px; font-family:monospace; font-size:0.8rem; resize:none;" placeholder="Seu código aparecerá aqui..."></textarea>
                             <button id="btn-copy-save" class="nav-btn hidden" style="margin-top:10px; background:var(--btn-bg);">📋 Copiar Código</button>
                             <textarea id="save-import-input" style="width:100%; height:100px; background:rgba(0,0,0,0.3); color:white; border:1px solid var(--glass-border); border-radius:8px; padding:10px; font-family:monospace; font-size:0.8rem; resize:none; margin:15px 0;" placeholder="Cole seu código de save aqui..."></textarea>
@@ -432,13 +494,13 @@
             </section>
 
             <!-- Map Section -->
-            <section id="view-map" class="view-section hidden">
+            <section id="view-map" class="view-section">
                 <div class="glass section-panel">
                     <h2>Explorador de Região</h2>
                     <p>Selecione uma rota ou cidade para ver os Pokémon encontrados na região atual.</p>
                     
                     <div style="text-align:center; margin-bottom: 20px;">
-                        <img id="map-image-display" src="img/Hoenn_Map.png" alt="Mapa da Região" style="max-width:100%; height:auto; border-radius:15px; box-shadow:0 8px 24px rgba(0,0,0,0.6); max-height:400px; object-fit:contain; background:rgba(0,0,0,0.3);">
+                        <img id="map-image-display" src="img/Hoenn_Map.png" alt="Mapa da Região" loading="lazy" decoding="async" style="max-width:100%; height:auto; border-radius:15px; box-shadow:0 8px 24px rgba(0,0,0,0.6); max-height:400px; object-fit:contain; background:rgba(0,0,0,0.3);">
                     </div>
 
                     <div style="background:var(--glass-bg); padding:15px; border-radius:12px; border:1px solid var(--glass-border); margin-bottom:20px;">
@@ -448,7 +510,7 @@
                                 <select id="map-location-select" class="input-select" style="flex:1;">
                                     <option value="">Carregando locais...</option>
                                 </select>
-                                <button id="btn-search-location" class="nav-btn" style="background:var(--primary-color);">Explorar</button>
+                                <button id="btn-search-location" class="nav-btn" style="background:var(--primary-surface); color:var(--primary-on);">Explorar</button>
                             </div>
                         </div>
                     </div>
@@ -462,13 +524,13 @@
             </section>
 
             <!-- Guides Section -->
-            <section id="view-guides" class="view-section hidden">
+            <section id="view-guides" class="view-section">
                 <div class="glass section-panel">
                     <h2>Guias Práticos</h2>
                     <p>Manuais detalhados para ajudar na sua jornada.</p>
                     
                     <div class="frontier-tabs" style="display:flex; gap:10px; margin-bottom:20px; justify-content:center; flex-wrap:wrap;">
-                        <button class="nav-btn btn-guide-tab active" data-tab="stones" style="background:var(--primary-color);">Itens & Pedras</button>
+                        <button class="nav-btn btn-guide-tab active" data-tab="stones" style="background:var(--primary-surface); color:var(--primary-on);">Itens & Pedras</button>
                         <button class="nav-btn btn-guide-tab" data-tab="natures">Natures</button>
                         <button class="nav-btn btn-guide-tab" data-tab="weakness">Calculadora de Tipos</button>
                         <button class="nav-btn btn-guide-tab" data-tab="berries">Evoluir Feebas</button>
@@ -523,6 +585,6 @@
     </div>
 
     <!-- Botão Voltar ao Topo -->
-    <button id="btn-back-to-top" class="btn-icon hidden" title="Voltar ao topo">⬆️</button>
+    <button id="btn-back-to-top" class="btn-icon" title="Voltar ao topo">⬆️</button>
 </body>
 </html>

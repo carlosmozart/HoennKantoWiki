@@ -11,8 +11,9 @@ class LiveEvents {
     }
 
     renderWidget() {
-        const dashboard = document.querySelector('#view-dashboard .section-panel');
-        if (!dashboard) return;
+        // Slot dedicado dentro do Painel do Treinador
+        const slot = document.getElementById('live-events-slot');
+        if (!slot) return;
 
         const widgetHtml = `
             <div id="live-events-widget" style="background:var(--glass-bg); border:1px solid var(--glass-border); padding:15px; border-radius:12px; margin-bottom:20px; display:flex; flex-wrap:wrap; gap:15px; align-items:center; justify-content:space-between;">
@@ -24,23 +25,19 @@ class LiveEvents {
                 </div>
                 
                 <div style="flex:1; min-width:200px; display:flex; gap:15px;">
-                    <div style="flex:1; background:rgba(0,0,0,0.2); padding:10px; border-radius:8px; text-align:center;">
+                    <div style="flex:1; background:var(--stat-cell-bg); border:1px solid var(--glass-border); padding:10px; border-radius:8px; text-align:center;">
                         <div style="font-size:0.8rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px;">Shoal Cave</div>
-                        <strong id="event-shoal" style="color:var(--type-water); font-size:1rem;">--</strong>
+                        <strong id="event-shoal" style="color:var(--event-high-tide); font-size:1rem;">--</strong>
                     </div>
-                    <div style="flex:1; background:rgba(0,0,0,0.2); padding:10px; border-radius:8px; text-align:center;">
+                    <div style="flex:1; background:var(--stat-cell-bg); border:1px solid var(--glass-border); padding:10px; border-radius:8px; text-align:center;">
                         <div style="font-size:0.8rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px;">Lilycove Dept.</div>
-                        <strong id="event-dept" style="color:var(--type-electric); font-size:1rem;">--</strong>
+                        <strong id="event-dept" style="color:var(--stat-tm); font-size:1rem;">--</strong>
                     </div>
                 </div>
             </div>
         `;
         
-        // Insere o widget logo após o <h2>
-        const h2 = dashboard.querySelector('h2');
-        if (h2) {
-            h2.insertAdjacentHTML('afterend', widgetHtml);
-        }
+        slot.innerHTML = widgetHtml;
     }
 
     updateEvents() {
@@ -67,11 +64,11 @@ class LiveEvents {
 
         if (isHighTide) {
             shoalEl.textContent = "Maré Alta 🌊";
-            shoalEl.style.color = "var(--type-water)";
+            shoalEl.style.color = "var(--event-high-tide)";
             shoalEl.title = "Explore os andares superiores em busca de Shoal Shells.";
         } else {
             shoalEl.textContent = "Maré Baixa 🧊";
-            shoalEl.style.color = "var(--type-ice)";
+            shoalEl.style.color = "var(--event-low-tide)";
             shoalEl.title = "Acesse a Caverna de Gelo (Icefall Cave) em busca de Snorunt e Shoal Salts.";
         }
 
@@ -79,7 +76,7 @@ class LiveEvents {
         // Como o original era ativado via TV e misturava recordes com outros jogadores, vamos fixar no Sábado (Dia 6)
         if (day === 6) {
             deptEl.textContent = "LIQUIDAÇÃO! 💰";
-            deptEl.style.color = "var(--type-electric)";
+            deptEl.style.color = "var(--stat-tm)";
             deptEl.title = "A liquidação no terraço está acontecendo hoje! Compre decorações exclusivas para sua Base Secreta.";
         } else {
             deptEl.textContent = "Normal";

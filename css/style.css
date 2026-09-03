@@ -1,16 +1,41 @@
 @import url('https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;500;600;700;800&display=swap');
 
+/* Utilitário global de visibilidade (usado por .hidden no HTML e no JS) */
+.hidden {
+    display: none !important;
+}
+
 :root {
     /* Tema Claro Padrão */
     --bg-color: #f4f5f7; /* Um cinza-azulado muito claro e suave, melhor aos olhos */
     --text-color: #333333;
-    --text-muted: #666666;
+    --text-muted: #5C5C5C; /* #666 dava 4,39:1 sobre os cards da Pokédex */
     --glass-bg: rgba(255, 255, 255, 0.85);
     --glass-border: rgba(0, 0, 0, 0.08);
     --input-bg: rgba(255, 255, 255, 1);
     --btn-bg: rgba(255, 255, 255, 1);
     --btn-hover: #e2e6ea;
     --stat-bar-bg: rgba(0, 0, 0, 0.08);
+    --sidebar-solid: #fcfcfd; /* --bg-color sob a camada .glass, para o degradê do menu */
+
+    /* Cor de destaque. Estava sendo usada em 28 lugares sem nunca ter sido
+       declarada: como fundo virava transparente e como texto herdava a cor do
+       pai (no tema claro o botão "Todos" ficava branco sobre branco).
+       São dois papéis diferentes: um valor legível como TEXTO sobre o fundo da
+       página e outro como FUNDO de botão, com o par de texto correspondente. */
+    --primary-color: #C62828;   /* texto e ícones */
+    --primary-surface: #C62828; /* fundo de botão */
+    --primary-on: #ffffff;      /* texto sobre --primary-surface */
+    --accent-color: #9B1C1C;    /* estado :hover do fundo de botão */
+
+    /* Números do Painel do Treinador, legíveis nos dois temas */
+    --stat-catch: #C62828;
+    --stat-fav: #A34A08;
+    --stat-tm: #7A5600;
+    --stat-cell-bg: rgba(0, 0, 0, 0.06);
+    /* Relógio de eventos: as cores de tipo (ciano, amarelo) sumiam no claro */
+    --event-high-tide: #1565C0;
+    --event-low-tide: #00695C;
     
     /* Cores de Tipos (Background) */
     --type-normal: #A8A77A;
@@ -31,6 +56,30 @@
     --type-dark: #705746;
     --type-steel: #B7B7CE;
     --type-fairy: #D685AD;
+
+    /* Cor do texto sobre cada tipo.
+       Texto branco sobre Elétrico dava 1,5:1 (o mínimo WCAG AA é 4,5:1);
+       Terrestre 1,77 e Metal 1,97. Cada tipo agora usa a tinta que passa. */
+    --ink-dark: #1a1a1f;
+    --ink-light: #ffffff;
+    --type-normal-ink: var(--ink-dark);
+    --type-fire-ink: var(--ink-dark);
+    --type-water-ink: var(--ink-dark);
+    --type-electric-ink: var(--ink-dark);
+    --type-grass-ink: var(--ink-dark);
+    --type-ice-ink: var(--ink-dark);
+    --type-fighting-ink: var(--ink-light);
+    --type-poison-ink: var(--ink-light);
+    --type-ground-ink: var(--ink-dark);
+    --type-flying-ink: var(--ink-dark);
+    --type-psychic-ink: var(--ink-dark);
+    --type-bug-ink: var(--ink-dark);
+    --type-rock-ink: var(--ink-dark);
+    --type-ghost-ink: var(--ink-light);
+    --type-dragon-ink: var(--ink-light);
+    --type-dark-ink: var(--ink-light);
+    --type-steel-ink: var(--ink-dark);
+    --type-fairy-ink: var(--ink-dark);
 }
 
 [data-theme="dark"] {
@@ -44,6 +93,15 @@
     --btn-bg: rgba(0, 0, 0, 0.7);
     --btn-hover: rgba(0, 0, 0, 0.9);
     --stat-bar-bg: rgba(255, 255, 255, 0.2);
+    --sidebar-solid: #090909;
+    /* No escuro o vermelho precisa clarear para continuar legível como texto */
+    --primary-color: #E85A6A;
+    --stat-catch: #FF6B78;
+    --stat-fav: #F0913F;
+    --stat-tm: #E8C547;
+    --stat-cell-bg: rgba(0, 0, 0, 0.25);
+    --event-high-tide: #6FB3F2;
+    --event-low-tide: #7FD8D2;
 }
 
 * {
@@ -160,6 +218,13 @@ body {
 .btn-search {
     padding: 0 20px;
 }
+.btn-install {
+    width: 40px;
+    min-width: 40px;
+    height: 40px;
+    padding: 0;
+    font-size: 1.3rem;
+}
 .btn-icon {
     min-width: 45px;
     padding: 0 10px;
@@ -189,17 +254,19 @@ body {
 }
 
 /* Loading Overlay */
+/* Visível por padrão: o JS controla a exibição adicionando/removendo .hidden. */
 .loading-overlay {
-    position: absolute;
+    position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
     background: var(--glass-bg);
     backdrop-filter: blur(10px);
-    z-index: 10;
+    z-index: 500;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    opacity: 0;
-    pointer-events: none;
+    opacity: 1;
+    pointer-events: all;
     transition: opacity 0.3s;
 }
 .loading-overlay.active {
@@ -276,33 +343,49 @@ body {
     border-radius: 20px;
     font-weight: 700;
     font-size: 0.9rem;
-    color: #fff;
     text-transform: uppercase;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
     box-shadow: 0 4px 6px rgba(0,0,0,0.2);
     border: 2px solid rgba(255, 255, 255, 0.85); /* Contorno para destacar do fundo */
     display: none;
     letter-spacing: 1px;
 }
 /* Classes dinâmicas baseadas nas variáveis de tipo que já temos */
-.badge-normal { background-color: var(--type-normal); }
-.badge-fire { background-color: var(--type-fire); }
-.badge-water { background-color: var(--type-water); }
-.badge-electric { background-color: var(--type-electric); }
-.badge-grass { background-color: var(--type-grass); }
-.badge-ice { background-color: var(--type-ice); }
-.badge-fighting { background-color: var(--type-fighting); }
-.badge-poison { background-color: var(--type-poison); }
-.badge-ground { background-color: var(--type-ground); }
-.badge-flying { background-color: var(--type-flying); }
-.badge-psychic { background-color: var(--type-psychic); }
-.badge-bug { background-color: var(--type-bug); }
-.badge-rock { background-color: var(--type-rock); }
-.badge-ghost { background-color: var(--type-ghost); }
-.badge-dragon { background-color: var(--type-dragon); }
-.badge-dark { background-color: var(--type-dark); }
-.badge-steel { background-color: var(--type-steel); }
-.badge-fairy { background-color: var(--type-fairy); }
+.badge-normal,
+.type-filter-btn.type-normal { background-color: var(--type-normal); color: var(--type-normal-ink); }
+.badge-fire,
+.type-filter-btn.type-fire { background-color: var(--type-fire); color: var(--type-fire-ink); }
+.badge-water,
+.type-filter-btn.type-water { background-color: var(--type-water); color: var(--type-water-ink); }
+.badge-electric,
+.type-filter-btn.type-electric { background-color: var(--type-electric); color: var(--type-electric-ink); }
+.badge-grass,
+.type-filter-btn.type-grass { background-color: var(--type-grass); color: var(--type-grass-ink); }
+.badge-ice,
+.type-filter-btn.type-ice { background-color: var(--type-ice); color: var(--type-ice-ink); }
+.badge-fighting,
+.type-filter-btn.type-fighting { background-color: var(--type-fighting); color: var(--type-fighting-ink); }
+.badge-poison,
+.type-filter-btn.type-poison { background-color: var(--type-poison); color: var(--type-poison-ink); }
+.badge-ground,
+.type-filter-btn.type-ground { background-color: var(--type-ground); color: var(--type-ground-ink); }
+.badge-flying,
+.type-filter-btn.type-flying { background-color: var(--type-flying); color: var(--type-flying-ink); }
+.badge-psychic,
+.type-filter-btn.type-psychic { background-color: var(--type-psychic); color: var(--type-psychic-ink); }
+.badge-bug,
+.type-filter-btn.type-bug { background-color: var(--type-bug); color: var(--type-bug-ink); }
+.badge-rock,
+.type-filter-btn.type-rock { background-color: var(--type-rock); color: var(--type-rock-ink); }
+.badge-ghost,
+.type-filter-btn.type-ghost { background-color: var(--type-ghost); color: var(--type-ghost-ink); }
+.badge-dragon,
+.type-filter-btn.type-dragon { background-color: var(--type-dragon); color: var(--type-dragon-ink); }
+.badge-dark,
+.type-filter-btn.type-dark { background-color: var(--type-dark); color: var(--type-dark-ink); }
+.badge-steel,
+.type-filter-btn.type-steel { background-color: var(--type-steel); color: var(--type-steel-ink); }
+.badge-fairy,
+.type-filter-btn.type-fairy { background-color: var(--type-fairy); color: var(--type-fairy-ink); }
 
 /* Medidas / Habilidades */
 .pokemon-info {
@@ -429,12 +512,13 @@ body {
 
 /* Type Matchups */
 .matchups-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; max-height: 200px; overflow-y: auto; padding-right: 5px; }
-.matchup-item { display: flex; justify-content: space-between; align-items: center; padding: 5px 15px; border-radius: 10px; font-weight: 700; font-size: 0.8rem; color: #fff; text-shadow: 1px 1px 2px rgba(0,0,0,0.6); }
-.matchup-mult { background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 5px; }
+.matchup-item { display: flex; justify-content: space-between; align-items: center; padding: 5px 15px; border-radius: 10px; font-weight: 700; font-size: 0.8rem; }
+.matchup-mult { background: rgba(0,0,0,0.15); color: inherit; padding: 2px 6px; border-radius: 5px; }
 
 /* Type Filters na Home */
 .type-filters-container { display: flex; flex-wrap: wrap; gap: 8px; margin: 15px 0; justify-content: center; }
-.type-filter-btn { padding: 5px 10px; border: none; border-radius: 15px; font-size: 0.8rem; font-weight: bold; cursor: pointer; color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.6); opacity: 0.5; transition: 0.3s; }
+.type-filter-btn { padding: 8px 14px; min-height: 36px; border: none; border-radius: 18px; font-size: 0.8rem; font-weight: bold; cursor: pointer; opacity: 0.55; transition: 0.3s; }
+.type-filter-btn.type-all { background-color: #6b6b78; color: var(--ink-light); }
 .type-filter-btn:hover, .type-filter-btn.active { opacity: 1; transform: scale(1.1); box-shadow: 0 2px 5px rgba(0,0,0,0.4); }
 
 /* Team Builder */
@@ -755,7 +839,8 @@ body {
     bottom: 30px;
     right: 30px;
     z-index: 9999;
-    background: var(--primary-color);
+    background: var(--primary-surface);
+    color: var(--primary-on);
     color: white;
     width: 50px;
     height: 50px;
@@ -808,3 +893,130 @@ body {
     }
 }
 
+
+/* Estado vazio da Pokédex (busca sem resultado ou filtro sem correspondência) */
+.grid-empty-state {
+    grid-column: 1 / -1;
+    margin: 0;
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 1rem;
+}
+
+/* ==========================================
+   PAINEL DO TREINADOR (recolhível)
+   ========================================== */
+/* Ficava sempre aberto e empurrava a grade de Pokémon para ~832px no desktop
+   e ~1545px no mobile. Agora vem recolhido, com um resumo na própria barra. */
+.collapsible-panel {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+
+.collapsible-summary {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 14px 18px;
+    min-height: 48px;
+    cursor: pointer;
+    list-style: none;
+    font-weight: 700;
+    color: var(--text-color);
+    border-radius: 12px;
+}
+
+.collapsible-summary::-webkit-details-marker { display: none; }
+
+.collapsible-summary::before {
+    content: '▸';
+    display: inline-block;
+    transition: transform 0.2s ease;
+    color: var(--primary-color);
+    font-size: 1.1rem;
+}
+
+.collapsible-panel[open] > .collapsible-summary::before {
+    transform: rotate(90deg);
+}
+
+.collapsible-summary:hover { background: var(--btn-hover); }
+
+.collapsible-digest {
+    margin-left: auto;
+    font-weight: 400;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.collapsible-body {
+    padding: 0 18px 4px;
+}
+
+/* ==========================================
+   ESTATÍSTICAS
+   ========================================== */
+/* Antes era um flex que virava uma coluna de 4 blocos no mobile (~360px de
+   altura). Em grade, o mesmo conteúdo cabe em 2x2. */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.stat-cell {
+    text-align: center;
+    padding: 12px 8px;
+    background: var(--stat-cell-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+}
+
+.stat-cell-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-cell-value {
+    font-size: 1.6rem;
+    font-weight: bold;
+    line-height: 1.2;
+}
+
+.stat-cell-track {
+    width: 100%;
+    height: 5px;
+    background: var(--stat-bar-bg);
+    border-radius: 5px;
+    margin-top: 6px;
+    overflow: hidden;
+}
+
+.stat-cell-fill {
+    width: 0%;
+    height: 100%;
+    background: var(--stat-catch);
+    transition: width 0.5s;
+}
+
+@media (max-width: 700px) {
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .stat-cell-value { font-size: 1.4rem; }
+    .collapsible-digest { margin-left: 0; width: 100%; }
+}
+
+/* Alvos de toque dos filtros de tipo no mobile */
+@media (max-width: 900px) {
+    .type-filter-btn {
+        min-height: 44px;
+        padding: 10px 16px;
+        font-size: 0.85rem;
+    }
+}

@@ -472,7 +472,7 @@ function renderExtrasTab(tabName) {
         return `
             <div class="bento-item frontier-facility-card" style="padding: 15px; cursor: pointer; transition: transform 0.2s;" onclick="playClickSound(); window.location.hash='pokemon/${p.id}'" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
                 <div style="display:flex; align-items:center; gap: 15px;">
-                    <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${p.id}.png" alt="${p.name}" style="width:96px; height:96px; filter:drop-shadow(2px 2px 4px rgba(0,0,0,0.5));">
+                    <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${p.id}.png" alt="${p.name}" loading="lazy" decoding="async" style="width:96px; height:96px; filter:drop-shadow(2px 2px 4px rgba(0,0,0,0.5));">
                     <div>
                         <h3 style="margin-bottom: 5px; font-size:1.2rem; border-bottom:none;">${p.name}</h3>
                         <div style="margin-bottom: 5px;">${typesHtml}</div>

@@ -24,7 +24,7 @@ const app = {
         favorites: [],
         team: [],
         captures: [],
-        versionGroup: 'emerald', // ruby-sapphire, firered-leafgreen
+        versionGroup: localStorage.getItem('wiki-version-group') || 'emerald', // ruby-sapphire, firered-leafgreen
         isShiny: false,
         lang: 'pt',
         isCompactMode: false,
@@ -93,7 +93,7 @@ const app = {
         this.state.captures = this.loadScopedData('captures', []);
     },
 
-    init() {
+    async init() {
         // Migração de dados antigos para o novo sistema
         const oldTeamStr = localStorage.getItem('wiki-team');
         const oldFavsStr = localStorage.getItem('wiki-favs');
@@ -119,7 +119,8 @@ const app = {
         }
 
         this.loadProfileState();
-        this.initLang();
+        if (this.dom.versionSelect) this.dom.versionSelect.value = this.state.versionGroup;
+        await this.initLang();
         
         // Evaluate compact mode dynamically
         if (localStorage.getItem('wiki-compact') !== null) {
@@ -139,11 +140,39 @@ const app = {
         this.bindEvents();
         this.initTheme();
         this.updateFrontierVisibility();
+        this.updateHoennOnlyWidgets();
         this.updateDashboardStats();
         this.renderTypeFilters();
         this.renderGrid();
         this.initDailyChecklist();
+        this.initTrainerPanel();
+        this.initNavScroller();
         this.handleRouting();
+    },
+
+    // Painel do Treinador: recolhido por padrão, com a escolha do usuário salva
+    initTrainerPanel() {
+        const panel = document.getElementById('trainer-panel');
+        if (!panel) return;
+        panel.open = localStorage.getItem('wiki-trainer-panel') === 'open';
+        panel.addEventListener('toggle', () => {
+            localStorage.setItem('wiki-trainer-panel', panel.open ? 'open' : 'closed');
+        });
+    },
+
+    // Degradê à direita do menu some quando não há mais para rolar
+    initNavScroller() {
+        const scroller = document.querySelector('.nav-scroller');
+        const nav = document.querySelector('.nav-links');
+        if (!scroller || !nav) return;
+
+        const update = () => {
+            const fim = nav.scrollLeft + nav.clientWidth >= nav.scrollWidth - 4;
+            scroller.classList.toggle('at-end', fim);
+        };
+        nav.addEventListener('scroll', update, { passive: true });
+        window.addEventListener('resize', update);
+        update();
     },
 
     initDailyChecklist() {
@@ -175,6 +204,16 @@ const app = {
         });
     },
 
+    // Shoal Cave, loteria de Lilycove e Mirage Island são de Hoenn:
+    // o relógio e o checklist não valem para FireRed/LeafGreen.
+    updateHoennOnlyWidgets() {
+        const ehHoenn = this.state.versionGroup !== 'firered-leafgreen';
+        ['live-events-slot', 'daily-checklist-container'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.classList.toggle('hidden', !ehHoenn);
+        });
+    },
+
     updateFrontierVisibility() {
         const frontierBtn = document.querySelector('[data-view="frontier"]');
         if (frontierBtn) {
@@ -197,6 +236,13 @@ const app = {
         // Fav count
         const statFav = document.getElementById('stat-fav-count');
         if (statFav) statFav.textContent = this.state.favorites.length;
+
+        // Capturados
+        const statCatch = document.getElementById('stat-catch-count');
+        const statCatchBar = document.getElementById('stat-catch-bar');
+        const caught = this.state.captures.length;
+        if (statCatch) statCatch.textContent = `${caught}/386`;
+        if (statCatchBar) statCatchBar.style.width = `${(caught / 386) * 100}%`;
         
         // TM count
         let tmCount = 0;
@@ -209,6 +255,13 @@ const app = {
         }
         const statTm = document.getElementById('stat-tm-count');
         if (statTm) statTm.textContent = tmCount;
+
+        // Resumo visível mesmo com o painel recolhido
+        const digest = document.getElementById('trainer-panel-digest');
+        if (digest) {
+            digest.textContent =
+                `${this.state.captures.length}/386 capturados · ${this.state.team.length}/6 na equipe · ${this.state.favorites.length} favoritos`;
+        }
     },
 
     handleRouting() {
@@ -249,8 +302,6 @@ const app = {
             this.switchView('pokedex');
             this.updateDashboardStats();
             document.title = 'Hoenn & Kanto Wiki - RSE / FRLG';
-            this.dom.navBtns.forEach(b => b.classList.remove('active'));
-            if (this.dom.navBtns[0]) this.dom.navBtns[0].classList.add('active');
         }
     },
 
@@ -396,12 +447,14 @@ const app = {
         }
 
         // Abas de Ataques (Moveset)
-        document.querySelectorAll('.move-tab-btn').forEach(btn => {
+        document.querySelectorAll('.move-tab-btn[data-target]').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                document.querySelectorAll('.move-tab-btn').forEach(b => b.classList.remove('active'));
+                const target = document.getElementById(btn.dataset.target);
+                if (!target) return;
+                document.querySelectorAll('.move-tab-btn[data-target]').forEach(b => b.classList.remove('active'));
                 document.querySelectorAll('.move-section').forEach(s => s.classList.remove('active'));
                 btn.classList.add('active');
-                document.getElementById(btn.dataset.target).classList.add('active');
+                target.classList.add('active');
             });
         });
 
@@ -410,8 +463,10 @@ const app = {
             btn.addEventListener('click', (e) => {
                 document.querySelectorAll('.btn-gym-tab').forEach(b => {
                     b.style.background = 'var(--glass-bg)';
+                    b.style.color = 'var(--text-color)';
                 });
-                btn.style.background = 'var(--primary-color)';
+                btn.style.background = 'var(--primary-surface)';
+                btn.style.color = 'var(--primary-on)';
                 this.state.gymTab = btn.dataset.tab;
                 this.renderGyms();
             });
@@ -422,8 +477,10 @@ const app = {
             btn.addEventListener('click', (e) => {
                 document.querySelectorAll('.btn-tm-tab').forEach(b => {
                     b.style.background = 'var(--glass-bg)';
+                    b.style.color = 'var(--text-color)';
                 });
-                btn.style.background = 'var(--primary-color)';
+                btn.style.background = 'var(--primary-surface)';
+                btn.style.color = 'var(--primary-on)';
                 this.state.tmTab = btn.dataset.tab;
                 this.renderTMs(); // renderTMs will handle switching views
             });
@@ -434,8 +491,10 @@ const app = {
             btn.addEventListener('click', (e) => {
                 document.querySelectorAll('.btn-guide-tab').forEach(b => {
                     b.style.background = 'var(--glass-bg)';
+                    b.style.color = 'var(--text-color)';
                 });
-                btn.style.background = 'var(--primary-color)';
+                btn.style.background = 'var(--primary-surface)';
+                btn.style.color = 'var(--primary-on)';
                 this.state.guideTab = btn.dataset.tab;
                 this.renderGuides();
             });
@@ -451,23 +510,14 @@ const app = {
         this.dom.searchInput.addEventListener('input', (e) => {
             clearTimeout(searchTimeout);
             searchTimeout = setTimeout(() => {
-                const val = e.target.value.trim().toLowerCase();
-                const cards = document.querySelectorAll('.grid-card');
-                
+                this.state.searchTerm = e.target.value.trim().toLowerCase();
+
                 // Força a voltar pra view de dashboard quando começa a digitar
-                if (val.length > 0 && !document.getElementById('view-dashboard').classList.contains('active')) {
+                if (this.state.searchTerm.length > 0 && !document.getElementById('view-dashboard').classList.contains('active')) {
                     window.location.hash = '';
                 }
 
-                cards.forEach(card => {
-                    const name = card.dataset.name || '';
-                    const idStr = String(card.dataset.id);
-                    if (name.includes(val) || idStr === val) {
-                        card.style.display = 'flex';
-                    } else {
-                        card.style.display = 'none';
-                    }
-                });
+                this.applyFilters();
             }, 150); // 150ms delay
         });
 
@@ -480,8 +530,8 @@ const app = {
                     b.style.color = 'var(--text-color)';
                 });
                 btn.classList.add('active');
-                btn.style.background = 'var(--primary-color)';
-                btn.style.color = '#fff';
+                btn.style.background = 'var(--primary-surface)';
+                btn.style.color = 'var(--primary-on)';
                 this.state.statusFilter = btn.dataset.status;
                 this.renderGrid();
             });
@@ -490,12 +540,14 @@ const app = {
         // Seletor de Versão
         this.dom.versionSelect.addEventListener('change', (e) => {
             this.state.versionGroup = e.target.value;
+            localStorage.setItem('wiki-version-group', this.state.versionGroup);
             this.loadProfileState(); // Recarrega estado para a nova versão
-            
+
             this.updateFrontierVisibility();
+            this.updateHoennOnlyWidgets();
             
             // Re-render components if they are active
-            if (document.getElementById('view-pokedex').classList.contains('active') || document.getElementById('view-dashboard').classList.contains('active')) {
+            if (document.getElementById('view-dashboard').classList.contains('active')) {
                 this.renderGrid();
                 this.updateDashboardStats();
             }
@@ -549,9 +601,10 @@ const app = {
                 this.state.favorites.splice(idx, 1);
             } else {
                 this.state.favorites.push(id);
-                this.dom.btnFav.classList.add('active');
             }
             this.saveGlobalProfileData('favs', this.state.favorites);
+            this.updateFavBtn(id);
+            this.updateDashboardStats();
         });
 
         // Alternar Layout Compacto
@@ -604,11 +657,33 @@ const app = {
             }
             this.saveScopedData('team', this.state.team);
             this.updateTeamBtn(id);
+            this.updateDashboardStats();
         });
 
         this.dom.btnCry.addEventListener('click', () => {
             if (this.state.currentPokemon) this.playCry(this.state.currentPokemon.id);
         });
+
+        if (this.dom.btnCapture) {
+            this.dom.btnCapture.addEventListener('click', () => {
+                if (!this.state.currentPokemon) return;
+                playClickSound();
+                const id = this.state.currentPokemon.id;
+                const idx = this.state.captures.indexOf(id);
+                if (idx > -1) {
+                    this.state.captures.splice(idx, 1);
+                } else {
+                    this.state.captures.push(id);
+                }
+                this.saveScopedData('captures', this.state.captures);
+                this.updateCaptureBtn(id);
+                this.updateDashboardStats();
+
+                // Mantém o ícone do card correspondente em sincronia
+                const cardIcon = document.querySelector(`.grid-card[data-id="${id}"] .catch-icon`);
+                if (cardIcon) cardIcon.classList.toggle('captured', this.state.captures.includes(id));
+            });
+        }
 
         // PWA Install Logic
         let deferredPrompt;
@@ -648,7 +723,7 @@ const app = {
                 this.loadProfileState();
                 
                 // Re-render
-                if (document.getElementById('view-pokedex').classList.contains('active') || document.getElementById('view-dashboard').classList.contains('active')) {
+                if (document.getElementById('view-dashboard').classList.contains('active')) {
                     this.renderGrid();
                     this.updateDashboardStats();
                 }
@@ -741,13 +816,23 @@ const app = {
         }
     },
 
-    initLang() {
+    async initLang() {
         const lang = localStorage.getItem('wiki-lang') || 'pt';
-        this.setLanguage(lang);
-        if (this.dom.langToggle) this.dom.langToggle.addEventListener('click', () => {
+        await this.setLanguage(lang);
+        if (this.dom.langToggle) this.dom.langToggle.addEventListener('click', async () => {
             playClickSound();
             const current = this.state.lang;
-            this.setLanguage(current === 'pt' ? 'en' : 'pt');
+            this.dom.langToggle.disabled = true;
+            let ok = false;
+            try {
+                ok = await this.setLanguage(current === 'pt' ? 'en' : 'pt');
+            } finally {
+                this.dom.langToggle.disabled = false;
+            }
+            if (!ok) {
+                alert('Não foi possível baixar o dicionário do outro idioma. Verifique sua conexão.');
+                return;
+            }
             if (this.state.currentPokemon) {
                 // Re-renderiza o pokemon atual para atualizar a linguagem
                 this.loadPokemon(this.state.currentPokemon.id);
@@ -755,16 +840,31 @@ const app = {
         });
     },
 
-    setLanguage(lang) {
+    async setLanguage(lang) {
+        // O dicionário é baixado sob demanda (só um idioma por vez). Se a busca
+        // falhar (offline, por exemplo), mantemos o idioma anterior em vez de
+        // salvar um estado que deixaria a página sem tradução nenhuma.
+        try {
+            await loadTranslations(lang);
+        } catch (e) {
+            console.error('Falha ao carregar as traduções:', e);
+            return false;
+        }
+
         this.state.lang = lang;
         localStorage.setItem('wiki-lang', lang);
         window.TRANSLATIONS = lang === 'pt' ? window.TRANSLATIONS_PT : window.TRANSLATIONS_EN;
         if (this.dom.langToggle) this.dom.langToggle.textContent = lang === 'pt' ? 'Alternar Idioma USA' : 'Alternar Idioma BRA';
+        return true;
     },
 
     switchView(viewId) {
         this.dom.views.forEach(v => v.classList.remove('active'));
-        
+
+        // Destaque na navegação lateral (a página de um Pokémon mantém a Pokédex ativa)
+        const navId = viewId === 'pokemon' ? 'pokedex' : viewId;
+        this.dom.navBtns.forEach(b => b.classList.toggle('active', b.dataset.view === navId));
+
         // Tratar mapeamentos especiais
         if (viewId === 'pokedex') {
             document.getElementById('view-dashboard').classList.add('active');
@@ -1039,6 +1139,14 @@ const app = {
         }
     },
 
+    updateCaptureBtn(id) {
+        if (!this.dom.btnCapture) return;
+        const capturado = this.state.captures.includes(id);
+        this.dom.btnCapture.classList.toggle('captured', capturado);
+        this.dom.btnCapture.title = capturado ? 'Desmarcar captura' : 'Marcar como capturado';
+        this.dom.btnCapture.setAttribute('aria-pressed', String(capturado));
+    },
+
     updateTeamBtn(id) {
         if (this.state.team.some(p => p.id === id)) {
             this.dom.btnTeam.classList.add('active');
@@ -1049,6 +1157,16 @@ const app = {
             this.dom.btnTeam.textContent = '➕';
             this.dom.btnTeam.title = 'Adicionar à Equipe';
         }
+    },
+
+    isTouchDevice() {
+        // (pointer: coarse) descreve o ponteiro principal: dá "true" em celular
+        // e tablet, e "false" num notebook com tela sensível ao toque + trackpad.
+        // A largura só entra como fallback em navegadores sem essa media query.
+        if (window.matchMedia && window.matchMedia('(pointer: coarse)').media === '(pointer: coarse)') {
+            return window.matchMedia('(pointer: coarse)').matches;
+        }
+        return window.innerWidth <= 900;
     },
 
     playCry(id) {
@@ -1085,15 +1203,22 @@ const app = {
 
     async loadPokemon(query) {
         this.dom.loadingOverlay.classList.remove('hidden');
-        
+
+        // Cada chamada recebe um número; se outra começar enquanto esta espera
+        // a rede, a resposta antiga é descartada em vez de sobrescrever a tela.
+        const requisicao = (this._loadSeq = (this._loadSeq || 0) + 1);
+        const obsoleta = () => requisicao !== this._loadSeq;
+
         const data = await API.getPokemon(query);
+        if (obsoleta()) return;
         if (!data) {
             alert('Pokémon não encontrado!');
             this.dom.loadingOverlay.classList.add('hidden');
             return;
         }
-        
+
         const species = await API.getSpecies(data.id);
+        if (obsoleta()) return;
         this.state.currentPokemon = data;
         
         // Reversão de Tipos para a Regra Clássica (Gen 3)
@@ -1176,13 +1301,7 @@ const app = {
         this.updateFavBtn(data.id);
         this.updateTeamBtn(data.id);
         
-        if (this.dom.btnCapture) {
-            if (this.state.captures.includes(data.id)) {
-                this.dom.btnCapture.classList.add('captured');
-            } else {
-                this.dom.btnCapture.classList.remove('captured');
-            }
-        }
+        this.updateCaptureBtn(data.id);
         
         this.dom.pImg.src = this.getSprite(data, false);
 
@@ -1250,15 +1369,37 @@ const app = {
             renderEvolutions(species.evolution_chain.url);
         }
 
-        // Sub-renders
-        renderStats(data.stats);
-        renderMatchups(data.types);
-        renderEncounters(data.id, this.state.versionGroup);
-        renderMoves(data.moves, this.state.versionGroup);
+        // Sub-renders (isolados: uma falha não pode travar a tela de carregamento)
+        [
+            () => renderStats(data.stats),
+            () => renderMatchups(data.types),
+            () => renderEncounters(data.id, this.state.versionGroup),
+            () => renderMoves(data.moves, this.state.versionGroup)
+        ].forEach(fn => {
+            try { fn(); } catch (e) { console.error('Falha ao renderizar seção do Pokémon:', e); }
+        });
 
-        this.playCry(data.id);
+        // O cry só toca sozinho no desktop; no mobile fica a cargo do botão 🔊
+        if (!this.isTouchDevice()) this.playCry(data.id);
         this.dom.loadingOverlay.classList.add('hidden');
         window.scrollTo(0,0);
+    },
+
+    // Aplica busca e filtro de tipo em conjunto sobre os cards já renderizados.
+    // (O filtro de status é aplicado antes, na montagem da grade em renderGrid.)
+    applyFilters() {
+        const termo = this.state.searchTerm || '';
+        const tipoPermitido = this.state.typeFilterNames; // null = todos os tipos
+
+        this.dom.gridContainer.querySelectorAll('.grid-card').forEach(card => {
+            const nome = card.dataset.name || '';
+            const id = String(card.dataset.id);
+            const casaBusca = !termo || nome.includes(termo) || id === termo;
+            const casaTipo = !tipoPermitido || tipoPermitido.has(nome);
+            card.style.display = (casaBusca && casaTipo) ? 'flex' : 'none';
+        });
+
+        this.updateEmptyState();
     },
 
     // Lazy load the first 386 pokemon (Gen 1 to 3)
@@ -1293,6 +1434,10 @@ const app = {
         }, { rootMargin: '200px' });
 
         const fragment = document.createDocumentFragment();
+
+        // Limpa a grade antes de repopular; sem isso cada re-render duplicava
+        // a Pokédex inteira sobre a anterior.
+        this.dom.gridContainer.innerHTML = '';
 
         this.state.statusFilter = this.state.statusFilter || 'all';
 
@@ -1329,24 +1474,52 @@ const app = {
                     catchBtn.classList.add('captured');
                 }
                 this.saveScopedData('captures', this.state.captures);
+                this.updateDashboardStats();
             });
 
             card.addEventListener('click', () => {
                 playClickSound();
                 window.location.hash = `pokemon/${i}`;
                 this.dom.searchInput.value = ''; // Limpa a busca ao entrar num pokemon
-                
+                this.state.searchTerm = '';
+
                 // Remove o active de todos os filtros de tipo
                 document.querySelectorAll('.type-filter-btn').forEach(b => b.classList.remove('active'));
                 const btnAll = document.querySelector('.type-filter-btn.type-all');
                 if (btnAll) btnAll.classList.add('active');
-                
-                document.querySelectorAll('.grid-card').forEach(c => c.style.display = 'flex');
+                this.state.typeFilterNames = null;
+
+                this.applyFilters();
             });
             fragment.appendChild(card);
             observer.observe(card);
         }
         this.dom.gridContainer.appendChild(fragment);
+        // A grade foi remontada: reaplica busca e filtro de tipo que estavam ativos
+        this.applyFilters();
+    },
+
+    // Mensagem quando nenhum card está visível (busca sem resultado ou filtro vazio)
+    updateEmptyState() {
+        const grid = this.dom.gridContainer;
+        let msg = document.getElementById('grid-empty-state');
+
+        const temCards = grid.querySelector('.grid-card:not([style*="display: none"])');
+        if (temCards) {
+            if (msg) msg.remove();
+            return;
+        }
+
+        if (!msg) {
+            msg = document.createElement('p');
+            msg.id = 'grid-empty-state';
+            msg.className = 'grid-empty-state';
+            grid.appendChild(msg);
+        }
+        const busca = this.dom.searchInput.value.trim();
+        msg.textContent = busca
+            ? `Nenhum Pokémon encontrado para "${busca}".`
+            : 'Nenhum Pokémon corresponde aos filtros selecionados.';
     },
 
     async renderTypeFilters() {
@@ -1357,46 +1530,47 @@ const app = {
         // Botão "Todos"
         const btnAll = document.createElement('button');
         btnAll.className = 'type-filter-btn type-all active';
-        btnAll.textContent = 'ALL';
-        btnAll.style.background = '#888';
+        btnAll.textContent = 'Todos';
+        btnAll.setAttribute('aria-pressed', 'true');
         btnAll.addEventListener('click', () => {
             playClickSound();
-            document.querySelectorAll('.type-filter-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.type-filter-btn').forEach(b => {
+                b.classList.remove('active');
+                b.setAttribute('aria-pressed', 'false');
+            });
             btnAll.classList.add('active');
-            // Remove search text and show all cards
-            this.dom.searchInput.value = '';
-            document.querySelectorAll('.grid-card').forEach(c => c.style.display = 'flex');
+            btnAll.setAttribute('aria-pressed', 'true');
+            this.state.typeFilterNames = null;
+            this.applyFilters();
         });
         container.appendChild(btnAll);
 
         types.forEach(type => {
             const btn = document.createElement('button');
             btn.className = `type-filter-btn type-${type}`;
-            btn.textContent = type.toUpperCase();
-            btn.style.background = `var(--type-${type})`;
+            btn.textContent = TYPE_TRANSLATIONS[type] || type.toUpperCase();
+            btn.setAttribute('aria-pressed', 'false');
             
             btn.addEventListener('click', async () => {
                 playClickSound();
-                document.querySelectorAll('.type-filter-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.type-filter-btn').forEach(b => {
+                    b.classList.remove('active');
+                    b.setAttribute('aria-pressed', 'false');
+                });
                 btn.classList.add('active');
-                this.dom.searchInput.value = '';
-                
+                btn.setAttribute('aria-pressed', 'true');
+
                 try {
                     this.dom.loadingOverlay.classList.remove('hidden');
-                    const res = await fetch(`https://pokeapi.co/api/v2/type/${type}`);
-                    const data = await res.json();
-                    const allowedNames = data.pokemon.map(p => p.pokemon.name);
-                    
-                    document.querySelectorAll('.grid-card').forEach(card => {
-                        const cardName = card.dataset.name;
-                        if (allowedNames.includes(cardName)) {
-                            card.style.display = 'flex';
-                        } else {
-                            card.style.display = 'none';
-                        }
-                    });
-                } catch(e) {}
-                this.dom.loadingOverlay.classList.add('hidden');
+                    // Via API.getType: fica em cache, então re-filtrar é instantâneo
+                    this.state.typeFilterNames = await getGen3SpeciesOfType(type);
+                } catch(e) {
+                    console.error('Falha ao filtrar por tipo:', e);
+                    this.state.typeFilterNames = null;
+                } finally {
+                    this.dom.loadingOverlay.classList.add('hidden');
+                }
+                this.applyFilters();
             });
             container.appendChild(btn);
         });
@@ -1432,7 +1606,7 @@ const app = {
             
             slot.innerHTML = `
                 <button class="remove-btn" title="Remover" data-id="${p.id}">X</button>
-                <img src="${sprite}" alt="${p.name}">
+                <img src="${sprite}" alt="${p.name}" loading="lazy" decoding="async">
                 <span class="team-name">${p.name}</span>
             `;
             
@@ -1468,26 +1642,24 @@ const app = {
             grid.appendChild(slot);
         }
 
-        // Calculate Matchups
-        analysis.innerHTML = '<div class="spinner"></div>';
+        // Calculate Matchups (tabela fixa da Gen 3, sem o tipo Fada)
+        analysis.innerHTML = '';
         const typeWeaknessesCount = {};
-        Object.keys(TYPE_TRANSLATIONS).forEach(t => typeWeaknessesCount[t] = 0);
-        
+        GEN3_TYPES.forEach(t => typeWeaknessesCount[t] = 0);
+
         for (let p of teamData) {
-            const typePromises = p.types.map(t => API.getType(t.type.name));
-            const typeResults = await Promise.all(typePromises);
-            
             const pMult = {};
-            Object.keys(TYPE_TRANSLATIONS).forEach(t => pMult[t] = 1);
-            
-            typeResults.forEach(result => {
-                if (!result) return;
-                const dmg = result.damage_relations;
-                dmg.double_damage_from.forEach(t => pMult[t.name] *= 2);
-                dmg.half_damage_from.forEach(t => pMult[t.name] *= 0.5);
-                dmg.no_damage_from.forEach(t => pMult[t.name] *= 0);
+            GEN3_TYPES.forEach(t => pMult[t] = 1);
+
+            p.types.forEach(t => {
+                const defType = t.type.name === 'fairy' ? 'normal' : t.type.name;
+                const relations = TYPE_CHART_GEN3[defType];
+                if (!relations) return;
+                for (const attacker in relations) {
+                    pMult[attacker] *= relations[attacker];
+                }
             });
-            
+
             for (let t in pMult) {
                 if (pMult[t] > 1) {
                     typeWeaknessesCount[t]++;
@@ -1514,9 +1686,20 @@ const app = {
 
     async renderGyms() {
         const container = document.getElementById('gyms-container');
-        if (!container || !window.GYM_LEADERS) return;
-        
+        if (!container) return;
+
         container.innerHTML = '<div class="spinner"></div>';
+
+        // Os dados de treinadores só são baixados ao abrir esta aba
+        if (!window.GYM_LEADERS) {
+            try {
+                await loadGymData();
+            } catch (e) {
+                container.innerHTML = '<p>Não foi possível carregar os dados dos treinadores. Verifique sua conexão.</p>';
+                return;
+            }
+        }
+        if (!window.GYM_LEADERS) return;
         
         let vg = this.state.versionGroup;
         const regionData = window.GYM_LEADERS[vg];
@@ -1596,7 +1779,7 @@ const app = {
                 if (badgeMap[leader.badge] === 'elite' || badgeMap[leader.badge] === 'champ') {
                     // Sem imagem de insígnia para E4, ou usar genérica
                 } else {
-                    badgeImgHtml = `<img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/badges/${badgeMap[leader.badge]}.png" alt="${leader.badge}" class="frontier-symbol-img" style="image-rendering: pixelated;">`;
+                    badgeImgHtml = `<img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/badges/${badgeMap[leader.badge]}.png" alt="${leader.badge}" class="frontier-symbol-img" loading="lazy" decoding="async" style="image-rendering: pixelated;">`;
                 }
             }
 
@@ -1605,7 +1788,7 @@ const app = {
             html += `
                 <div class="bento-item frontier-facility-card">
                     <div class="frontier-facility-header">
-                        <img src="${leader.sprite}" alt="${leader.name}" class="frontier-brain-sprite gym-leader-sprite" style="max-height: 120px; object-fit: contain;">
+                        <img src="${leader.sprite}" alt="${leader.name}" class="frontier-brain-sprite gym-leader-sprite" loading="lazy" decoding="async" style="max-height: 120px; object-fit: contain;">
                         <div class="frontier-facility-title">
                             <h3>${leader.name}</h3>
                             <div class="frontier-brain-title">${leader.city || ''}</div>

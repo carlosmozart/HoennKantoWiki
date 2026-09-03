@@ -2,20 +2,25 @@
   "name": "Hoenn & Kanto Wiki",
   "short_name": "PokeWiki",
   "start_url": ".",
+  "scope": ".",
   "display": "standalone",
+  "orientation": "any",
   "background_color": "#121212",
   "theme_color": "#121212",
+  "lang": "pt-BR",
   "description": "Uma enciclopédia Pokémon focada na Terceira Geração (RSE/FRLG).",
   "icons": [
     {
-      "src": "favicons/pokedex.png",
+      "src": "favicons/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
-      "src": "favicons/pokedex.png",
+      "src": "favicons/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     }
   ]
 }

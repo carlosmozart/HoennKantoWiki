@@ -128,7 +128,7 @@ window.GUIDES_DATA = {
             <div style="text-align:left; color:var(--text-muted); font-size: 0.95rem;">
                 <p>As Sevii Islands são um arquipélago exclusivo de Pokémon FireRed e LeafGreen. As ilhas 1-3 são acessadas após vencer o Ginásio de Cinnabar, enquanto as ilhas 4-7 exigem vencer a Elite 4 e possuir o National Pokédex.</p>
                 <div style="text-align:center; margin: 20px 0;">
-                    <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/rainbow-pass.png" alt="Rainbow Pass" style="image-rendering:pixelated; width:60px; filter:drop-shadow(2px 2px 4px rgba(0,0,0,0.5));">
+                    <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/rainbow-pass.png" alt="Rainbow Pass" loading="lazy" decoding="async" style="image-rendering:pixelated; width:60px; filter:drop-shadow(2px 2px 4px rgba(0,0,0,0.5));">
                 </div>
                 
                 <h3 style="color:var(--type-fire); margin-top: 25px; border-bottom: 1px solid var(--glass-border); padding-bottom: 5px;">Knot Island (Ilha 1)</h3>

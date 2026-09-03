@@ -29,11 +29,18 @@ body {
     font-size: 2rem;
 }
 
+/* Wrapper do menu: no desktop é transparente, no mobile vira a pista rolável */
+.nav-scroller {
+    flex: 1;
+    width: 100%;
+    min-width: 0;
+}
+
 .nav-links {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    flex: 1;
+    height: 100%;
 }
 
 .nav-btn {
@@ -387,19 +394,63 @@ body {
     .wiki-container { flex-direction: column; }
     .sidebar { width: 100%; height: auto; position: relative; flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between; padding: 10px 20px; }
     .sidebar .logo { margin-bottom: 0; order: 1; width: 100%; text-align: center; }
-    .nav-links { 
+    /* 10 seções em ~1530px numa faixa de ~334px: sem uma pista visual de que
+       rola, 8 delas ficavam invisíveis no celular. O degradê à direita e o
+       recorte do último item indicam que há mais conteúdo. */
+    .nav-scroller {
+        order: 2;
+        /* flex-basis explícito: com "flex: 1" herdado do desktop a base era 0
+           e o wrapper colapsava para largura zero dentro do flex-wrap. */
+        flex: 0 0 100%;
+        width: 100%;
+        margin-top: 15px;
+        position: relative;
+    }
+    /* Degradê de recorte */
+    .nav-scroller::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 5px;
+        width: 56px;
+        pointer-events: none;
+        z-index: 1;
+        transition: opacity 0.2s ease;
+        background: linear-gradient(to right, transparent, var(--sidebar-solid) 70%);
+    }
+    /* Seta indicando que há mais seções à direita */
+    .nav-scroller::after {
+        content: '›';
+        position: absolute;
+        top: 50%;
+        right: 4px;
+        transform: translateY(-60%);
+        z-index: 2;
+        pointer-events: none;
+        font-size: 1.6rem;
+        line-height: 1;
+        font-weight: 700;
+        color: var(--primary-color);
+        transition: opacity 0.2s ease;
+    }
+    .nav-scroller.at-end::before,
+    .nav-scroller.at-end::after { opacity: 0; }
+
+    .nav-links {
         display: flex;
         flex: none;
-        order: 2;
-        margin-top: 15px;
-        flex-direction: row; 
-        width: 100%; 
+        margin-top: 0;
+        flex-direction: row;
+        width: 100%;
         overflow-x: auto;
         white-space: nowrap;
         scrollbar-width: none;
         -ms-overflow-style: none;
         padding-bottom: 5px;
+        scroll-snap-type: x proximity;
     }
+    .nav-links .nav-btn { scroll-snap-align: start; }
     .sidebar-footer { order: 3; width: 100%; margin-top: 15px; gap: 15px; justify-content: center; }
     .nav-links::-webkit-scrollbar {
         display: none;
@@ -435,5 +486,40 @@ body {
     .bento-hero, .bento-desc, .bento-info, .bento-stats, .bento-matchups, .bento-evolutions, .bento-locations, .bento-moves {
         grid-column: span 1;
         grid-row: auto;
+    }
+
+    /* Em telas estreitas a coluna de botões cobria o "próximo Pokémon";
+       vira uma barra horizontal acima do card. */
+    .bento-hero {
+        padding-top: 15px;
+    }
+    .bento-hero .image-controls {
+        position: static;
+        flex-direction: row;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 12px;
+    }
+    .pokemon-name {
+        font-size: 1.6rem;
+    }
+}
+
+/* Navegação entre Pokémon (◀ ▶) — alvo de toque confortável no mobile */
+.btn-poke-nav {
+    min-width: 35px;
+    width: 35px;
+    height: 35px;
+    padding: 0;
+    font-size: 1rem;
+}
+
+@media (max-width: 600px) {
+    .btn-poke-nav {
+        min-width: 44px;
+        width: 44px;
+        height: 44px;
+        font-size: 1.1rem;
     }
 }
