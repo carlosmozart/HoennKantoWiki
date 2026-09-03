@@ -29,6 +29,12 @@ class MapExplorer {
         if (img) {
             img.src = region === 'hoenn' ? 'img/Hoenn_Map.png' : 'img/Kanto_Map.png';
         }
+        
+        const container = document.getElementById('map-encounters-container');
+        if (container) {
+            container.innerHTML = '<div style="text-align:center; padding:40px; color:var(--text-muted);"><p>Selecione um local acima para ver os Pokémon.</p></div>';
+        }
+        
         this.loadRegionData();
     }
 
