@@ -386,8 +386,11 @@ body {
 @media (max-width: 900px) {
     .wiki-container { flex-direction: column; }
     .sidebar { width: 100%; height: auto; position: relative; flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between; padding: 10px 20px; }
-    .sidebar .logo { margin-bottom: 0; }
+    .sidebar .logo { margin-bottom: 0; order: 1; }
+    .sidebar-footer { order: 2; }
     .nav-links { 
+        order: 3;
+        margin-top: 15px;
         flex-direction: row; 
         width: 100%; 
         overflow-x: auto;
