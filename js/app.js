@@ -159,6 +159,39 @@ const app = {
             });
         }
 
+        // Exportar Imagem da Equipe
+        const btnExportTeam = document.getElementById('btn-export-team');
+        if (btnExportTeam) {
+            btnExportTeam.addEventListener('click', async () => {
+                const teamGrid = document.getElementById('team-grid');
+                if (teamGrid && typeof html2canvas !== 'undefined') {
+                    try {
+                        const originalStyle = teamGrid.style.cssText;
+                        teamGrid.style.background = 'var(--glass-bg)';
+                        teamGrid.style.padding = '20px';
+                        teamGrid.style.borderRadius = '15px';
+                        
+                        const canvas = await html2canvas(teamGrid, {
+                            backgroundColor: '#1a1a2e',
+                            scale: 2
+                        });
+                        
+                        teamGrid.style.cssText = originalStyle;
+                        
+                        const link = document.createElement('a');
+                        link.download = 'minha-equipe-hoenn.png';
+                        link.href = canvas.toDataURL('image/png');
+                        link.click();
+                    } catch (err) {
+                        console.error('Erro ao exportar equipe:', err);
+                        alert('Houve um erro ao gerar a imagem da equipe.');
+                    }
+                } else {
+                    alert('html2canvas não foi carregado.');
+                }
+            });
+        }
+
         if (this.dom.btnPrev) {
             this.dom.btnPrev.addEventListener('click', () => {
                 if (this.state.currentPokemon && this.state.currentPokemon.id > 1) {
@@ -473,11 +506,17 @@ const app = {
 
                     const nameCap = machine.move.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
                     
+                    const isChecked = localStorage.getItem(`wiki-tm-${machine.id}`) === 'true' ? 'checked' : '';
+                    const opacity = isChecked ? '0.5' : '1';
+                    
                     html += `
-                        <div class="grid-card machine-card" style="display:flex; flex-direction:column; gap:8px; padding:15px; border-radius:12px; background:var(--glass-bg); border:1px solid var(--glass-border); box-sizing:border-box;">
-                            <div style="display:flex; justify-content:flex-start; align-items:center; gap:12px;">
-                                <strong>${machine.id}</strong>
-                                <span class="badge-${machine.type}" style="padding: 2px 6px; border-radius: 4px; font-size: 0.8rem; text-transform: uppercase;">${machine.type}</span>
+                        <div class="grid-card machine-card tm-card-${machine.id}" style="opacity: ${opacity}; display:flex; flex-direction:column; gap:8px; padding:15px; border-radius:12px; background:var(--glass-bg); border:1px solid var(--glass-border); box-sizing:border-box; transition: opacity 0.3s;">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <div style="display:flex; align-items:center; gap:12px;">
+                                    <strong>${machine.id}</strong>
+                                    <span class="badge-${machine.type}" style="padding: 2px 6px; border-radius: 4px; font-size: 0.8rem; text-transform: uppercase;">${machine.type}</span>
+                                </div>
+                                <input type="checkbox" class="tm-checkbox" data-tmid="${machine.id}" ${isChecked} style="width: 20px; height: 20px; cursor: pointer;">
                             </div>
                             <h4 style="margin: 0; font-size: 1.1rem; word-wrap: break-word;">${nameCap}</h4>
                             <p style="font-size: 0.85rem; color: var(--text-muted); margin:0; text-align: justify; flex: 1;">${desc}</p>
@@ -490,6 +529,18 @@ const app = {
                 });
             }
             gridTM.innerHTML = html;
+            
+            // Add Checkbox logic
+            gridTM.querySelectorAll('.tm-checkbox').forEach(chk => {
+                chk.addEventListener('change', (e) => {
+                    const tmId = e.target.dataset.tmid;
+                    localStorage.setItem(`wiki-tm-${tmId}`, e.target.checked);
+                    const card = document.querySelector(`.tm-card-${tmId}`);
+                    if(card) {
+                        card.style.opacity = e.target.checked ? '0.5' : '1';
+                    }
+                });
+            });
         } else {
             // Render Tutors
             gridTM.classList.add('hidden');

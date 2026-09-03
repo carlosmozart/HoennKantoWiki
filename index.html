@@ -32,8 +32,10 @@
     <script defer src="./js/frontier.js?v=1.0.2"></script>
     <script defer src="./js/extras.js?v=1.0.0"></script>
     <script defer src="js/tutors.js"></script>
+    <script defer src="js/events.js"></script>
     <script defer src="js/guides.js"></script>
     <script defer src="./js/app.js?v=1.0.2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -118,6 +120,9 @@
                     
                     <div class="team-grid" id="team-grid">
                         <!-- Slots da equipe injetados via JS -->
+                    </div>
+                    <div style="text-align:center; margin-top: 20px;">
+                        <button class="nav-btn" id="btn-export-team" style="background:var(--primary-color);">📸 Baixar Imagem da Equipe</button>
                     </div>
                 </div>
 
