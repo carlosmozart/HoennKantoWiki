@@ -517,6 +517,9 @@ body {
 .catch-icon { position: absolute; top: 8px; right: 8px; color: var(--text-muted); opacity: 0.3; transition: 0.2s; z-index: 2; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; }
 .catch-icon:hover { opacity: 0.8; color: var(--text-color); }
 .catch-icon.captured { color: #ff4757; opacity: 1; filter: drop-shadow(0 0 5px rgba(255, 71, 87, 0.5)); }
+
+.catch-profile-btn { color: var(--text-color); transition: 0.3s; }
+.catch-profile-btn.captured { color: #ff4757; filter: drop-shadow(0 0 8px rgba(255, 71, 87, 0.8)); }
 .grid-card img { width: 60px; height: 60px; object-fit: contain; }
 .grid-card-id { font-size: 0.8rem; font-weight: bold; color: var(--text-muted); }
 .grid-card-name { font-size: 0.9rem; font-weight: 700; text-transform: capitalize; text-align: center; word-break: break-word; overflow-wrap: break-word; }

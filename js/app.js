@@ -59,6 +59,7 @@ const app = {
         btnTeam: document.getElementById('btn-team'),
         btnShiny: document.getElementById('btn-shiny'),
         btnCry: document.getElementById('btn-cry'),
+        btnCapture: document.getElementById('btn-capture-profile'),
         btnPrev: document.getElementById('btn-prev'),
         btnNext: document.getElementById('btn-next'),
         btnLayout: document.getElementById('btn-layout')
@@ -1017,6 +1018,15 @@ const app = {
 
         this.updateFavBtn(data.id);
         this.updateTeamBtn(data.id);
+        
+        if (this.dom.btnCapture) {
+            if (this.state.captures.includes(data.id)) {
+                this.dom.btnCapture.classList.add('captured');
+            } else {
+                this.dom.btnCapture.classList.remove('captured');
+            }
+        }
+        
         this.dom.pImg.src = this.getSprite(data, false);
 
         // Types
