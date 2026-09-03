@@ -387,7 +387,21 @@ body {
     .wiki-container { flex-direction: column; }
     .sidebar { width: 100%; height: auto; position: relative; flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between; padding: 10px 20px; }
     .sidebar .logo { margin-bottom: 0; }
-    .nav-links { flex-direction: row; width: 100%; }
+    .nav-links { 
+        flex-direction: row; 
+        width: 100%; 
+        overflow-x: auto;
+        white-space: nowrap;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        padding-bottom: 5px; /* dá um respiro se necessário */
+    }
+    .nav-links::-webkit-scrollbar {
+        display: none;
+    }
+    .nav-links .nav-btn {
+        flex: 0 0 auto;
+    }
     .main-content { max-width: 100%; padding: 10px; }
     .section-panel { padding: 15px; }
     .grid-container { padding: 10px; gap: 10px; }

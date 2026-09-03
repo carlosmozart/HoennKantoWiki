@@ -837,7 +837,10 @@ const app = {
         
         container.innerHTML = '<div class="spinner"></div>';
         
-        const vg = this.state.versionGroup;
+        let vg = this.state.versionGroup;
+        if (vg === 'ruby-sapphire' && window.GYM_LEADERS['emerald'] && !window.GYM_LEADERS['ruby-sapphire']) {
+            vg = 'emerald';
+        }
         const regionData = window.GYM_LEADERS[vg];
         
         if (!regionData) {
