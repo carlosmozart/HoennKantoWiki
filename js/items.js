@@ -1,0 +1,105 @@
+const keyItemsData = {
+    hoenn: [
+        {
+            category: "Treinamento & Batalha",
+            items: [
+                { name: "Exp. Share", desc: "Entregue a Letter para o Steven na Granite Cave. Depois volte a Rustboro e fale com o Mr. Stone na Devon Corporation." },
+                { name: "Macho Brace", desc: "Vença a família Winstrate na Rota 111 (Norte de Mauville) e fale com a mãe da família." },
+                { name: "Amulet Coin", desc: "Entregue pela sua mãe (no seu quarto em Littleroot Town) após vencer o Norman (5º Ginásio)." }
+            ]
+        },
+        {
+            category: "Varas de Pescar",
+            items: [
+                { name: "Old Rod", desc: "Fale com o pescador ao lado do Ginásio de Dewford Town." },
+                { name: "Good Rod", desc: "Fale com o pescador no lado leste do rio na Rota 118 (precisa usar Surf partindo de Mauville)." },
+                { name: "Super Rod", desc: "Fale com o pescador dentro da casa em Mossdeep City." }
+            ]
+        },
+        {
+            category: "Locomoção & Exploração",
+            items: [
+                { name: "Mach / Acro Bike", desc: "Pegue com o Rydel na loja de Bicicletas em Mauville City. Você pode trocar o tipo da bicicleta falando com ele depois." },
+                { name: "Itemfinder", desc: "Dada pelo Rival (May/Brendan) na Rota 110 após você vencê-lo em batalha." },
+                { name: "Go-Goggles", desc: "Recebido da May/Brendan em Lavaridge Town após você derrotar a Flannery (4º Ginásio)." }
+            ]
+        },
+        {
+            category: "Itens Evolutivos Principais",
+            items: [
+                { name: "Water / Fire / Leaf Stone", desc: "Podem ser trocadas por Shards (Blue, Red, Yellow, Green) com o Treasure Hunter na Rota 124." },
+                { name: "Moon / Sun Stone", desc: "Moon Stone é encontrada na Meteor Falls. Sun Stone está no Space Center em Mossdeep City." }
+            ]
+        }
+    ],
+    kanto: [
+        {
+            category: "Treinamento & Batalha",
+            items: [
+                { name: "Exp. Share", desc: "Fale com o ajudante do Prof. Oak no portão leste da Fuchsia City (Rota 15). É necessário ter 50 Pokémon registrados na Pokédex." },
+                { name: "Macho Brace", desc: "Use o Itemfinder no exato local onde Giovanni estava no Ginásio de Viridian City, após derrotá-lo." },
+                { name: "Amulet Coin", desc: "Fale com o ajudante do Prof. Oak no portão da Rota 16 (Oeste de Celadon). É necessário ter 40 Pokémon capturados." }
+            ]
+        },
+        {
+            category: "Varas de Pescar",
+            items: [
+                { name: "Old Rod", desc: "Fale com o Fishing Guru dentro do Pokémon Center de Vermilion City." },
+                { name: "Good Rod", desc: "Fale com o irmão do Fishing Guru na casa em Fuchsia City." },
+                { name: "Super Rod", desc: "Fale com o irmão mais velho na casa na Rota 12 (sul de Lavender Town)." }
+            ]
+        },
+        {
+            category: "Locomoção & Exploração",
+            items: [
+                { name: "Bicycle", desc: "Pegue o Bike Voucher com o presidente do Pokémon Fan Club em Vermilion City, e troque na Bike Shop em Cerulean City." },
+                { name: "Itemfinder", desc: "Fale com o ajudante do Prof. Oak no portão da Rota 11. É necessário ter 30 Pokémon registrados." },
+                { name: "Silph Scope", desc: "Derrote o Giovanni no esconderijo da Equipe Rocket em Celadon City (Game Corner)." }
+            ]
+        },
+        {
+            category: "Itens Evolutivos Principais",
+            items: [
+                { name: "Evolution Stones", desc: "Fire, Water, Thunder, e Leaf Stones podem ser compradas no Celadon Department Store (4º Andar) por $2100." },
+                { name: "Moon Stone", desc: "Encontrada no Mt. Moon (duas cópias) e no Rocket Hideout." }
+            ]
+        }
+    ]
+};
+
+window.renderKeyItems = function(versionGroup) {
+    const container = document.getElementById('view-items-content');
+    if (!container) return;
+    
+    // Emerald / Ruby / Sapphire usam dados da Hoenn. FireRed / LeafGreen usam Kanto.
+    const region = (versionGroup === 'emerald' || versionGroup === 'ruby-sapphire') ? 'hoenn' : 'kanto';
+    const data = keyItemsData[region];
+    
+    let html = '';
+    
+    data.forEach(category => {
+        html += `
+            <div class="bento-item" style="padding: 20px; background: var(--glass-bg);">
+                <h3 style="color: var(--primary-color); margin-bottom: 15px; border-bottom: 1px solid var(--glass-border); padding-bottom: 10px;">
+                    ${category.category}
+                </h3>
+                <div style="display: flex; flex-direction: column; gap: 15px;">
+        `;
+        
+        category.items.forEach(item => {
+            html += `
+                    <div class="item-card" style="padding: 10px; background: rgba(0,0,0,0.1); border-radius: 8px;">
+                        <h4 style="margin: 0 0 5px 0; color: var(--text-color); font-size: 1.05rem;">📦 ${item.name}</h4>
+                        <p style="margin: 0; font-size: 0.9rem; color: var(--text-muted); line-height: 1.4;">${item.desc}</p>
+                    </div>
+            `;
+        });
+        
+        html += `
+                </div>
+            </div>
+        `;
+    });
+    
+    container.innerHTML = html;
+};

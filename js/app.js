@@ -200,6 +200,9 @@ const app = {
         } else if (hash === 'extras') {
             this.switchView('extras');
             if (window.renderExtras) window.renderExtras();
+        } else if (hash === 'items') {
+            this.switchView('items');
+            if (window.renderKeyItems) window.renderKeyItems(this.state.versionGroup);
         } else if (hash === 'guides') {
             this.switchView('guides');
             this.renderGuides();
@@ -471,6 +474,9 @@ const app = {
             }
             if (document.getElementById('view-guides').classList.contains('active')) {
                 this.renderGuides();
+            }
+            if (document.getElementById('view-items').classList.contains('active')) {
+                if (window.renderKeyItems) window.renderKeyItems(this.state.versionGroup);
             }
             if (window.MapManager && document.getElementById('view-map').classList.contains('active')) {
                 const region = this.state.versionGroup === 'emerald' || this.state.versionGroup === 'ruby-sapphire' ? 'hoenn' : 'kanto';
