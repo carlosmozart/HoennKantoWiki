@@ -62,6 +62,17 @@ const app = {
     },
 
     init() {
+        // Migração de Equipe (de Array de Números para Array de Objetos com EVs)
+        if (this.state.team.length > 0 && typeof this.state.team[0] === 'number') {
+            this.state.team = this.state.team.map(id => ({
+                id: id,
+                nature: 'hardy',
+                evs: { hp: 0, attack: 0, defense: 0, special_attack: 0, special_defense: 0, speed: 0 },
+                ivs: { hp: 31, attack: 31, defense: 31, special_attack: 31, special_defense: 31, speed: 31 }
+            }));
+            localStorage.setItem('wiki-team', JSON.stringify(this.state.team));
+        }
+
         this.initLang();
         
         // Evaluate compact mode dynamically
@@ -82,6 +93,7 @@ const app = {
         this.bindEvents();
         this.initTheme();
         this.updateFrontierVisibility();
+        this.updateDashboardStats();
         this.renderTypeFilters();
         this.renderGrid();
         this.handleRouting();
@@ -99,6 +111,27 @@ const app = {
                 }
             }
         }
+    },
+
+    updateDashboardStats() {
+        // Team size
+        const statTeam = document.getElementById('stat-team-size');
+        if (statTeam) statTeam.textContent = `${this.state.team.length}/6`;
+        
+        // Fav count
+        const statFav = document.getElementById('stat-fav-count');
+        if (statFav) statFav.textContent = this.state.favorites.length;
+        
+        // TM count
+        let tmCount = 0;
+        for (let i = 0; i < localStorage.length; i++) {
+            const k = localStorage.key(i);
+            if (k && k.startsWith('wiki-tm-') && localStorage.getItem(k) === 'true') {
+                tmCount++;
+            }
+        }
+        const statTm = document.getElementById('stat-tm-count');
+        if (statTm) statTm.textContent = tmCount;
     },
 
     handleRouting() {
@@ -130,8 +163,11 @@ const app = {
                 const region = this.state.versionGroup === 'emerald' || this.state.versionGroup === 'ruby-sapphire' ? 'hoenn' : 'kanto';
                 window.MapManager.setRegion(region);
             }
+        } else if (hash === 'settings') {
+            this.switchView('settings');
         } else {
             this.switchView('pokedex');
+            this.updateDashboardStats();
             document.title = 'Hoenn & Kanto Wiki - RSE / FRLG';
             this.dom.navBtns.forEach(b => b.classList.remove('active'));
             if (this.dom.navBtns[0]) this.dom.navBtns[0].classList.add('active');
@@ -162,6 +198,69 @@ const app = {
             });
             btnScrollTop.addEventListener('click', () => {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
+
+        // Sincronização em Nuvem (Cloud Save)
+        const btnExportSave = document.getElementById('btn-export-save');
+        const btnCopySave = document.getElementById('btn-copy-save');
+        const btnImportSave = document.getElementById('btn-import-save');
+        const exportOutput = document.getElementById('save-export-output');
+        const importInput = document.getElementById('save-import-input');
+
+        if (btnExportSave) {
+            btnExportSave.addEventListener('click', () => {
+                try {
+                    const saveData = {};
+                    for (let i = 0; i < localStorage.length; i++) {
+                        const key = localStorage.key(i);
+                        if (key && key.startsWith('wiki-')) {
+                            saveData[key] = localStorage.getItem(key);
+                        }
+                    }
+                    const jsonStr = JSON.stringify(saveData);
+                    const base64Str = btoa(unescape(encodeURIComponent(jsonStr)));
+                    exportOutput.value = base64Str;
+                    btnCopySave.classList.remove('hidden');
+                } catch (e) {
+                    alert('Erro ao gerar código: ' + e.message);
+                }
+            });
+        }
+
+        if (btnCopySave) {
+            btnCopySave.addEventListener('click', () => {
+                exportOutput.select();
+                document.execCommand('copy');
+                btnCopySave.textContent = '✅ Copiado!';
+                setTimeout(() => btnCopySave.textContent = '📋 Copiar Código', 2000);
+            });
+        }
+
+        if (btnImportSave) {
+            btnImportSave.addEventListener('click', () => {
+                const code = importInput.value.trim();
+                if (!code) return alert('Cole um código primeiro!');
+                try {
+                    const jsonStr = decodeURIComponent(escape(atob(code)));
+                    const saveData = JSON.parse(jsonStr);
+                    
+                    let imported = 0;
+                    for (const key in saveData) {
+                        if (key.startsWith('wiki-')) {
+                            localStorage.setItem(key, saveData[key]);
+                            imported++;
+                        }
+                    }
+                    if (imported > 0) {
+                        alert(`Save restaurado com sucesso! ${imported} registros recuperados. A página será recarregada.`);
+                        window.location.reload();
+                    } else {
+                        alert('Código inválido ou vazio.');
+                    }
+                } catch (e) {
+                    alert('Erro ao importar: Código inválido ou corrompido.');
+                }
             });
         }
 
@@ -378,7 +477,7 @@ const app = {
             if (!this.state.currentPokemon) return;
             playClickSound();
             const id = this.state.currentPokemon.id;
-            const idx = this.state.team.indexOf(id);
+            const idx = this.state.team.findIndex(t => t.id === id);
             if (idx > -1) {
                 this.state.team.splice(idx, 1);
             } else {
@@ -386,7 +485,12 @@ const app = {
                     alert('Sua equipe já está cheia (máximo de 6 Pokémon)!');
                     return;
                 }
-                this.state.team.push(id);
+                this.state.team.push({
+                    id: id,
+                    nature: 'hardy',
+                    evs: { hp: 0, attack: 0, defense: 0, special_attack: 0, special_defense: 0, speed: 0 },
+                    ivs: { hp: 31, attack: 31, defense: 31, special_attack: 31, special_defense: 31, speed: 31 }
+                });
             }
             localStorage.setItem('wiki-team', JSON.stringify(this.state.team));
             this.updateTeamBtn(id);
@@ -625,7 +729,7 @@ const app = {
     },
 
     updateTeamBtn(id) {
-        if (this.state.team.includes(id)) {
+        if (this.state.team.some(p => p.id === id)) {
             this.dom.btnTeam.classList.add('active');
             this.dom.btnTeam.textContent = '❌';
             this.dom.btnTeam.title = 'Remover da Equipe';
@@ -952,7 +1056,7 @@ const app = {
             return;
         }
 
-        const teamPromises = this.state.team.map(id => API.getPokemon(id));
+        const teamPromises = this.state.team.map(t => API.getPokemon(t.id));
         const teamResults = await Promise.all(teamPromises);
         const teamData = teamResults.filter(data => data !== null);
 
@@ -974,7 +1078,11 @@ const app = {
             slot.addEventListener('click', (e) => {
                 if (e.target.tagName !== 'BUTTON') {
                     playClickSound();
-                    window.location.hash = `pokemon/${p.id}`;
+                    if (window.Training) {
+                        window.Training.openTrainingCard(p.id);
+                    } else {
+                        window.location.hash = `pokemon/${p.id}`;
+                    }
                 }
             });
             
@@ -982,7 +1090,7 @@ const app = {
             slot.querySelector('.remove-btn').addEventListener('click', (e) => {
                 e.stopPropagation();
                 playClickSound();
-                this.state.team = this.state.team.filter(tId => tId !== p.id);
+                this.state.team = this.state.team.filter(t => t.id !== p.id);
                 localStorage.setItem('wiki-team', JSON.stringify(this.state.team));
                 this.renderTeam(); // Re-render
             });
