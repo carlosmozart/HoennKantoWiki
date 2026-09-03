@@ -42,10 +42,10 @@ class TrainingManager {
 
     bindEvents() {
         document.getElementById('btn-close-training').addEventListener('click', () => {
-            document.getElementById('training-modal').classList.add('hidden');
+            document.getElementById('training-modal').style.display = 'none';
         });
         document.getElementById('btn-training-to-pokedex').addEventListener('click', () => {
-            document.getElementById('training-modal').classList.add('hidden');
+            document.getElementById('training-modal').style.display = 'none';
             window.location.hash = `pokemon/${this.currentPokemonId}`;
         });
         
@@ -71,7 +71,7 @@ class TrainingManager {
         const teamMember = app.state.team.find(t => t.id === pokemonId);
         if (!teamMember) return;
 
-        document.getElementById('training-modal').classList.remove('hidden');
+        document.getElementById('training-modal').style.display = 'flex';
         document.getElementById('training-modal-name').textContent = translations.getName(pokemonId);
         document.getElementById('training-modal-img').src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonId}.png`;
         
