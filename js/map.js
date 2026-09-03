@@ -189,6 +189,14 @@ class MapExplorer {
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    window.MapManager = new MapExplorer();
-});
+function initMapManager() {
+    if (!window.MapManager) {
+        window.MapManager = new MapExplorer();
+    }
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMapManager);
+} else {
+    initMapManager();
+}
