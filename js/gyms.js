@@ -4,7 +4,7 @@ window.GYM_LEADERS = {
     {
         "name": "May / Brendan",
         "type": "normal",
-        "sprite": "img/trainers/Brendan.png",
+        "sprite": "https://play.pokemonshowdown.com/sprites/trainers/brendan-gen3.png",
         "desc": "Batalha final em Lilycove City.",
         "silverReq": "Rival",
         "silverTeam": [
@@ -80,7 +80,7 @@ window.GYM_LEADERS = {
     {
         "name": "Wally",
         "type": "psychic",
-        "sprite": "img/trainers/Wally.png",
+        "sprite": "https://play.pokemonshowdown.com/sprites/trainers/wally-gen3.png",
         "desc": "Batalha decisiva na Victory Road.",
         "silverReq": "Rival",
         "silverTeam": [
@@ -175,7 +175,7 @@ window.GYM_LEADERS = {
     {
         "name": "Maxie",
         "type": "fire",
-        "sprite": "img/trainers/Maxie.png",
+        "sprite": "https://play.pokemonshowdown.com/sprites/trainers/maxie-gen3.png",
         "desc": "Líder da Equipe Magma (Mossdeep Space Center).",
         "silverReq": "Chefe Magma",
         "silverTeam": [
@@ -234,7 +234,7 @@ window.GYM_LEADERS = {
     {
         "name": "Archie",
         "type": "water",
-        "sprite": "img/trainers/Archie.png",
+        "sprite": "https://play.pokemonshowdown.com/sprites/trainers/archie-gen3.png",
         "desc": "Líder da Equipe Aqua (Seafloor Cavern).",
         "silverReq": "Chefe Aqua",
         "silverTeam": [
@@ -1271,7 +1271,7 @@ window.GYM_LEADERS = {
     {
         "name": "Blue (Rival)",
         "type": "normal",
-        "sprite": "img/trainers/Blue.png",
+        "sprite": "https://play.pokemonshowdown.com/sprites/trainers/blue-gen3champion.png",
         "desc": "Batalha na Route 22 (Final).",
         "silverReq": "Rival",
         "silverTeam": [
@@ -1381,7 +1381,7 @@ window.GYM_LEADERS = {
     {
         "name": "Giovanni",
         "type": "ground",
-        "sprite": "img/trainers/Giovanni.png",
+        "sprite": "https://play.pokemonshowdown.com/sprites/trainers/giovanni-gen3.png",
         "desc": "Chefe da Equipe Rocket (Silph Co).",
         "silverReq": "Chefe Rocket",
         "silverTeam": [
@@ -2962,7 +2962,7 @@ window.GYM_LEADERS = {
     {
         "name": "May / Brendan",
         "type": "normal",
-        "sprite": "img/trainers/Brendan.png",
+        "sprite": "https://play.pokemonshowdown.com/sprites/trainers/brendan-gen3.png",
         "desc": "Batalha final em Lilycove City.",
         "silverReq": "Rival",
         "silverTeam": [
@@ -3038,7 +3038,7 @@ window.GYM_LEADERS = {
     {
         "name": "Wally",
         "type": "psychic",
-        "sprite": "img/trainers/Wally.png",
+        "sprite": "https://play.pokemonshowdown.com/sprites/trainers/wally-gen3.png",
         "desc": "Batalha decisiva na Victory Road.",
         "silverReq": "Rival",
         "silverTeam": [
@@ -3133,7 +3133,7 @@ window.GYM_LEADERS = {
     {
         "name": "Maxie",
         "type": "fire",
-        "sprite": "img/trainers/Maxie.png",
+        "sprite": "https://play.pokemonshowdown.com/sprites/trainers/maxie-gen3.png",
         "desc": "Líder da Equipe Magma (Mossdeep Space Center).",
         "silverReq": "Chefe Magma",
         "silverTeam": [
@@ -3192,7 +3192,7 @@ window.GYM_LEADERS = {
     {
         "name": "Archie",
         "type": "water",
-        "sprite": "img/trainers/Archie.png",
+        "sprite": "https://play.pokemonshowdown.com/sprites/trainers/archie-gen3.png",
         "desc": "Líder da Equipe Aqua (Seafloor Cavern).",
         "silverReq": "Chefe Aqua",
         "silverTeam": [

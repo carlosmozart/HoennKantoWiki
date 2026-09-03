@@ -26,21 +26,23 @@ window.GUIDES_DATA = {
     "stones": {
         "title": "Guia de Itens de Evolução",
         "content": `
-            <table class="moves-table" style="width:100%; text-align:left;">
-                <thead>
-                    <tr><th>Item</th><th>Evoluções Chaves</th><th>Onde Encontrar (Hoenn)</th><th>Onde Encontrar (Kanto)</th></tr>
-                </thead>
-                <tbody>
-                    <tr><td><strong>Fire Stone</strong></td><td>Vulpix, Growlithe, Eevee</td><td>Fiery Path</td><td>Celadon Dept. Store, Mt. Ember</td></tr>
-                    <tr><td><strong>Water Stone</strong></td><td>Poliwhirl, Shellder, Staryu, Eevee, Lombre</td><td>Abandoned Ship</td><td>Celadon Dept. Store, Seafoam Islands</td></tr>
-                    <tr><td><strong>Thunder Stone</strong></td><td>Pikachu, Eevee</td><td>New Mauville</td><td>Celadon Dept. Store, Power Plant</td></tr>
-                    <tr><td><strong>Leaf Stone</strong></td><td>Gloom, Weepinbell, Exeggcute, Nuzleaf</td><td>Route 119</td><td>Celadon Dept. Store, Safari Zone</td></tr>
-                    <tr><td><strong>Moon Stone</strong></td><td>Nidorina, Nidorino, Clefairy, Jigglypuff, Skitty</td><td>Meteor Falls</td><td>Mt. Moon, Celadon City</td></tr>
-                    <tr><td><strong>Sun Stone</strong></td><td>Gloom, Sunkern</td><td>Mossdeep City</td><td>Ruin Valley, Segurado por Solrock selvagem</td></tr>
-                    <tr><td><strong>Dragon Scale</strong></td><td>Seadra -> Kingdra</td><td>Segurado por Horsea/Bagon selvagens</td><td>Water Path</td></tr>
-                    <tr><td><strong>Metal Coat</strong></td><td>Onix -> Steelix, Scyther -> Scizor</td><td>Segurado por Magnemite selvagens</td><td>Memorial Pillar</td></tr>
-                </tbody>
-            </table>
+            <div style="overflow-x: auto;">
+                <table class="moves-table" style="width:100%; text-align:left; min-width:600px;">
+                    <thead>
+                        <tr><th>Item</th><th>Evoluções Chaves</th><th>Onde Encontrar (Hoenn)</th><th>Onde Encontrar (Kanto)</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>Fire Stone</strong></td><td>Vulpix, Growlithe, Eevee</td><td>Fiery Path</td><td>Celadon Dept. Store, Mt. Ember</td></tr>
+                        <tr><td><strong>Water Stone</strong></td><td>Poliwhirl, Shellder, Staryu, Eevee, Lombre</td><td>Abandoned Ship</td><td>Celadon Dept. Store, Seafoam Islands</td></tr>
+                        <tr><td><strong>Thunder Stone</strong></td><td>Pikachu, Eevee</td><td>New Mauville</td><td>Celadon Dept. Store, Power Plant</td></tr>
+                        <tr><td><strong>Leaf Stone</strong></td><td>Gloom, Weepinbell, Exeggcute, Nuzleaf</td><td>Route 119</td><td>Celadon Dept. Store, Safari Zone</td></tr>
+                        <tr><td><strong>Moon Stone</strong></td><td>Nidorina, Nidorino, Clefairy, Jigglypuff, Skitty</td><td>Meteor Falls</td><td>Mt. Moon, Celadon City</td></tr>
+                        <tr><td><strong>Sun Stone</strong></td><td>Gloom, Sunkern</td><td>Mossdeep City</td><td>Ruin Valley, Segurado por Solrock selvagem</td></tr>
+                        <tr><td><strong>Dragon Scale</strong></td><td>Seadra -> Kingdra</td><td>Segurado por Horsea/Bagon selvagens</td><td>Water Path</td></tr>
+                        <tr><td><strong>Metal Coat</strong></td><td>Onix -> Steelix, Scyther -> Scizor</td><td>Segurado por Magnemite selvagens</td><td>Memorial Pillar</td></tr>
+                    </tbody>
+                </table>
+            </div>
         `
     },
     "safari": {
