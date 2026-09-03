@@ -34,6 +34,7 @@
     <script defer src="js/tutors.js"></script>
     <script defer src="js/events.js"></script>
     <script defer src="js/guides.js"></script>
+    <script defer src="js/map.js"></script>
     <script defer src="./js/app.js?v=1.0.2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
@@ -58,6 +59,7 @@
                 <button class="nav-btn" data-view="team">Minha Equipe</button>
                 <button class="nav-btn" data-view="gyms">Treinadores</button>
                 <button class="nav-btn" data-view="tms">TMs & HMs</button>
+                <button class="nav-btn" data-view="map">Mapa Múndi</button>
                 <button class="nav-btn" data-view="frontier">Battle Frontier</button>
                 <button class="nav-btn" data-view="extras">Emerald Extras</button>
                 <button class="nav-btn" data-view="guides">Guias Práticos</button>
@@ -337,6 +339,36 @@
 
                     <div class="grid-container" id="extras-grid">
                         <!-- Preenchido via JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Map Section -->
+            <section id="view-map" class="view-section hidden">
+                <div class="glass section-panel">
+                    <h2>Explorador de Região</h2>
+                    <p>Selecione uma rota ou cidade para ver os Pokémon encontrados na região atual.</p>
+                    
+                    <div style="text-align:center; margin-bottom: 20px;">
+                        <img id="map-image-display" src="img/Hoenn_Map.png" alt="Mapa da Região" style="max-width:100%; height:auto; border-radius:15px; box-shadow:0 8px 24px rgba(0,0,0,0.6); max-height:400px; object-fit:contain; background:rgba(0,0,0,0.3);">
+                    </div>
+
+                    <div style="background:var(--glass-bg); padding:15px; border-radius:12px; border:1px solid var(--glass-border); margin-bottom:20px;">
+                        <div style="display:flex; flex-direction:column; gap:10px;">
+                            <label for="map-location-select" style="font-weight:bold; color:var(--primary-color);">Selecione um Local:</label>
+                            <div style="display:flex; gap:10px;">
+                                <select id="map-location-select" class="input-select" style="flex:1;">
+                                    <option value="">Carregando locais...</option>
+                                </select>
+                                <button id="btn-search-location" class="nav-btn" style="background:var(--primary-color);">Explorar</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="map-encounters-container" style="min-height:200px;">
+                        <div style="text-align:center; padding:40px; color:var(--text-muted);">
+                            <p>Selecione um local acima para ver os Pokémon.</p>
+                        </div>
                     </div>
                 </div>
             </section>

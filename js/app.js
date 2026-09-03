@@ -124,6 +124,12 @@ const app = {
         } else if (hash === 'guides') {
             this.switchView('guides');
             this.renderGuides();
+        } else if (hash === 'map') {
+            this.switchView('map');
+            if (window.MapManager) {
+                const region = this.state.versionGroup === 'emerald' || this.state.versionGroup === 'ruby-sapphire' ? 'hoenn' : 'kanto';
+                window.MapManager.setRegion(region);
+            }
         } else {
             this.switchView('pokedex');
             document.title = 'Hoenn & Kanto Wiki - RSE / FRLG';
@@ -309,6 +315,10 @@ const app = {
             }
             if (document.getElementById('view-guides').classList.contains('active')) {
                 this.renderGuides();
+            }
+            if (window.MapManager && document.getElementById('view-map').classList.contains('active')) {
+                const region = this.state.versionGroup === 'emerald' || this.state.versionGroup === 'ruby-sapphire' ? 'hoenn' : 'kanto';
+                window.MapManager.setRegion(region);
             }
         });
 
