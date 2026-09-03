@@ -33,13 +33,16 @@ const fetchWithCache = async (url, cacheKey) => {
     }
 };
 
+// Setup API Base URL
+const POKEAPI_BASE = 'https://pokeapi.co/api/v2';
+
 // Endpoints
 const API = {
-    getPokemon: (id) => fetchWithCache(`https://pokeapi.co/api/v2/pokemon/${id}`, `poke_${id}`),
-    getSpecies: (id) => fetchWithCache(`https://pokeapi.co/api/v2/pokemon-species/${id}`, `spec_${id}`),
-    getType: (name) => fetchWithCache(`https://pokeapi.co/api/v2/type/${name}`, `type_${name}`),
+    getPokemon: (id) => fetchWithCache(`${POKEAPI_BASE}/pokemon/${id}`, `poke_${id}`),
+    getSpecies: (id) => fetchWithCache(`${POKEAPI_BASE}/pokemon-species/${id}`, `spec_${id}`),
+    getType: (name) => fetchWithCache(`${POKEAPI_BASE}/type/${name}`, `type_${name}`),
     getEvolution: (url) => fetchWithCache(url, `evo_${url}`),
-    getEncounters: (id) => fetchWithCache(`https://pokeapi.co/api/v2/pokemon/${id}/encounters`, `enc_${id}`)
+    getEncounters: (id) => fetchWithCache(`${POKEAPI_BASE}/pokemon/${id}/encounters`, `enc_${id}`)
 };
 
 // Dicionário de Tipos
