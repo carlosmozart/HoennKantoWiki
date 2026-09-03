@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pokewiki-v2';
+const CACHE_NAME = 'pokewiki-v3';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -42,10 +42,17 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // Comportamento padrão: tenta o cache, senão tenta a rede
+  // Comportamento padrão: Network First (Tenta a rede, se falhar usa o cache)
   event.respondWith(
-    caches.match(event.request).then(cachedResponse => {
-      return cachedResponse || fetch(event.request);
+    fetch(event.request).then(networkResponse => {
+      // Se a rede funcionou, atualiza o cache
+      return caches.open(CACHE_NAME).then(cache => {
+        cache.put(event.request, networkResponse.clone());
+        return networkResponse;
+      });
+    }).catch(() => {
+      // Se a rede falhar (offline), tenta o cache
+      return caches.match(event.request);
     })
   );
 });
