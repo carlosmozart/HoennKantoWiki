@@ -388,6 +388,8 @@ body {
     .sidebar { width: 100%; height: auto; position: relative; flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between; padding: 10px 20px; }
     .sidebar .logo { margin-bottom: 0; order: 1; width: 100%; text-align: center; }
     .nav-links { 
+        display: flex;
+        flex: none;
         order: 2;
         margin-top: 15px;
         flex-direction: row; 
