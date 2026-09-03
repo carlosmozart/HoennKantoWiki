@@ -128,6 +128,28 @@
                         </div>
                     </div>
                     
+                    <!-- Checklist Diário -->
+                    <div id="daily-checklist-container" style="background:rgba(0,0,0,0.2); border-radius:12px; padding:15px; margin-bottom:20px; border:1px solid var(--glass-border);">
+                        <h4 style="margin: 0 0 10px 0; color:var(--type-electric); display:flex; justify-content:space-between;">
+                            <span>⏱️ Eventos Diários (RSE)</span>
+                            <span id="daily-reset-timer" style="font-size:0.8rem; color:var(--text-muted); font-weight:normal;">Reseta à meia-noite</span>
+                        </h4>
+                        <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap:10px;">
+                            <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:0.9rem;">
+                                <input type="checkbox" class="daily-task-chk" data-task="berry"> Falar com o Berry Master
+                            </label>
+                            <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:0.9rem;">
+                                <input type="checkbox" class="daily-task-chk" data-task="lottery"> Loteria de Lilycove
+                            </label>
+                            <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:0.9rem;">
+                                <input type="checkbox" class="daily-task-chk" data-task="mirage"> Checar Mirage Island
+                            </label>
+                            <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:0.9rem;">
+                                <input type="checkbox" class="daily-task-chk" data-task="shoal"> Checar Maré da Shoal Cave
+                            </label>
+                        </div>
+                    </div>
+
                     <div class="bento-item" style="margin-bottom: 25px; text-align: center; padding: 20px;">
                         <h3 style="margin-bottom: 15px; font-size: 1.1rem; color: var(--text-color);">Filtros de Pesquisa</h3>
                         
@@ -450,6 +472,9 @@
                         <button class="nav-btn btn-guide-tab" data-tab="natures">Natures</button>
                         <button class="nav-btn btn-guide-tab" data-tab="weakness">Calculadora de Tipos</button>
                         <button class="nav-btn btn-guide-tab" data-tab="berries">Evoluir Feebas</button>
+                        <button class="nav-btn btn-guide-tab" data-tab="ev">Treino de EVs</button>
+                        <button class="nav-btn btn-guide-tab" data-tab="frontier">Battle Frontier</button>
+                        <button class="nav-btn btn-guide-tab" data-tab="bases">Bases Secretas</button>
                         <button class="nav-btn btn-guide-tab" data-tab="safari">Safari Zone</button>
                         <button class="nav-btn btn-guide-tab" data-tab="sevii">Sevii Islands</button>
                     </div>

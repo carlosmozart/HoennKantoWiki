@@ -142,7 +142,37 @@ const app = {
         this.updateDashboardStats();
         this.renderTypeFilters();
         this.renderGrid();
+        this.initDailyChecklist();
         this.handleRouting();
+    },
+
+    initDailyChecklist() {
+        const checkboxes = document.querySelectorAll('.daily-task-chk');
+        if (checkboxes.length === 0) return;
+
+        // Recupera dados salvos
+        let savedData = localStorage.getItem('wiki-daily-checklist');
+        let dailyState = savedData ? JSON.parse(savedData) : { date: '', tasks: {} };
+
+        // Verifica a data de hoje (Formato YYYY-MM-DD local)
+        const todayStr = new Date().toLocaleDateString();
+
+        if (dailyState.date !== todayStr) {
+            // Se virou o dia, reseta
+            dailyState = { date: todayStr, tasks: {} };
+            localStorage.setItem('wiki-daily-checklist', JSON.stringify(dailyState));
+        }
+
+        // Aplica o estado visual
+        checkboxes.forEach(chk => {
+            const task = chk.dataset.task;
+            chk.checked = !!dailyState.tasks[task];
+            
+            chk.addEventListener('change', (e) => {
+                dailyState.tasks[task] = e.target.checked;
+                localStorage.setItem('wiki-daily-checklist', JSON.stringify(dailyState));
+            });
+        });
     },
 
     updateFrontierVisibility() {
