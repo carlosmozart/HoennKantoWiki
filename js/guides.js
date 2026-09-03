@@ -46,23 +46,44 @@ window.GUIDES_DATA = {
         `
     },
     "safari": {
-        "title": "Safari Zone",
+        "title": "Guia da Safari Zone",
         "content": `
-            <div style="text-align:left; color:var(--text-muted);">
-                <p>A Safari Zone é uma área especial onde você captura Pokémon utilizando <strong>Safari Balls</strong> em vez de batalhar. Em Hoenn, a Safari Zone requer a PokéBlock Case para entrar.</p>
-                <div style="display:flex; gap:15px; margin-top:20px; flex-wrap:wrap; justify-content:center;">
-                    <div style="background:var(--glass-bg); border:1px solid var(--glass-border); padding:15px; border-radius:12px; max-width:300px;">
-                        <h4 style="color:var(--primary-color); margin-bottom:10px;">Acro Bike (Norte)</h4>
-                        <p style="font-size:0.85rem;">Área acessível apenas utilizando a Acro Bike (empinando e pulando pontes). Aqui você encontra Heracross e Phanpy.</p>
-                    </div>
-                    <div style="background:var(--glass-bg); border:1px solid var(--glass-border); padding:15px; border-radius:12px; max-width:300px;">
-                        <h4 style="color:var(--primary-color); margin-bottom:10px;">Mach Bike (Nordeste)</h4>
-                        <p style="font-size:0.85rem;">Requer a Mach Bike para subir a rampa de lama. Encontros notáveis incluem Pinsir, Rhyhorn e Dodrio.</p>
-                    </div>
-                    <div style="background:var(--glass-bg); border:1px solid var(--glass-border); padding:15px; border-radius:12px; max-width:300px;">
-                        <h4 style="color:var(--primary-color); margin-bottom:10px;">Expansão Pós-Jogo (Emerald)</h4>
-                        <p style="font-size:0.85rem;">Após derrotar a Elite 4, novas áreas são abertas a leste contendo Pokémon de Johto como Mareep, Houndour, Sunkern e Miltank.</p>
-                    </div>
+            <div style="text-align:left; color:var(--text-muted); font-size: 0.95rem;">
+                <p>A Safari Zone é uma área especial onde você captura Pokémon utilizando <strong>Safari Balls</strong> em vez de batalhar. Abaixo você encontra os Pokémon exclusivos e os itens de cada zona.</p>
+                
+                <h3 style="color:var(--type-grass); margin-top: 25px; border-bottom: 1px solid var(--glass-border); padding-bottom: 5px;">Hoenn (Emerald / Ruby & Sapphire)</h3>
+                <div style="overflow-x: auto; margin-top: 15px;">
+                    <table class="moves-table" style="width:100%; text-align:left; min-width:600px;">
+                        <thead>
+                            <tr><th>Zona / Requisito</th><th>Encontros Notáveis / Exclusivos</th><th>Itens no Chão</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>Área 1 & 2 (Sul)</strong><br><small>Entrada principal</small></td><td>Oddish, Gloom, Doduo, Pikachu, Wobbuffet, Natu, Girafarig.</td><td>Max Potion</td></tr>
+                            <tr><td><strong>Área 3 (Norte)</strong><br><small>Requer Acro Bike</small></td><td>Heracross, Phanpy, Xatu, Pinsir.</td><td>Calcium, TM22 (SolarBeam)</td></tr>
+                            <tr><td><strong>Área 4 (Nordeste)</strong><br><small>Requer Mach Bike</small></td><td>Rhyhorn, Pinsir, Dodrio.</td><td>Zinc</td></tr>
+                            <tr><td><strong>Expansão (Leste/Sudeste)</strong><br><small>Pós-Jogo (Apenas Emerald)</small></td><td><strong>Exclusivos de Johto:</strong> Mareep, Houndour, Aipom, Pineco, Shuckle, Gligar, Snubbull, Teddiursa, Smeargle, Miltank.</td><td>Big Pearl, Rare Candy, Nugget</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3 style="color:var(--type-grass); margin-top: 35px; border-bottom: 1px solid var(--glass-border); padding-bottom: 5px;">Kanto (FireRed / LeafGreen)</h3>
+                <div style="overflow-x: auto; margin-top: 15px;">
+                    <table class="moves-table" style="width:100%; text-align:left; min-width:600px;">
+                        <thead>
+                            <tr><th>Zona / Área</th><th>Encontros Notáveis / Exclusivos</th><th>Itens no Chão</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>Center Area</strong><br><small>Entrada</small></td><td>Scyther (FR), Pinsir (LG), Chansey, Exeggcute, Rhyhorn, Dratini (Super Rod).</td><td>Nugget</td></tr>
+                            <tr><td><strong>Area 1 (Leste)</strong></td><td>Kangaskhan, Scyther (FR), Pinsir (LG), Doduo, Dragonair.</td><td>Leaf Stone, TM11 (Sunny Day), Max Potion, Full Restore</td></tr>
+                            <tr><td><strong>Area 2 (Norte)</strong></td><td>Tauros, Kangaskhan, Chansey, Venomoth.</td><td>Quick Claw, TM47 (Steel Wing), Protein, Calcium</td></tr>
+                            <tr><td><strong>Area 3 (Oeste)</strong><br><small>Casa Secreta</small></td><td>Tauros, Kangaskhan, Venomoth, Doduo.</td><td>Gold Teeth, HM03 (Surf), Max Revive, Max Potion, Revive</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div style="background:var(--glass-bg); border:1px solid var(--glass-border); padding:15px; border-radius:12px; margin-top:25px;">
+                    <h4 style="color:var(--primary-color); margin-bottom:5px;">💡 Dica de Captura</h4>
+                    <p style="font-size:0.85rem; margin:0;">Jogar <strong>Pokéblocks/Bait</strong> (Isca) deixa o Pokémon menos propenso a fugir, mas mais difícil de capturar. Jogar <strong>Lama/Pedra</strong> torna o Pokémon mais fácil de capturar, mas mais propenso a fugir.</p>
                 </div>
             </div>
         `
