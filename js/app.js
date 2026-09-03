@@ -564,32 +564,32 @@ const app = {
 
     switchView(viewId) {
         this.dom.views.forEach(v => v.classList.remove('active'));
-        // Special mapping if needed, mas aqui dashboard = pokedex, pokemon = hidden
+        
+        // Tratar mapeamentos especiais
         if (viewId === 'pokedex') {
             document.getElementById('view-dashboard').classList.add('active');
             this.dom.dynamicBg.className = 'bg-default';
-        } else if (viewId === 'pokemon') {
-            document.getElementById('view-pokemon').classList.add('active');
-        } else if (viewId === 'team') {
-            document.getElementById('view-team').classList.add('active');
+            return;
+        }
+        
+        // Tratar todos os outros dinamicamente
+        const target = document.getElementById(`view-${viewId}`);
+        if (target) {
+            target.classList.add('active');
+        }
+        
+        // Renderizadores e backgrounds específicos
+        if (viewId === 'team') {
             this.dom.dynamicBg.className = 'bg-default';
             this.renderTeam();
         } else if (viewId === 'gyms') {
-            document.getElementById('view-gyms').classList.add('active');
             this.dom.dynamicBg.className = 'bg-default';
             this.renderGyms();
-        } else if (viewId === 'tms') {
-            document.getElementById('view-tms').classList.add('active');
-            this.dom.dynamicBg.className = 'bg-default';
-        } else if (viewId === 'frontier') {
-            document.getElementById('view-frontier').classList.add('active');
-            this.dom.dynamicBg.className = 'bg-default';
-        } else if (viewId === 'extras') {
-            document.getElementById('view-extras').classList.add('active');
-            this.dom.dynamicBg.className = 'bg-default';
-        } else if (viewId === 'guides') {
-            document.getElementById('view-guides').classList.add('active');
-            this.dom.dynamicBg.className = 'bg-default';
+        } else {
+            // Default background for others
+            if (viewId !== 'pokemon') {
+                this.dom.dynamicBg.className = 'bg-default';
+            }
         }
     },
 
