@@ -386,10 +386,9 @@ body {
 @media (max-width: 900px) {
     .wiki-container { flex-direction: column; }
     .sidebar { width: 100%; height: auto; position: relative; flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between; padding: 10px 20px; }
-    .sidebar .logo { margin-bottom: 0; order: 1; }
-    .sidebar-footer { order: 2; }
+    .sidebar .logo { margin-bottom: 0; order: 1; width: 100%; text-align: center; }
     .nav-links { 
-        order: 3;
+        order: 2;
         margin-top: 15px;
         flex-direction: row; 
         width: 100%; 
@@ -397,8 +396,9 @@ body {
         white-space: nowrap;
         scrollbar-width: none;
         -ms-overflow-style: none;
-        padding-bottom: 5px; /* dá um respiro se necessário */
+        padding-bottom: 5px;
     }
+    .sidebar-footer { order: 3; width: 100%; margin-top: 15px; gap: 15px; justify-content: center; }
     .nav-links::-webkit-scrollbar {
         display: none;
     }
