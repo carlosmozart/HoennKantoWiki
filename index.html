@@ -32,6 +32,7 @@
     <script defer src="./js/frontier.js?v=1.0.2"></script>
     <script defer src="./js/extras.js?v=1.0.0"></script>
     <script defer src="js/tutors.js"></script>
+    <script defer src="js/guides.js"></script>
     <script defer src="./js/app.js?v=1.0.2"></script>
     <script>
         if ('serviceWorker' in navigator) {
@@ -57,6 +58,7 @@
                 <button class="nav-btn" data-view="tms">TMs & HMs</button>
                 <button class="nav-btn" data-view="frontier">Battle Frontier</button>
                 <button class="nav-btn" data-view="extras">Emerald Extras</button>
+                <button class="nav-btn" data-view="guides">Guias Práticos</button>
             </nav>
             <div class="sidebar-footer">
                 <button id="lang-toggle" class="btn-icon" title="Alternar Idioma">🇧🇷</button>
@@ -329,6 +331,24 @@
                     </div>
 
                     <div class="grid-container" id="extras-grid">
+                        <!-- Preenchido via JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Guides Section -->
+            <section id="view-guides" class="view-section hidden">
+                <div class="glass section-panel">
+                    <h2>Guias Práticos</h2>
+                    <p>Manuais detalhados para ajudar na sua jornada.</p>
+                    
+                    <div class="frontier-tabs" style="display:flex; gap:10px; margin-bottom:20px; justify-content:center; flex-wrap:wrap;">
+                        <button class="nav-btn btn-guide-tab active" data-tab="stones" style="background:var(--primary-color);">Itens & Pedras</button>
+                        <button class="nav-btn btn-guide-tab" data-tab="berries">Evoluir Feebas (Berries)</button>
+                        <button class="nav-btn btn-guide-tab" data-tab="safari">Safari Zone</button>
+                    </div>
+
+                    <div class="guides-container" id="guides-container" style="padding: 10px; border-radius:12px;">
                         <!-- Preenchido via JS -->
                     </div>
                 </div>

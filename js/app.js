@@ -121,6 +121,9 @@ const app = {
         } else if (hash === 'extras') {
             this.switchView('extras');
             if (window.renderExtras) window.renderExtras();
+        } else if (hash === 'guides') {
+            this.switchView('guides');
+            this.renderGuides();
         } else {
             this.switchView('pokedex');
             document.title = 'Hoenn & Kanto Wiki - RSE / FRLG';
@@ -207,6 +210,19 @@ const app = {
                 this.renderTMs(); // renderTMs will handle switching views
             });
         });
+
+        // Abas de Guias
+        document.querySelectorAll('.btn-guide-tab').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.btn-guide-tab').forEach(b => {
+                    b.style.background = 'var(--glass-bg)';
+                });
+                btn.style.background = 'var(--primary-color)';
+                this.state.guideTab = btn.dataset.tab;
+                this.renderGuides();
+            });
+        });
+
         // Formulário de Busca (Impede recarregar)
         this.dom.searchForm.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -257,6 +273,9 @@ const app = {
             }
             if (document.getElementById('view-extras').classList.contains('active')) {
                 if (window.renderExtras) window.renderExtras();
+            }
+            if (document.getElementById('view-guides').classList.contains('active')) {
+                this.renderGuides();
             }
         });
 
@@ -418,6 +437,12 @@ const app = {
         } else if (viewId === 'frontier') {
             document.getElementById('view-frontier').classList.add('active');
             this.dom.dynamicBg.className = 'bg-default';
+        } else if (viewId === 'extras') {
+            document.getElementById('view-extras').classList.add('active');
+            this.dom.dynamicBg.className = 'bg-default';
+        } else if (viewId === 'guides') {
+            document.getElementById('view-guides').classList.add('active');
+            this.dom.dynamicBg.className = 'bg-default';
         }
     },
 
@@ -507,6 +532,24 @@ const app = {
                 html = '<p>Dados de tutores não encontrados.</p>';
             }
             gridTutor.innerHTML = html;
+        }
+    },
+
+    renderGuides() {
+        const container = document.getElementById('guides-container');
+        if (!container) return;
+
+        const tab = this.state.guideTab || 'stones';
+        if (window.GUIDES_DATA && window.GUIDES_DATA[tab]) {
+            const data = window.GUIDES_DATA[tab];
+            container.innerHTML = `
+                <h3 style="color:var(--text-color); margin-bottom:15px;">${data.title}</h3>
+                <div style="font-size: 0.95rem; line-height: 1.6;">
+                    ${data.content}
+                </div>
+            `;
+        } else {
+            container.innerHTML = '<p>Guia não encontrado.</p>';
         }
     },
 
