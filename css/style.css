@@ -454,7 +454,7 @@ body {
 .team-analysis-count { font-size: 1rem; background: rgba(0,0,0,0.5); padding: 2px 8px; border-radius: 5px; }
 
 /* Gym Leaders */
-.gyms-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-top: 15px; }
+.gyms-container { display: block; margin-top: 15px; }
 .gym-card { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); border-radius: 15px; padding: 15px; text-align: center; color: white; display: flex; flex-direction: column; align-items: center; }
 .gym-card h3 { margin: 0; font-size: 1.2rem; }
 .gym-card .gym-city { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px; }
@@ -545,4 +545,193 @@ body {
 .grid-container.compact .grid-card-id {
     font-size: 0.65rem;
     margin-bottom: 2px;
+}
+
+/* Bento Box Gyms / Elite Four / Frontier Styles */
+.frontier-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 20px;
+}
+
+.frontier-facility-card {
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.frontier-facility-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 20px;
+}
+
+.frontier-brain-sprite {
+    height: 180px;
+    object-fit: contain;
+    filter: drop-shadow(4px 6px 8px rgba(0,0,0,0.5));
+}
+
+.gym-leader-sprite {
+    max-height: 140px !important;
+}
+
+.frontier-facility-title {
+    flex: 1;
+    min-width: 250px;
+}
+
+.frontier-facility-title h3 {
+    color: var(--type-electric);
+    font-size: 1.5rem;
+    margin: 0 0 5px 0;
+}
+
+.frontier-brain-title {
+    color: var(--type-fire);
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+}
+
+.frontier-desc {
+    color: var(--text-color);
+    line-height: 1.6;
+    font-size: 1rem;
+    text-align: justify;
+}
+
+.frontier-symbol-box {
+    background: var(--stat-bar-bg);
+    padding: 10px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.frontier-symbol-img {
+    height: 40px;
+    image-rendering: pixelated;
+}
+
+.frontier-teams-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.frontier-team-section {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 15px;
+}
+
+.frontier-team-req {
+    text-align: center;
+    color: var(--type-electric);
+    font-weight: bold;
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.frontier-team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+}
+
+.frontier-poke-card {
+    background: rgba(255,255,255,0.03);
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.frontier-poke-card:hover {
+    background: rgba(255,255,255,0.08);
+    transform: scale(1.02);
+}
+
+.frontier-poke-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.frontier-poke-header img {
+    width: 60px;
+    height: 60px;
+    filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.5));
+}
+
+.frontier-poke-info {
+    flex: 1;
+}
+
+.frontier-poke-name {
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 5px;
+}
+
+.frontier-poke-level {
+    font-size: 0.8rem;
+    color: var(--text-color);
+    margin-left: 5px;
+}
+
+.frontier-poke-types {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+.frontier-poke-types .pokemon-type-badge {
+    font-size: 0.65rem;
+    padding: 3px 6px;
+    margin: 0;
+}
+
+.frontier-poke-details {
+    background: rgba(0,0,0,0.2);
+    padding: 6px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+}
+
+.detail-row {
+    margin-bottom: 2px;
+}
+.detail-row:last-child {
+    margin-bottom: 0;
+}
+.detail-row strong {
+    color: var(--text-muted);
+}
+
+.frontier-poke-moves {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    justify-content: center;
+}
+
+.frontier-move {
+    background: rgba(0,0,0,0.2);
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-size: 0.75rem;
 }

@@ -24,10 +24,11 @@ const app = {
         versionGroup: 'emerald', // ruby-sapphire, firered-leafgreen
         isShiny: false,
         lang: 'pt',
-        isCompactMode: false
+        isCompactMode: false,
+        gymTab: 'gyms'
     },
     dom: {
-        navBtns: document.querySelectorAll('.nav-btn'),
+        navBtns: document.querySelectorAll('.sidebar .nav-btn'),
         views: document.querySelectorAll('.view-section'),
         gridContainer: document.getElementById('pokedex-grid'),
         searchForm: document.getElementById('search-form'),
@@ -80,9 +81,24 @@ const app = {
         }
         this.bindEvents();
         this.initTheme();
+        this.updateFrontierVisibility();
         this.renderTypeFilters();
         this.renderGrid();
         this.handleRouting();
+    },
+
+    updateFrontierVisibility() {
+        const frontierBtn = document.querySelector('[data-view="frontier"]');
+        if (frontierBtn) {
+            if (this.state.versionGroup === 'emerald') {
+                frontierBtn.style.display = 'block';
+            } else {
+                frontierBtn.style.display = 'none';
+                if (window.location.hash.replace('#', '') === 'frontier') {
+                    window.location.hash = ''; // Redirect to pokedex if we hide it while active
+                }
+            }
+        }
     },
 
     handleRouting() {
@@ -99,6 +115,9 @@ const app = {
         } else if (hash === 'tms') {
             this.switchView('tms');
             this.renderTMs();
+        } else if (hash === 'frontier') {
+            this.switchView('frontier');
+            if (window.renderFrontier) window.renderFrontier();
         } else {
             this.switchView('pokedex');
             document.title = 'Hoenn & Kanto Wiki - RSE / FRLG';
@@ -147,6 +166,18 @@ const app = {
             });
         });
 
+        // Abas de Ginásios / Elite 4
+        document.querySelectorAll('.btn-gym-tab').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.btn-gym-tab').forEach(b => {
+                    b.style.background = 'var(--glass-bg)';
+                });
+                btn.style.background = 'var(--primary-color)';
+                this.state.gymTab = btn.dataset.tab;
+                this.renderGyms();
+            });
+        });
+
         // Formulário de Busca (Impede recarregar)
         this.dom.searchForm.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -180,6 +211,7 @@ const app = {
         // Seletor de Versão
         this.dom.versionSelect.addEventListener('change', (e) => {
             this.state.versionGroup = e.target.value;
+            this.updateFrontierVisibility();
             if (this.state.currentPokemon) {
                 // Re-render moves and encounters based on new version
                 renderMoves(this.state.currentPokemon.moves, this.state.versionGroup);
@@ -326,6 +358,9 @@ const app = {
         } else if (viewId === 'tms') {
             document.getElementById('view-tms').classList.add('active');
             this.dom.dynamicBg.className = 'bg-default';
+        } else if (viewId === 'frontier') {
+            document.getElementById('view-frontier').classList.add('active');
+            this.dom.dynamicBg.className = 'bg-default';
         }
     },
 
@@ -391,13 +426,20 @@ const app = {
     },
 
     playCry(id) {
-        let cryUrl = `https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/legacy/${id}.ogg`; // Fallback
+        let legacyUrl = `https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/legacy/${id}.ogg`;
+        let latestUrl = `https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/${id}.ogg`;
+        
         if (this.state.currentPokemon && this.state.currentPokemon.id === id && this.state.currentPokemon.cries) {
-            // Usa o cry legacy (Gen 1-5) se existir, por ser uma wiki de Gen 3
-            cryUrl = this.state.currentPokemon.cries.legacy || this.state.currentPokemon.cries.latest || cryUrl;
+            legacyUrl = this.state.currentPokemon.cries.legacy || legacyUrl;
+            latestUrl = this.state.currentPokemon.cries.latest || latestUrl;
         }
-        const audio = new Audio(cryUrl);
-        audio.play().catch(e => console.warn(`Cry indisponível: ${id}`));
+        
+        const audio = new Audio(legacyUrl);
+        audio.play().catch(e => {
+            console.warn(`Cry legacy indisponível ou corrompido para: ${id}. Tentando o mais recente...`);
+            const audioLatest = new Audio(latestUrl);
+            audioLatest.play().catch(err => console.warn(`Nenhum cry disponível para: ${id}`));
+        });
     },
 
     getSprite(data, shiny) {
@@ -525,8 +567,19 @@ const app = {
 
         // Species Text (Genus and Flavor)
         if (species) {
-            const genus = species.genera.find(g => g.language.name === 'pt-BR' || g.language.name === 'en');
-            this.dom.pCat.textContent = genus ? genus.genus : 'Pokémon';
+            const genusPtBr = species.genera.find(g => g.language.name === 'pt-BR');
+            const genusEn = species.genera.find(g => g.language.name === 'en');
+            let genusText = 'Pokémon';
+            if (genusPtBr) {
+                genusText = genusPtBr.genus;
+            } else if (genusEn) {
+                if (window.TRANSLATIONS_PT && window.TRANSLATIONS_PT.genera && window.TRANSLATIONS_PT.genera[genusEn.genus]) {
+                    genusText = window.TRANSLATIONS_PT.genera[genusEn.genus];
+                } else {
+                    genusText = genusEn.genus;
+                }
+            }
+            this.dom.pCat.textContent = genusText;
             
             const flavor = species.flavor_text_entries.find(f => f.language.name === 'pt-BR' || f.language.name === 'pt' || f.language.name === 'es' || f.language.name === 'en');
             let descText = flavor ? flavor.flavor_text.replace(/[\n\f]/g, ' ') : 'Sem descrição';
@@ -785,57 +838,116 @@ const app = {
         container.innerHTML = '<div class="spinner"></div>';
         
         const vg = this.state.versionGroup;
-        const leaders = window.GYM_LEADERS[vg];
+        const regionData = window.GYM_LEADERS[vg];
         
-        if (!leaders) {
+        if (!regionData) {
             container.innerHTML = '<p>Dados não encontrados.</p>';
             return;
         }
 
-        let html = '';
+        const tab = this.state.gymTab || 'gyms';
+        const leaders = regionData[tab];
+
+        if (!leaders || leaders.length === 0) {
+            container.innerHTML = '<p>Nenhum dado disponível.</p>';
+            return;
+        }
+
+        let html = '<div class="frontier-grid">';
         const badgeMap = {
             "Boulder Badge": 1, "Cascade Badge": 2, "Thunder Badge": 3, "Rainbow Badge": 4, 
             "Soul Badge": 5, "Marsh Badge": 6, "Volcano Badge": 7, "Earth Badge": 8,
             "Stone Badge": 17, "Knuckle Badge": 18, "Dynamo Badge": 19, "Heat Badge": 20, 
-            "Balance Badge": 21, "Feather Badge": 22, "Mind Badge": 23, "Rain Badge": 24
+            "Balance Badge": 21, "Feather Badge": 22, "Mind Badge": 23, "Rain Badge": 24,
+            "Elite Four": "elite", "Champion": "champ"
         };
 
-        for (let leader of leaders) {
-            let teamHtml = '';
-            for (let poke of leader.team) {
-                // Uso direto da URL da imagem para evitar 40+ chamadas HTTP simultâneas na PokéAPI e travar a página
+        const renderTeam = (teamArr, req) => {
+            if (!teamArr || teamArr.length === 0) return '';
+            let teamHtml = `<div class="frontier-team-section">
+                <div class="frontier-team-req">${req}</div>
+                <div class="frontier-team-grid">`;
+            
+            for (let poke of teamArr) {
                 const spriteUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${poke.id}.png`;
+                
+                let typesHtml = '';
+                if (poke.types) {
+                    poke.types.forEach(t => {
+                        const tName = typeof TYPE_TRANSLATIONS !== 'undefined' && TYPE_TRANSLATIONS[t] ? TYPE_TRANSLATIONS[t] : t;
+                        typesHtml += `<span class="pokemon-type-badge badge-${t}">${tName}</span>`;
+                    });
+                }
+                
+                let movesHtml = '';
+                if (poke.moves) {
+                    poke.moves.forEach(m => {
+                        movesHtml += `<span class="frontier-move">${m}</span>`;
+                    });
+                }
+
                 teamHtml += `
-                    <div class="gym-poke" onclick="playClickSound(); window.location.hash='pokemon/${poke.id}'">
-                        <img src="${spriteUrl}" alt="Poke ${poke.id}" loading="lazy">
-                        <span>Nv. ${poke.level}</span>
+                    <div class="frontier-poke-card" onclick="playClickSound(); window.location.hash='pokemon/${poke.id}'" title="Ver Pokédex">
+                        <div class="frontier-poke-header">
+                            <img src="${spriteUrl}" alt="${poke.name}" loading="lazy">
+                            <div class="frontier-poke-info">
+                                <div class="frontier-poke-name">${poke.name} <span class="frontier-poke-level">Nv. ${poke.level}</span></div>
+                                <div class="frontier-poke-types">${typesHtml}</div>
+                            </div>
+                        </div>
+                        <div class="frontier-poke-details">
+                            <div class="detail-row"><strong>Habilidade:</strong> ${poke.ability || '-'}</div>
+                            <div class="detail-row"><strong>Item:</strong> ${poke.item || '-'}</div>
+                        </div>
+                        <div class="frontier-poke-moves">
+                            ${movesHtml}
+                        </div>
                     </div>
                 `;
             }
-            
+            teamHtml += `</div></div>`;
+            return teamHtml;
+        };
+
+        for (let leader of leaders) {
             let badgeImgHtml = '';
             if (badgeMap[leader.badge]) {
-                badgeImgHtml = `<img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/badges/${badgeMap[leader.badge]}.png" alt="${leader.badge}" style="height: 40px; image-rendering: pixelated;">`;
+                if (badgeMap[leader.badge] === 'elite' || badgeMap[leader.badge] === 'champ') {
+                    // Sem imagem de insígnia para E4, ou usar genérica
+                } else {
+                    badgeImgHtml = `<img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/badges/${badgeMap[leader.badge]}.png" alt="${leader.badge}" class="frontier-symbol-img" style="image-rendering: pixelated;">`;
+                }
             }
 
+            const tName = typeof TYPE_TRANSLATIONS !== 'undefined' && TYPE_TRANSLATIONS[leader.type] ? TYPE_TRANSLATIONS[leader.type] : leader.type;
+            
             html += `
-                <div class="gym-card">
-                    <h3>${leader.name}</h3>
-                    <span class="gym-city">${leader.city}</span>
-                    
-                    <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin: 15px 0;">
-                        ${badgeImgHtml}
-                        <span class="gym-badge badge-${leader.type}" style="margin:0;">${leader.badge}</span>
+                <div class="bento-item frontier-facility-card">
+                    <div class="frontier-facility-header">
+                        <img src="${leader.sprite}" alt="${leader.name}" class="frontier-brain-sprite gym-leader-sprite" style="max-height: 120px; object-fit: contain;">
+                        <div class="frontier-facility-title">
+                            <h3>${leader.name}</h3>
+                            <div class="frontier-brain-title">${leader.city}</div>
+                            <p class="frontier-desc" style="margin-top:10px;">${leader.desc}</p>
+                            <div class="frontier-symbol-box">
+                                ${badgeImgHtml}
+                                <div>
+                                    <strong style="color:var(--text-color);">${leader.symbol || leader.badge}</strong><br>
+                                    <span class="pokemon-type-badge badge-${leader.type}">${tName}</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-
-                    <img src="${leader.sprite}" class="gym-sprite" alt="${leader.name}">
-                    <div class="gym-team">
-                        ${teamHtml}
+                    
+                    <div class="frontier-teams-container">
+                        ${renderTeam(leader.silverTeam, leader.silverReq)}
+                        ${renderTeam(leader.goldTeam, leader.goldReq)}
                     </div>
                 </div>
             `;
         }
         
+        html += '</div>'; // close frontier-grid
         container.innerHTML = html;
     }
 };

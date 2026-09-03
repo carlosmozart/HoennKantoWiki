@@ -138,6 +138,7 @@ body {
     display: flex;
     flex-direction: column;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    min-width: 0; /* Previne que o item estoure o grid em telas menores */
 }
 
 .bento-item h3 {
@@ -236,6 +237,7 @@ body {
 
 .moves-tabs-header {
     display: flex;
+    flex-wrap: wrap; /* Permite que os botões caiam para a linha de baixo no mobile */
     gap: 10px;
     border-bottom: 2px solid var(--glass-border);
     padding-bottom: 5px;

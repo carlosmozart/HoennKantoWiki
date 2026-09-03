@@ -27,11 +27,18 @@ const renderStats = (stats) => {
             <div class="stat-row">
                 <span class="stat-label">${name}</span>
                 <span class="stat-value">${val}</span>
-                <div class="stat-bar"><div class="stat-fill ${colorClass}" style="width: ${pct}%;"></div></div>
+                <div class="stat-bar"><div class="stat-fill ${colorClass}" style="width: 0%; transition: width 1s ease-out;" data-width="${pct}%"></div></div>
             </div>
         `;
     });
     DOM.statsContainer.innerHTML = html;
+    
+    setTimeout(() => {
+        const fills = DOM.statsContainer.querySelectorAll('.stat-fill');
+        fills.forEach(fill => {
+            fill.style.width = fill.getAttribute('data-width');
+        });
+    }, 50);
 };
 
 // ==========================================

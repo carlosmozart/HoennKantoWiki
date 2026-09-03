@@ -19,17 +19,18 @@
     <link rel="apple-touch-icon" href="./favicons/pokedex.png">
 
     <!-- Estilos (com ?v= anti-cache) -->
-    <link rel="stylesheet" href="./css/style.css?v=1.0.1">
-    <link rel="stylesheet" href="./css/layout.css?v=1.0.1">
+    <link rel="stylesheet" href="./css/style.css?v=2">
+    <link rel="stylesheet" href="./css/layout.css?v=1.0.2">
     
     <!-- Scripts (com ?v= anti-cache) -->
-    <script defer src="./js/translations.js?v=1.0.1"></script>
-    <script defer src="./js/translations_pt.js?v=1.0.1"></script>
-    <script defer src="./js/gyms.js?v=1.0.1"></script>
-    <script defer src="./js/api.js?v=1.0.1"></script>
-    <script defer src="./js/tms.js?v=1.0.1"></script>
-    <script defer src="./js/render.js?v=1.0.1"></script>
-    <script defer src="./js/app.js?v=1.0.1"></script>
+    <script defer src="./js/translations.js?v=1.0.2"></script>
+    <script defer src="./js/translations_pt.js?v=1.0.2"></script>
+    <script defer src="./js/gyms.js?v=1.0.2"></script>
+    <script defer src="./js/api.js?v=1.0.2"></script>
+    <script defer src="./js/tms.js?v=1.0.2"></script>
+    <script defer src="./js/render.js?v=1.0.2"></script>
+    <script defer src="./js/frontier.js?v=1.0.2"></script>
+    <script defer src="./js/app.js?v=1.0.2"></script>
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -52,6 +53,7 @@
                 <button class="nav-btn" data-view="team">Equipe</button>
                 <button class="nav-btn" data-view="gyms">Líderes</button>
                 <button class="nav-btn" data-view="tms">TM / HM</button>
+                <button class="nav-btn" data-view="frontier">Battle Frontier</button>
             </nav>
             <div class="sidebar-footer">
                 <button id="lang-toggle" class="btn-icon" title="Alternar Idioma">🇧🇷</button>
@@ -122,11 +124,17 @@
                 </div>
             </section>
 
-            <!-- Gym Leaders -->
+            <!-- Gym Leaders & Elite Four -->
             <section id="view-gyms" class="view-section hidden">
                 <div class="glass section-panel">
-                    <h2>Líderes de Ginásio</h2>
+                    <h2>Líderes de Ginásio & Elite Four</h2>
                     <p>Conheça os líderes da região selecionada e suas equipes.</p>
+                    
+                    <div class="frontier-tabs" style="display:flex; gap:10px; margin-bottom:20px; justify-content:center; flex-wrap:wrap;">
+                        <button class="nav-btn btn-gym-tab" data-tab="gyms" style="background:var(--primary-color);">Líderes de Ginásio</button>
+                        <button class="nav-btn btn-gym-tab" data-tab="e4">Elite Four & Campeão</button>
+                    </div>
+
                     <div class="gyms-container" id="gyms-container">
                         <!-- Injetado via JS -->
                     </div>
@@ -268,6 +276,25 @@
                     <h2>Máquinas Técnicas e Ocultas (TM / HM)</h2>
                     <p>Lista completa das 58 máquinas da Geração 3.</p>
                     <div class="grid-container" id="tms-grid">
+                        <!-- Preenchido via JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Battle Frontier -->
+            <section id="view-frontier" class="view-section hidden">
+                <div class="glass section-panel">
+                    <h2>Battle Frontier</h2>
+                    <p>Guia completo do parque de batalhas em Pokémon Emerald.</p>
+                    
+                    <div class="moves-tabs-header" style="margin: 20px 0;">
+                        <button class="move-tab-btn frontier-main-tab active" data-tab="overview">Overview</button>
+                        <button class="move-tab-btn frontier-main-tab" data-tab="facilities">Líderes (Facilities)</button>
+                        <button class="move-tab-btn frontier-main-tab" data-tab="shops">Lojas (BP)</button>
+                        <button class="move-tab-btn frontier-main-tab" data-tab="pokemon">Pokémon Especiais</button>
+                    </div>
+
+                    <div class="grid-container" id="frontier-grid">
                         <!-- Preenchido via JS -->
                     </div>
                 </div>
