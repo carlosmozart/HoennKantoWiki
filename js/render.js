@@ -235,6 +235,27 @@ const formatLocationName = (rawName) => {
 
 const renderEncounters = async (id, versionGroup) => {
     DOM.encountersContainer.innerHTML = '<div class="spinner"></div>';
+    
+    // Hardcode para Pokémon de Evento Especial (Mythicals/Legendaries de Evento da Gen 3)
+    const eventPokemon = {
+        151: "Mew: Acessível na Faraway Island. É necessário obter o item de evento 'Old Sea Map' em Pokémon Emerald.",
+        249: "Lugia: Acessível na Navel Rock. É necessário obter o item de evento 'MysticTicket' em Pokémon Emerald, FireRed ou LeafGreen.",
+        250: "Ho-Oh: Acessível na Navel Rock. É necessário obter o item de evento 'MysticTicket' em Pokémon Emerald, FireRed ou LeafGreen.",
+        251: "Celebi: Obtido apenas através do Pokémon Colosseum Bonus Disc (Japão) ou distribuído em eventos da Nintendo.",
+        385: "Jirachi: Obtido transferindo do Pokémon Colosseum Bonus Disc (EUA) ou de Pokémon Channel (Europa/Austrália).",
+        386: "Deoxys: Acessível na Birth Island (item de evento 'AuroraTicket'). Suas formas e status variam conforme o jogo (Normal em R/S, Attack em FR, Defense em LG e Speed em Emerald)."
+    };
+    
+    if (eventPokemon[id]) {
+        DOM.encountersContainer.innerHTML = `
+            <div class="encounter-item" style="display:block; line-height: 1.5;">
+                <strong style="color: var(--type-psychic);">⭐ Evento Especial ⭐</strong><br><br>
+                <span style="color: var(--text-color);">${eventPokemon[id]}</span>
+            </div>
+        `;
+        return;
+    }
+
     const encData = await API.getEncounters(id);
     
     if (!encData || encData.length === 0) {
@@ -285,7 +306,20 @@ const renderMoves = (moves, versionGroup) => {
 
     moves.forEach(m => {
         // Encontra o detalhe de versão correspondente à geração 3
-        const vDetail = m.version_group_details.find(v => v.version_group.name === versionGroup);
+        let vDetail = m.version_group_details.find(v => v.version_group.name === versionGroup);
+        
+        // Fallback para Pokémon Especiais (como Deoxys) onde a PokeAPI não mapeia perfeitamente todas as versões
+        if (!vDetail) {
+            const isHoenn = versionGroup === 'emerald' || versionGroup === 'ruby-sapphire';
+            if (isHoenn) {
+                vDetail = m.version_group_details.find(v => v.version_group.name === 'ruby-sapphire' || v.version_group.name === 'emerald');
+            } else {
+                vDetail = m.version_group_details.find(v => v.version_group.name === 'firered-leafgreen');
+            }
+            if (!vDetail) {
+                vDetail = m.version_group_details.find(v => ['ruby-sapphire', 'emerald', 'firered-leafgreen'].includes(v.version_group.name));
+            }
+        }
         if (!vDetail) return;
 
         const moveData = {
