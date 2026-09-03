@@ -68,8 +68,7 @@
                 <button class="nav-btn" data-view="guides">Guias de Jogo</button>
                 <button class="nav-btn" data-view="settings">Configurações</button>
             </nav>
-            <div class="sidebar-footer">
-                <button id="btn-install-app" class="btn-icon hidden" title="Instalar Aplicativo" aria-label="Instalar WikiGen3">📱</button>
+            <div class="sidebar-footer" style="display: none;">
             </div>
         </aside>
 
@@ -78,11 +77,14 @@
             <!-- Header do Conteúdo (Busca) -->
             <header class="content-header glass">
                 <form class="search-form" id="search-form">
-                    <select id="game-version-select" class="input-select" title="Versão do Jogo">
-                        <option value="emerald">Emerald</option>
-                        <option value="ruby-sapphire">Ruby / Sapphire</option>
-                        <option value="firered-leafgreen">FireRed / LeafGreen</option>
-                    </select>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <select id="game-version-select" class="input-select" title="Versão do Jogo" style="max-width: 140px; padding: 10px 5px; font-size: 0.9rem;">
+                            <option value="emerald">Emerald</option>
+                            <option value="ruby-sapphire">Ruby / Sapphire</option>
+                            <option value="firered-leafgreen">FireRed / LeafGreen</option>
+                        </select>
+                        <button type="button" id="btn-install-app" class="btn-icon hidden" title="Instalar Aplicativo" aria-label="Instalar WikiGen3" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; padding: 0;">📱</button>
+                    </div>
                     <div class="search-input-wrapper">
                         <input type="search" id="input-search" class="input-search" placeholder="Buscar Pokémon por Nome ou Nº (Gen 1-3)..." required>
                         <button type="submit" class="btn-search" title="Buscar">🔍</button>

@@ -28,7 +28,12 @@ const keyItemsData = {
             category: "Itens Evolutivos Principais",
             items: [
                 { name: "Water / Fire / Leaf Stone", desc: "Podem ser trocadas por Shards (Blue, Red, Yellow, Green) com o Treasure Hunter na Rota 124." },
-                { name: "Moon / Sun Stone", desc: "Moon Stone é encontrada na Meteor Falls. Sun Stone está no Space Center em Mossdeep City." }
+                { name: "Moon / Sun Stone", desc: "Moon Stone é encontrada na Meteor Falls. Sun Stone está no Space Center em Mossdeep City." },
+                { name: "Metal Coat", desc: "Pode ser encontrado equipado em Magnemite e Magneton selvagens no New Mauville (5% de chance)." },
+                { name: "King's Rock", desc: "Dada por um garoto passeando próximo à casa do Steven em Mossdeep City." },
+                { name: "Dragon Scale", desc: "Pode ser encontrada equipada em Bagon e Horsea selvagens (5% de chance)." },
+                { name: "Deep Sea Tooth & Scale", desc: "Troque o Scanner encontrado no Abandoned Ship com o Capitão Stern em Slateport. Você só pode escolher um dos dois." },
+                { name: "Up-Grade", desc: "Não está disponível naturalmente em Hoenn. É necessário transferir através de troca de Pokémon FireRed/LeafGreen." }
             ]
         }
     ],
@@ -61,7 +66,11 @@ const keyItemsData = {
             category: "Itens Evolutivos Principais",
             items: [
                 { name: "Evolution Stones", desc: "Fire, Water, Thunder, e Leaf Stones podem ser compradas no Celadon Department Store (4º Andar) por $2100." },
-                { name: "Moon Stone", desc: "Encontrada no Mt. Moon (duas cópias) e no Rocket Hideout." }
+                { name: "Moon Stone", desc: "Encontrada no Mt. Moon (duas cópias) e no Rocket Hideout." },
+                { name: "Metal Coat", desc: "Recebida no Memorial Pillar (Five Island) como recompensa." },
+                { name: "King's Rock", desc: "Encontrada no Sevault Canyon (Seven Island) e pode vir equipada em Slowbro/Poliwhirl selvagens." },
+                { name: "Dragon Scale", desc: "Encontrada no Water Path (Six Island) e pode vir equipada em Horsea, Seadra, Dratini e Dragonair selvagens." },
+                { name: "Up-Grade", desc: "Encontrada no Rocket Warehouse (Five Island)." }
             ]
         }
     ]
