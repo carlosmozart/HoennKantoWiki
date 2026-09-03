@@ -322,6 +322,31 @@ const app = {
         this.dom.btnCry.addEventListener('click', () => {
             if (this.state.currentPokemon) this.playCry(this.state.currentPokemon.id);
         });
+
+        // PWA Install Logic
+        let deferredPrompt;
+        const installBtn = document.getElementById('btn-install-app');
+        if (installBtn) {
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                installBtn.classList.remove('hidden');
+            });
+            installBtn.addEventListener('click', async () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    if (outcome === 'accepted') {
+                        installBtn.classList.add('hidden');
+                    }
+                    deferredPrompt = null;
+                }
+            });
+            window.addEventListener('appinstalled', () => {
+                installBtn.classList.add('hidden');
+                deferredPrompt = null;
+            });
+        }
     },
 
     initTheme() {

@@ -347,9 +347,43 @@ const FRLG_EXTRAS = {
     ]
 };
 
+const RS_EXTRAS = {
+    "gifts": [
+        { "id": 252, "name": "Treecko", "types": ["grass"], "level": 5, "ability": "Overgrow", "desc": "Escolhido como inicial na Rota 101." },
+        { "id": 255, "name": "Torchic", "types": ["fire"], "level": 5, "ability": "Blaze", "desc": "Escolhido como inicial na Rota 101." },
+        { "id": 258, "name": "Mudkip", "types": ["water"], "level": 5, "ability": "Torrent", "desc": "Escolhido como inicial na Rota 101." },
+        { "id": 351, "name": "Castform", "types": ["normal"], "level": 25, "ability": "Forecast", "item": "Mystic Water", "desc": "Presente no Weather Institute após derrotar a Equipe vilã." },
+        { "id": 360, "name": "Wynaut", "types": ["psychic"], "level": 5, "ability": "Shadow Tag", "desc": "Choca de um Ovo recebido em Lavaridge Town." },
+        { "id": 345, "name": "Lileep", "types": ["rock", "grass"], "level": 20, "ability": "Suction Cups", "desc": "Revivido do Root Fossil (Desert). Em R/S você só pode escolher UM." },
+        { "id": 347, "name": "Anorith", "types": ["rock", "bug"], "level": 20, "ability": "Battle Armor", "desc": "Revivido do Claw Fossil (Desert). Em R/S você só pode escolher UM." },
+        { "id": 374, "name": "Beldum", "types": ["steel", "psychic"], "level": 5, "ability": "Clear Body", "desc": "Encontrado na casa do Steven em Mossdeep City após vencer a Elite Four." }
+    ],
+    "events": [
+        { "id": 380, "name": "Latias", "types": ["dragon", "psychic"], "level": 50, "item": "Soul Dew", "desc": "Southern Island. Requer o <b>Eon Ticket</b> (apenas no Ruby, pois é fixa no Sapphire)." },
+        { "id": 381, "name": "Latios", "types": ["dragon", "psychic"], "level": 50, "item": "Soul Dew", "desc": "Southern Island. Requer o <b>Eon Ticket</b> (apenas no Sapphire, pois é fixo no Ruby)." }
+    ],
+    "trades": [
+        { "id": 296, "name": "Makuhita (Makita)", "types": ["fighting"], "desc": "Rustboro City. Entregue um Slakoth em troca." },
+        { "id": 300, "name": "Skitty (Skitty)", "types": ["normal"], "desc": "Fortree City. Entregue um Pikachu em troca." },
+        { "id": 222, "name": "Corsola (Corsola)", "types": ["water", "rock"], "desc": "Pacifidlog Town. Entregue um Bellossom em troca." }
+    ],
+    "missing": [
+        { "id": 273, "name": "Seedot line", "types": ["grass"], "desc": "Exclusivo de Ruby." },
+        { "id": 303, "name": "Mawile", "types": ["steel"], "desc": "Exclusivo de Ruby." },
+        { "id": 335, "name": "Zangoose", "types": ["normal"], "desc": "Exclusivo de Ruby." },
+        { "id": 338, "name": "Solrock", "types": ["rock", "psychic"], "desc": "Exclusivo de Ruby." },
+        { "id": 381, "name": "Latios", "types": ["dragon", "psychic"], "desc": "Exclusivo de Ruby (Roaming)." },
+        { "id": 270, "name": "Lotad line", "types": ["water", "grass"], "desc": "Exclusivo de Sapphire." },
+        { "id": 302, "name": "Sableye", "types": ["dark", "ghost"], "desc": "Exclusivo de Sapphire." },
+        { "id": 336, "name": "Seviper", "types": ["poison"], "desc": "Exclusivo de Sapphire." },
+        { "id": 337, "name": "Lunatone", "types": ["rock", "psychic"], "desc": "Exclusivo de Sapphire." },
+        { "id": 380, "name": "Latias", "types": ["dragon", "psychic"], "desc": "Exclusivo de Sapphire (Roaming)." }
+    ]
+};
+
 window.GAME_EXTRAS = {
     "emerald": EMERALD_EXTRAS,
-    "ruby-sapphire": EMERALD_EXTRAS,
+    "ruby-sapphire": RS_EXTRAS,
     "firered-leafgreen": FRLG_EXTRAS
 };
 
@@ -373,6 +407,9 @@ window.renderExtras = function() {
     const descEl = document.querySelector('#view-extras p');
     if (app.state.versionGroup === 'firered-leafgreen') {
         titleEl.textContent = 'Extras de FireRed & LeafGreen';
+        descEl.textContent = 'Informações detalhadas sobre Pokémon presenteados (Gifts/Eventos), trocas no jogo (In-Game Trades) e exclusivos (Inobtíveis).';
+    } else if (app.state.versionGroup === 'ruby-sapphire') {
+        titleEl.textContent = 'Extras de Ruby & Sapphire';
         descEl.textContent = 'Informações detalhadas sobre Pokémon presenteados (Gifts/Eventos), trocas no jogo (In-Game Trades) e exclusivos (Inobtíveis).';
     } else {
         titleEl.textContent = 'Extras do Pokémon Emerald';
