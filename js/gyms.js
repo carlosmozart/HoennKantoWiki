@@ -1,5 +1,296 @@
 window.GYM_LEADERS = {
     "ruby-sapphire": {
+    "rivals": [
+    {
+        "name": "May / Brendan",
+        "type": "normal",
+        "sprite": "img/trainers/Brendan.png",
+        "desc": "Batalha final em Lilycove City.",
+        "silverReq": "Rival",
+        "silverTeam": [
+            {
+                "id": 277,
+                "level": 31,
+                "name": "Swellow",
+                "types": [
+                    "normal",
+                    "flying"
+                ],
+                "item": "Nenhum",
+                "ability": "Guts",
+                "moves": [
+                    "Quick Attack",
+                    "Wing Attack",
+                    "Double Team",
+                    "Endeavor"
+                ]
+            },
+            {
+                "id": 219,
+                "level": 32,
+                "name": "Magcargo",
+                "types": [
+                    "fire",
+                    "rock"
+                ],
+                "item": "Nenhum",
+                "ability": "Magma Armor",
+                "moves": [
+                    "Smog",
+                    "Rock Throw",
+                    "Overheat",
+                    "Amnesia"
+                ]
+            },
+            {
+                "id": 271,
+                "level": 32,
+                "name": "Lombre",
+                "types": [
+                    "water",
+                    "grass"
+                ],
+                "item": "Nenhum",
+                "ability": "Swift Swim",
+                "moves": [
+                    "Fake Out",
+                    "Nature Power",
+                    "Uproar",
+                    "Absorb"
+                ]
+            },
+            {
+                "id": 254,
+                "level": 34,
+                "name": "Sceptile",
+                "types": [
+                    "grass"
+                ],
+                "item": "Nenhum",
+                "ability": "Overgrow",
+                "moves": [
+                    "Pursuit",
+                    "Quick Attack",
+                    "Leaf Blade",
+                    "Agility"
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Wally",
+        "type": "psychic",
+        "sprite": "img/trainers/Wally.png",
+        "desc": "Batalha decisiva na Victory Road.",
+        "silverReq": "Rival",
+        "silverTeam": [
+            {
+                "id": 334,
+                "level": 44,
+                "name": "Altaria",
+                "types": [
+                    "dragon",
+                    "flying"
+                ],
+                "item": "Nenhum",
+                "ability": "Natural Cure",
+                "moves": [
+                    "Aerial Ace",
+                    "Dragon Breath",
+                    "Dragon Dance",
+                    "Safeguard"
+                ]
+            },
+            {
+                "id": 301,
+                "level": 43,
+                "name": "Delcatty",
+                "types": [
+                    "normal"
+                ],
+                "item": "Nenhum",
+                "ability": "Cute Charm",
+                "moves": [
+                    "Assist",
+                    "Charm",
+                    "Faint Attack",
+                    "Sing"
+                ]
+            },
+            {
+                "id": 315,
+                "level": 41,
+                "name": "Roselia",
+                "types": [
+                    "grass",
+                    "poison"
+                ],
+                "item": "Nenhum",
+                "ability": "Poison Point",
+                "moves": [
+                    "Giga Drain",
+                    "Magical Leaf",
+                    "Toxic",
+                    "Synthesis"
+                ]
+            },
+            {
+                "id": 82,
+                "level": 41,
+                "name": "Magneton",
+                "types": [
+                    "electric",
+                    "steel"
+                ],
+                "item": "Nenhum",
+                "ability": "Magnet Pull",
+                "moves": [
+                    "Spark",
+                    "Supersonic",
+                    "Thunder Wave",
+                    "Swift"
+                ]
+            },
+            {
+                "id": 282,
+                "level": 45,
+                "name": "Gardevoir",
+                "types": [
+                    "psychic",
+                    "fairy"
+                ],
+                "item": "Sitrus Berry",
+                "ability": "Synchronize",
+                "moves": [
+                    "Psychic",
+                    "Calm Mind",
+                    "Future Sight",
+                    "Double Team"
+                ]
+            }
+        ]
+    }
+],
+    "villains": [
+    {
+        "name": "Maxie",
+        "type": "fire",
+        "sprite": "img/trainers/Maxie.png",
+        "desc": "Líder da Equipe Magma (Mossdeep Space Center).",
+        "silverReq": "Chefe Magma",
+        "silverTeam": [
+            {
+                "id": 262,
+                "level": 42,
+                "name": "Mightyena",
+                "types": [
+                    "dark"
+                ],
+                "item": "Nenhum",
+                "ability": "Intimidate",
+                "moves": [
+                    "Roar",
+                    "Take Down",
+                    "Taunt",
+                    "Crunch"
+                ]
+            },
+            {
+                "id": 169,
+                "level": 43,
+                "name": "Crobat",
+                "types": [
+                    "poison",
+                    "flying"
+                ],
+                "item": "Nenhum",
+                "ability": "Inner Focus",
+                "moves": [
+                    "Poison Fang",
+                    "Air Cutter",
+                    "Bite",
+                    "Confuse Ray"
+                ]
+            },
+            {
+                "id": 323,
+                "level": 44,
+                "name": "Camerupt",
+                "types": [
+                    "fire",
+                    "ground"
+                ],
+                "item": "Nenhum",
+                "ability": "Magma Armor",
+                "moves": [
+                    "Earthquake",
+                    "Rock Slide",
+                    "Take Down",
+                    "Amnesia"
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Archie",
+        "type": "water",
+        "sprite": "img/trainers/Archie.png",
+        "desc": "Líder da Equipe Aqua (Seafloor Cavern).",
+        "silverReq": "Chefe Aqua",
+        "silverTeam": [
+            {
+                "id": 262,
+                "level": 41,
+                "name": "Mightyena",
+                "types": [
+                    "dark"
+                ],
+                "item": "Nenhum",
+                "ability": "Intimidate",
+                "moves": [
+                    "Roar",
+                    "Take Down",
+                    "Taunt",
+                    "Crunch"
+                ]
+            },
+            {
+                "id": 169,
+                "level": 41,
+                "name": "Crobat",
+                "types": [
+                    "poison",
+                    "flying"
+                ],
+                "item": "Nenhum",
+                "ability": "Inner Focus",
+                "moves": [
+                    "Poison Fang",
+                    "Air Cutter",
+                    "Bite",
+                    "Confuse Ray"
+                ]
+            },
+            {
+                "id": 319,
+                "level": 43,
+                "name": "Sharpedo",
+                "types": [
+                    "water",
+                    "dark"
+                ],
+                "item": "Nenhum",
+                "ability": "Rough Skin",
+                "moves": [
+                    "Slash",
+                    "Taunt",
+                    "Swagger",
+                    "Crunch"
+                ]
+            }
+        ]
+    }
+],
     "gyms": [
         {
             "name": "Roxanne",
@@ -976,6 +1267,193 @@ window.GYM_LEADERS = {
 },
 
     "firered-leafgreen": {
+    "rivals": [
+    {
+        "name": "Blue (Rival)",
+        "type": "normal",
+        "sprite": "img/trainers/Blue.png",
+        "desc": "Batalha na Route 22 (Final).",
+        "silverReq": "Rival",
+        "silverTeam": [
+            {
+                "id": 18,
+                "level": 47,
+                "name": "Pidgeot",
+                "types": [
+                    "normal",
+                    "flying"
+                ],
+                "item": "Nenhum",
+                "ability": "Keen Eye",
+                "moves": [
+                    "Feather Dance",
+                    "Wing Attack",
+                    "Whirlwind",
+                    "Agility"
+                ]
+            },
+            {
+                "id": 111,
+                "level": 45,
+                "name": "Rhyhorn",
+                "types": [
+                    "ground",
+                    "rock"
+                ],
+                "item": "Nenhum",
+                "ability": "Lightning Rod",
+                "moves": [
+                    "Scary Face",
+                    "Rock Blast",
+                    "Take Down",
+                    "Tail Whip"
+                ]
+            },
+            {
+                "id": 102,
+                "level": 45,
+                "name": "Exeggcute",
+                "types": [
+                    "grass",
+                    "psychic"
+                ],
+                "item": "Nenhum",
+                "ability": "Chlorophyll",
+                "moves": [
+                    "Solar Beam",
+                    "Light Screen",
+                    "Reflect",
+                    "Hypnosis"
+                ]
+            },
+            {
+                "id": 58,
+                "level": 45,
+                "name": "Growlithe",
+                "types": [
+                    "fire"
+                ],
+                "item": "Nenhum",
+                "ability": "Intimidate",
+                "moves": [
+                    "Roar",
+                    "Flamethrower",
+                    "Take Down",
+                    "Bite"
+                ]
+            },
+            {
+                "id": 65,
+                "level": 47,
+                "name": "Alakazam",
+                "types": [
+                    "psychic"
+                ],
+                "item": "Nenhum",
+                "ability": "Synchronize",
+                "moves": [
+                    "Psychic",
+                    "Future Sight",
+                    "Recover",
+                    "Reflect"
+                ]
+            },
+            {
+                "id": 9,
+                "level": 53,
+                "name": "Blastoise",
+                "types": [
+                    "water"
+                ],
+                "item": "Sitrus Berry",
+                "ability": "Torrent",
+                "moves": [
+                    "Hydro Pump",
+                    "Rain Dance",
+                    "Skull Bash",
+                    "Bite"
+                ]
+            }
+        ]
+    }
+],
+    "villains": [
+    {
+        "name": "Giovanni",
+        "type": "ground",
+        "sprite": "img/trainers/Giovanni.png",
+        "desc": "Chefe da Equipe Rocket (Silph Co).",
+        "silverReq": "Chefe Rocket",
+        "silverTeam": [
+            {
+                "id": 33,
+                "level": 37,
+                "name": "Nidorino",
+                "types": [
+                    "poison"
+                ],
+                "item": "Nenhum",
+                "ability": "Poison Point",
+                "moves": [
+                    "Horn Attack",
+                    "Double Kick",
+                    "Poison Sting",
+                    "Focus Energy"
+                ]
+            },
+            {
+                "id": 115,
+                "level": 35,
+                "name": "Kangaskhan",
+                "types": [
+                    "normal"
+                ],
+                "item": "Nenhum",
+                "ability": "Early Bird",
+                "moves": [
+                    "Fake Out",
+                    "Mega Punch",
+                    "Bite",
+                    "Tail Whip"
+                ]
+            },
+            {
+                "id": 111,
+                "level": 37,
+                "name": "Rhyhorn",
+                "types": [
+                    "ground",
+                    "rock"
+                ],
+                "item": "Nenhum",
+                "ability": "Lightning Rod",
+                "moves": [
+                    "Rock Blast",
+                    "Scary Face",
+                    "Take Down",
+                    "Tail Whip"
+                ]
+            },
+            {
+                "id": 31,
+                "level": 41,
+                "name": "Nidoqueen",
+                "types": [
+                    "poison",
+                    "ground"
+                ],
+                "item": "Nenhum",
+                "ability": "Poison Point",
+                "moves": [
+                    "Body Slam",
+                    "Double Kick",
+                    "Toxic",
+                    "Tail Whip"
+                ]
+            }
+        ]
+    }
+],
         "gyms": [
             {
                 "name": "Brock",
@@ -2480,6 +2958,297 @@ window.GYM_LEADERS = {
         ]
     },
     "emerald": {
+    "rivals": [
+    {
+        "name": "May / Brendan",
+        "type": "normal",
+        "sprite": "img/trainers/Brendan.png",
+        "desc": "Batalha final em Lilycove City.",
+        "silverReq": "Rival",
+        "silverTeam": [
+            {
+                "id": 277,
+                "level": 31,
+                "name": "Swellow",
+                "types": [
+                    "normal",
+                    "flying"
+                ],
+                "item": "Nenhum",
+                "ability": "Guts",
+                "moves": [
+                    "Quick Attack",
+                    "Wing Attack",
+                    "Double Team",
+                    "Endeavor"
+                ]
+            },
+            {
+                "id": 219,
+                "level": 32,
+                "name": "Magcargo",
+                "types": [
+                    "fire",
+                    "rock"
+                ],
+                "item": "Nenhum",
+                "ability": "Magma Armor",
+                "moves": [
+                    "Smog",
+                    "Rock Throw",
+                    "Overheat",
+                    "Amnesia"
+                ]
+            },
+            {
+                "id": 271,
+                "level": 32,
+                "name": "Lombre",
+                "types": [
+                    "water",
+                    "grass"
+                ],
+                "item": "Nenhum",
+                "ability": "Swift Swim",
+                "moves": [
+                    "Fake Out",
+                    "Nature Power",
+                    "Uproar",
+                    "Absorb"
+                ]
+            },
+            {
+                "id": 254,
+                "level": 34,
+                "name": "Sceptile",
+                "types": [
+                    "grass"
+                ],
+                "item": "Nenhum",
+                "ability": "Overgrow",
+                "moves": [
+                    "Pursuit",
+                    "Quick Attack",
+                    "Leaf Blade",
+                    "Agility"
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Wally",
+        "type": "psychic",
+        "sprite": "img/trainers/Wally.png",
+        "desc": "Batalha decisiva na Victory Road.",
+        "silverReq": "Rival",
+        "silverTeam": [
+            {
+                "id": 334,
+                "level": 44,
+                "name": "Altaria",
+                "types": [
+                    "dragon",
+                    "flying"
+                ],
+                "item": "Nenhum",
+                "ability": "Natural Cure",
+                "moves": [
+                    "Aerial Ace",
+                    "Dragon Breath",
+                    "Dragon Dance",
+                    "Safeguard"
+                ]
+            },
+            {
+                "id": 301,
+                "level": 43,
+                "name": "Delcatty",
+                "types": [
+                    "normal"
+                ],
+                "item": "Nenhum",
+                "ability": "Cute Charm",
+                "moves": [
+                    "Assist",
+                    "Charm",
+                    "Faint Attack",
+                    "Sing"
+                ]
+            },
+            {
+                "id": 315,
+                "level": 41,
+                "name": "Roselia",
+                "types": [
+                    "grass",
+                    "poison"
+                ],
+                "item": "Nenhum",
+                "ability": "Poison Point",
+                "moves": [
+                    "Giga Drain",
+                    "Magical Leaf",
+                    "Toxic",
+                    "Synthesis"
+                ]
+            },
+            {
+                "id": 82,
+                "level": 41,
+                "name": "Magneton",
+                "types": [
+                    "electric",
+                    "steel"
+                ],
+                "item": "Nenhum",
+                "ability": "Magnet Pull",
+                "moves": [
+                    "Spark",
+                    "Supersonic",
+                    "Thunder Wave",
+                    "Swift"
+                ]
+            },
+            {
+                "id": 282,
+                "level": 45,
+                "name": "Gardevoir",
+                "types": [
+                    "psychic",
+                    "fairy"
+                ],
+                "item": "Sitrus Berry",
+                "ability": "Synchronize",
+                "moves": [
+                    "Psychic",
+                    "Calm Mind",
+                    "Future Sight",
+                    "Double Team"
+                ]
+            }
+        ]
+    }
+],
+    "villains": [
+    {
+        "name": "Maxie",
+        "type": "fire",
+        "sprite": "img/trainers/Maxie.png",
+        "desc": "Líder da Equipe Magma (Mossdeep Space Center).",
+        "silverReq": "Chefe Magma",
+        "silverTeam": [
+            {
+                "id": 262,
+                "level": 42,
+                "name": "Mightyena",
+                "types": [
+                    "dark"
+                ],
+                "item": "Nenhum",
+                "ability": "Intimidate",
+                "moves": [
+                    "Roar",
+                    "Take Down",
+                    "Taunt",
+                    "Crunch"
+                ]
+            },
+            {
+                "id": 169,
+                "level": 43,
+                "name": "Crobat",
+                "types": [
+                    "poison",
+                    "flying"
+                ],
+                "item": "Nenhum",
+                "ability": "Inner Focus",
+                "moves": [
+                    "Poison Fang",
+                    "Air Cutter",
+                    "Bite",
+                    "Confuse Ray"
+                ]
+            },
+            {
+                "id": 323,
+                "level": 44,
+                "name": "Camerupt",
+                "types": [
+                    "fire",
+                    "ground"
+                ],
+                "item": "Nenhum",
+                "ability": "Magma Armor",
+                "moves": [
+                    "Earthquake",
+                    "Rock Slide",
+                    "Take Down",
+                    "Amnesia"
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Archie",
+        "type": "water",
+        "sprite": "img/trainers/Archie.png",
+        "desc": "Líder da Equipe Aqua (Seafloor Cavern).",
+        "silverReq": "Chefe Aqua",
+        "silverTeam": [
+            {
+                "id": 262,
+                "level": 41,
+                "name": "Mightyena",
+                "types": [
+                    "dark"
+                ],
+                "item": "Nenhum",
+                "ability": "Intimidate",
+                "moves": [
+                    "Roar",
+                    "Take Down",
+                    "Taunt",
+                    "Crunch"
+                ]
+            },
+            {
+                "id": 169,
+                "level": 41,
+                "name": "Crobat",
+                "types": [
+                    "poison",
+                    "flying"
+                ],
+                "item": "Nenhum",
+                "ability": "Inner Focus",
+                "moves": [
+                    "Poison Fang",
+                    "Air Cutter",
+                    "Bite",
+                    "Confuse Ray"
+                ]
+            },
+            {
+                "id": 319,
+                "level": 43,
+                "name": "Sharpedo",
+                "types": [
+                    "water",
+                    "dark"
+                ],
+                "item": "Nenhum",
+                "ability": "Rough Skin",
+                "moves": [
+                    "Slash",
+                    "Taunt",
+                    "Swagger",
+                    "Crunch"
+                ]
+            }
+        ]
+    }
+],
         "gyms": [
             {
                 "name": "Roxanne",

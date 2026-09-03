@@ -196,6 +196,17 @@ const app = {
             });
         });
 
+        // Abas de TMs / Tutores
+        document.querySelectorAll('.btn-tm-tab').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.btn-tm-tab').forEach(b => {
+                    b.style.background = 'var(--glass-bg)';
+                });
+                btn.style.background = 'var(--primary-color)';
+                this.state.tmTab = btn.dataset.tab;
+                this.renderTMs(); // renderTMs will handle switching views
+            });
+        });
         // Formulário de Busca (Impede recarregar)
         this.dom.searchForm.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -411,42 +422,92 @@ const app = {
     },
 
     renderTMs() {
-        const grid = document.getElementById('tms-grid');
-        if (!grid) return;
+        const gridTM = document.getElementById('tms-grid');
+        const gridTutor = document.getElementById('tutors-container');
+        if (!gridTM || !gridTutor) return;
 
-        let html = '';
-        if (typeof GEN3_MACHINES !== 'undefined') {
-            GEN3_MACHINES.forEach(machine => {
-                let desc = "Sem descrição.";
-                if (window.TRANSLATIONS && window.TRANSLATIONS.moves && window.TRANSLATIONS.moves[machine.move]) {
-                    desc = window.TRANSLATIONS.moves[machine.move];
-                }
-                
-                let location = "Local desconhecido / Aleatório";
-                if (window.TRANSLATIONS && window.TRANSLATIONS.tm_locations && window.TRANSLATIONS.tm_locations[machine.move]) {
-                    const locObj = window.TRANSLATIONS.tm_locations[machine.move];
-                    location = locObj[this.state.versionGroup] || locObj["emerald"] || location;
-                }
+        const tab = this.state.tmTab || 'tms';
+        
+        if (tab === 'tms') {
+            gridTM.classList.remove('hidden');
+            gridTutor.classList.add('hidden');
+            
+            let html = '';
+            if (typeof GEN3_MACHINES !== 'undefined') {
+                GEN3_MACHINES.forEach(machine => {
+                    let desc = "Sem descrição.";
+                    if (window.TRANSLATIONS && window.TRANSLATIONS.moves && window.TRANSLATIONS.moves[machine.move]) {
+                        desc = window.TRANSLATIONS.moves[machine.move];
+                    }
+                    
+                    let location = "Local desconhecido / Aleatório";
+                    if (window.TRANSLATIONS && window.TRANSLATIONS.tm_locations && window.TRANSLATIONS.tm_locations[machine.move]) {
+                        const locObj = window.TRANSLATIONS.tm_locations[machine.move];
+                        location = locObj[this.state.versionGroup] || locObj["emerald"] || location;
+                    }
 
-                const nameCap = machine.move.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-                
-                html += `
-                    <div class="grid-card machine-card" style="display:flex; flex-direction:column; gap:8px; padding:15px; border-radius:12px; background:var(--glass-bg); border:1px solid var(--glass-border); box-sizing:border-box;">
-                        <div style="display:flex; justify-content:flex-start; align-items:center; gap:12px;">
-                            <strong>${machine.id}</strong>
-                            <span class="badge-${machine.type}" style="padding: 2px 6px; border-radius: 4px; font-size: 0.8rem; text-transform: uppercase;">${machine.type}</span>
+                    const nameCap = machine.move.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+                    
+                    html += `
+                        <div class="grid-card machine-card" style="display:flex; flex-direction:column; gap:8px; padding:15px; border-radius:12px; background:var(--glass-bg); border:1px solid var(--glass-border); box-sizing:border-box;">
+                            <div style="display:flex; justify-content:flex-start; align-items:center; gap:12px;">
+                                <strong>${machine.id}</strong>
+                                <span class="badge-${machine.type}" style="padding: 2px 6px; border-radius: 4px; font-size: 0.8rem; text-transform: uppercase;">${machine.type}</span>
+                            </div>
+                            <h4 style="margin: 0; font-size: 1.1rem; word-wrap: break-word;">${nameCap}</h4>
+                            <p style="font-size: 0.85rem; color: var(--text-muted); margin:0; text-align: justify; flex: 1;">${desc}</p>
+                            
+                            <div style="margin-top:auto; padding-top:8px; border-top:1px solid rgba(255,255,255,0.1); font-size:0.8rem;">
+                                <strong style="color:var(--text-color);">📍 Encontrar:</strong> <span style="color:var(--text-muted);">${location}</span>
+                            </div>
                         </div>
-                        <h4 style="margin: 0; font-size: 1.1rem; word-wrap: break-word;">${nameCap}</h4>
-                        <p style="font-size: 0.85rem; color: var(--text-muted); margin:0; text-align: justify; flex: 1;">${desc}</p>
+                    `;
+                });
+            }
+            gridTM.innerHTML = html;
+        } else {
+            // Render Tutors
+            gridTM.classList.add('hidden');
+            gridTutor.classList.remove('hidden');
+            
+            let html = '';
+            const vg = this.state.versionGroup || 'emerald';
+            if (window.MOVE_TUTORS && window.MOVE_TUTORS[vg]) {
+                window.MOVE_TUTORS[vg].forEach(cat => {
+                    html += `
+                        <div class="frontier-team-section" style="margin-top:20px; text-align:left;">
+                            <div class="frontier-team-req" style="margin-bottom:10px;">${cat.category}</div>
+                            <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:15px;">${cat.desc}</p>
+                            <div class="frontier-grid">
+                    `;
+                    cat.tutors.forEach(t => {
+                        let desc = "Sem descrição.";
+                        const tMoveLower = t.move.toLowerCase().replace(' ', '-');
+                        if (window.TRANSLATIONS && window.TRANSLATIONS.moves && window.TRANSLATIONS.moves[tMoveLower]) {
+                            desc = window.TRANSLATIONS.moves[tMoveLower];
+                        }
                         
-                        <div style="margin-top:auto; padding-top:8px; border-top:1px solid rgba(255,255,255,0.1); font-size:0.8rem;">
-                            <strong style="color:var(--text-color);">📍 Encontrar:</strong> <span style="color:var(--text-muted);">${location}</span>
-                        </div>
-                    </div>
-                `;
-            });
+                        let locHtml = t.location ? `<div style="margin-top:auto; padding-top:8px; border-top:1px solid rgba(255,255,255,0.1); font-size:0.8rem;"><strong style="color:var(--text-color);">📍 Encontrar:</strong> <span style="color:var(--text-muted);">${t.location}</span></div>` : '';
+                        
+                        html += `
+                            <div class="grid-card machine-card" style="display:flex; flex-direction:column; gap:8px; padding:15px; border-radius:12px; background:var(--glass-bg); border:1px solid var(--glass-border); box-sizing:border-box;">
+                                <div style="display:flex; justify-content:space-between; align-items:center;">
+                                    <span class="badge-${t.type}" style="padding: 2px 6px; border-radius: 4px; font-size: 0.8rem; text-transform: uppercase;">${t.type}</span>
+                                    <strong style="color:var(--text-color); font-size:0.9rem;">${t.cost}</strong>
+                                </div>
+                                <h4 style="margin: 0; font-size: 1.1rem; word-wrap: break-word;">${t.move}</h4>
+                                <p style="font-size: 0.85rem; color: var(--text-muted); margin:0; text-align: justify; flex: 1;">${desc}</p>
+                                ${locHtml}
+                            </div>
+                        `;
+                    });
+                    html += `</div></div>`;
+                });
+            } else {
+                html = '<p>Dados de tutores não encontrados.</p>';
+            }
+            gridTutor.innerHTML = html;
         }
-        grid.innerHTML = html;
     },
 
     updateFavBtn(id) {
@@ -973,12 +1034,12 @@ const app = {
                         <img src="${leader.sprite}" alt="${leader.name}" class="frontier-brain-sprite gym-leader-sprite" style="max-height: 120px; object-fit: contain;">
                         <div class="frontier-facility-title">
                             <h3>${leader.name}</h3>
-                            <div class="frontier-brain-title">${leader.city}</div>
+                            <div class="frontier-brain-title">${leader.city || ''}</div>
                             <p class="frontier-desc" style="margin-top:10px;">${leader.desc}</p>
-                            <div class="frontier-symbol-box">
+                            <div class="frontier-symbol-box" style="${(!leader.symbol && !leader.badge) ? 'display:none;' : ''}">
                                 ${badgeImgHtml}
                                 <div>
-                                    <strong style="color:var(--text-color);">${leader.symbol || leader.badge}</strong><br>
+                                    <strong style="color:var(--text-color);">${leader.symbol || leader.badge || ''}</strong><br>
                                     <span class="pokemon-type-badge badge-${leader.type}">${tName}</span>
                                 </div>
                             </div>

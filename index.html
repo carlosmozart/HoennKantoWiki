@@ -31,6 +31,7 @@
     <script defer src="./js/render.js?v=1.0.2"></script>
     <script defer src="./js/frontier.js?v=1.0.2"></script>
     <script defer src="./js/extras.js?v=1.0.0"></script>
+    <script defer src="js/tutors.js"></script>
     <script defer src="./js/app.js?v=1.0.2"></script>
     <script>
         if ('serviceWorker' in navigator) {
@@ -51,9 +52,9 @@
             <h1 class="logo">WikiGen3</h1>
             <nav class="nav-links">
                 <button class="nav-btn active" data-view="pokedex">Pokédex</button>
-                <button class="nav-btn" data-view="team">Equipe</button>
-                <button class="nav-btn" data-view="gyms">Líderes</button>
-                <button class="nav-btn" data-view="tms">TM / HM</button>
+                <button class="nav-btn" data-view="team">Minha Equipe</button>
+                <button class="nav-btn" data-view="gyms">Treinadores</button>
+                <button class="nav-btn" data-view="tms">TMs & HMs</button>
                 <button class="nav-btn" data-view="frontier">Battle Frontier</button>
                 <button class="nav-btn" data-view="extras">Emerald Extras</button>
             </nav>
@@ -130,12 +131,14 @@
             <!-- Gym Leaders & Elite Four -->
             <section id="view-gyms" class="view-section hidden">
                 <div class="glass section-panel">
-                    <h2>Líderes de Ginásio & Elite Four</h2>
-                    <p>Conheça os líderes da região selecionada e suas equipes.</p>
+                    <h2>Treinadores & Batalhas Importantes</h2>
+                    <p>Conheça os líderes, a Elite Four, os rivais e os chefes das equipes vilãs.</p>
                     
                     <div class="frontier-tabs" style="display:flex; gap:10px; margin-bottom:20px; justify-content:center; flex-wrap:wrap;">
                         <button class="nav-btn btn-gym-tab" data-tab="gyms" style="background:var(--primary-color);">Líderes de Ginásio</button>
                         <button class="nav-btn btn-gym-tab" data-tab="e4">Elite Four & Campeão</button>
+                        <button class="nav-btn btn-gym-tab" data-tab="rivals">Rivais</button>
+                        <button class="nav-btn btn-gym-tab" data-tab="villains">Equipes Vilãs</button>
                     </div>
 
                     <div class="gyms-container" id="gyms-container">
@@ -276,9 +279,19 @@
             <!-- TM / HM -->
             <section id="view-tms" class="view-section hidden">
                 <div class="glass section-panel">
-                    <h2>Máquinas Técnicas e Ocultas (TM / HM)</h2>
-                    <p>Lista completa das 58 máquinas da Geração 3.</p>
+                    <h2>Móquinas Técnicas, Ocultas e Tutores</h2>
+                    <p>Lista completa das 58 máquinas da Geração 3 e os Tutores de Ataque.</p>
+                    
+                    <div class="frontier-tabs" style="display:flex; gap:10px; margin-bottom:20px; justify-content:center; flex-wrap:wrap;">
+                        <button class="nav-btn btn-tm-tab" data-tab="tms" style="background:var(--primary-color);">TMs & HMs</button>
+                        <button class="nav-btn btn-tm-tab" data-tab="tutors">Move Tutors</button>
+                    </div>
+
                     <div class="grid-container" id="tms-grid">
+                        <!-- Preenchido via JS -->
+                    </div>
+                    
+                    <div class="tutors-container hidden" id="tutors-container">
                         <!-- Preenchido via JS -->
                     </div>
                 </div>
