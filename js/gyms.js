@@ -1,4 +1,980 @@
 window.GYM_LEADERS = {
+    "ruby-sapphire": {
+    "gyms": [
+        {
+            "name": "Roxanne",
+            "city": "Rustboro City",
+            "type": "rock",
+            "badge": "Stone Badge",
+            "symbol": "Stone Badge",
+            "sprite": "img/trainers/Roxanne.png",
+            "desc": "Professora dedicada na Escola de Treinadores Pokémon.",
+            "silverReq": "Líder de Ginásio (R/S)",
+            "silverTeam": [
+                {
+                    "id": 74,
+                    "level": 14,
+                    "name": "Geodude",
+                    "types": [
+                        "rock",
+                        "ground"
+                    ],
+                    "item": "Nenhum",
+                    "ability": "Rock Head",
+                    "moves": [
+                        "Rock Throw",
+                        "Defense Curl",
+                        "Tackle",
+                        "Mud Sport"
+                    ]
+                },
+                {
+                    "id": 299,
+                    "level": 15,
+                    "name": "Nosepass",
+                    "types": [
+                        "rock"
+                    ],
+                    "item": "Oran Berry",
+                    "ability": "Sturdy",
+                    "moves": [
+                        "Tackle",
+                        "Rock Throw",
+                        "Harden",
+                        "Rock Tomb"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Brawly",
+            "city": "Dewford Town",
+            "type": "fighting",
+            "badge": "Knuckle Badge",
+            "symbol": "Knuckle Badge",
+            "sprite": "img/trainers/Brawly.png",
+            "desc": "Surfista e ex-parceiro de treino de Bruno.",
+            "silverReq": "Líder de Ginásio (R/S)",
+            "silverTeam": [
+                {
+                    "id": 66,
+                    "level": 17,
+                    "name": "Machop",
+                    "types": [
+                        "fighting"
+                    ],
+                    "item": "Nenhum",
+                    "ability": "Guts",
+                    "moves": [
+                        "Karate Chop",
+                        "Seismic Toss",
+                        "Focus Energy",
+                        "Bulk Up"
+                    ]
+                },
+                {
+                    "id": 296,
+                    "level": 18,
+                    "name": "Makuhita",
+                    "types": [
+                        "fighting"
+                    ],
+                    "item": "Sitrus Berry",
+                    "ability": "Guts",
+                    "moves": [
+                        "Arm Thrust",
+                        "Vital Throw",
+                        "Sand Attack",
+                        "Bulk Up"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Wattson",
+            "city": "Mauville City",
+            "type": "electric",
+            "badge": "Dynamo Badge",
+            "symbol": "Dynamo Badge",
+            "sprite": "img/trainers/Wattson.png",
+            "desc": "Um homem alegre que adora armadilhas.",
+            "silverReq": "Líder de Ginásio (R/S)",
+            "silverTeam": [
+                {
+                    "id": 81,
+                    "level": 22,
+                    "name": "Magnemite",
+                    "types": [
+                        "electric",
+                        "steel"
+                    ],
+                    "item": "Nenhum",
+                    "ability": "Magnet Pull",
+                    "moves": [
+                        "Thunder Wave",
+                        "Sonic Boom",
+                        "Tackle",
+                        "Shock Wave"
+                    ]
+                },
+                {
+                    "id": 100,
+                    "level": 20,
+                    "name": "Voltorb",
+                    "types": [
+                        "electric"
+                    ],
+                    "item": "Nenhum",
+                    "ability": "Soundproof",
+                    "moves": [
+                        "Rollout",
+                        "Spark",
+                        "Charge",
+                        "Shock Wave"
+                    ]
+                },
+                {
+                    "id": 82,
+                    "level": 23,
+                    "name": "Magneton",
+                    "types": [
+                        "electric",
+                        "steel"
+                    ],
+                    "item": "Sitrus Berry",
+                    "ability": "Magnet Pull",
+                    "moves": [
+                        "Supersonic",
+                        "Sonic Boom",
+                        "Thunder Wave",
+                        "Shock Wave"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Flannery",
+            "city": "Lavaridge Town",
+            "type": "fire",
+            "badge": "Heat Badge",
+            "symbol": "Heat Badge",
+            "sprite": "img/trainers/Flannery.png",
+            "desc": "Novata que tenta agir como experiente.",
+            "silverReq": "Líder de Ginásio (R/S)",
+            "silverTeam": [
+                {
+                    "id": 218,
+                    "level": 26,
+                    "name": "Slugma",
+                    "types": [
+                        "fire"
+                    ],
+                    "item": "Nenhum",
+                    "ability": "Magma Armor",
+                    "moves": [
+                        "Overheat",
+                        "Smog",
+                        "Light Screen",
+                        "Sunny Day"
+                    ]
+                },
+                {
+                    "id": 218,
+                    "level": 26,
+                    "name": "Slugma",
+                    "types": [
+                        "fire"
+                    ],
+                    "item": "Nenhum",
+                    "ability": "Flame Body",
+                    "moves": [
+                        "Overheat",
+                        "Smog",
+                        "Light Screen",
+                        "Sunny Day"
+                    ]
+                },
+                {
+                    "id": 324,
+                    "level": 28,
+                    "name": "Torkoal",
+                    "types": [
+                        "fire"
+                    ],
+                    "item": "White Herb",
+                    "ability": "White Smoke",
+                    "moves": [
+                        "Overheat",
+                        "Flail",
+                        "Body Slam",
+                        "Attract"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Norman",
+            "city": "Petalburg City",
+            "type": "normal",
+            "badge": "Balance Badge",
+            "symbol": "Balance Badge",
+            "sprite": "img/trainers/Norman.png",
+            "desc": "O pai do protagonista e mestre do tipo Normal.",
+            "silverReq": "Líder de Ginásio (R/S)",
+            "silverTeam": [
+                {
+                    "id": 289,
+                    "level": 27,
+                    "name": "Slaking",
+                    "types": [
+                        "normal"
+                    ],
+                    "item": "Nenhum",
+                    "ability": "Truant",
+                    "moves": [
+                        "Yawn",
+                        "Encore",
+                        "Faint Attack",
+                        "Facade"
+                    ]
+                },
+                {
+                    "id": 288,
+                    "level": 30,
+                    "name": "Vigoroth",
+                    "types": [
+                        "normal"
+                    ],
+                    "item": "Nenhum",
+                    "ability": "Vital Spirit",
+                    "moves": [
+                        "Slash",
+                        "Facade",
+                        "Encore",
+                        "Faint Attack"
+                    ]
+                },
+                {
+                    "id": 289,
+                    "level": 31,
+                    "name": "Slaking",
+                    "types": [
+                        "normal"
+                    ],
+                    "item": "Sitrus Berry",
+                    "ability": "Truant",
+                    "moves": [
+                        "Focus Punch",
+                        "Faint Attack",
+                        "Yawn",
+                        "Facade"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Winona",
+            "city": "Fortree City",
+            "type": "flying",
+            "badge": "Feather Badge",
+            "symbol": "Feather Badge",
+            "sprite": "img/trainers/Winona.png",
+            "desc": "Dançarina dos céus.",
+            "silverReq": "Líder de Ginásio (R/S)",
+            "silverTeam": [
+                {
+                    "id": 277,
+                    "level": 31,
+                    "name": "Swellow",
+                    "types": [
+                        "normal",
+                        "flying"
+                    ],
+                    "item": "Nenhum",
+                    "ability": "Guts",
+                    "moves": [
+                        "Endeavor",
+                        "Aerial Ace",
+                        "Double Team",
+                        "Quick Attack"
+                    ]
+                },
+                {
+                    "id": 279,
+                    "level": 30,
+                    "name": "Pelipper",
+                    "types": [
+                        "water",
+                        "flying"
+                    ],
+                    "item": "Nenhum",
+                    "ability": "Keen Eye",
+                    "moves": [
+                        "Water Gun",
+                        "Supersonic",
+                        "Protect",
+                        "Aerial Ace"
+                    ]
+                },
+                {
+                    "id": 227,
+                    "level": 32,
+                    "name": "Skarmory",
+                    "types": [
+                        "steel",
+                        "flying"
+                    ],
+                    "item": "Nenhum",
+                    "ability": "Keen Eye",
+                    "moves": [
+                        "Sand Attack",
+                        "Fury Attack",
+                        "Agility",
+                        "Aerial Ace"
+                    ]
+                },
+                {
+                    "id": 334,
+                    "level": 33,
+                    "name": "Altaria",
+                    "types": [
+                        "dragon",
+                        "flying"
+                    ],
+                    "item": "Oran Berry",
+                    "ability": "Natural Cure",
+                    "moves": [
+                        "Earthquake",
+                        "Dragon Breath",
+                        "Dragon Dance",
+                        "Aerial Ace"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Tate & Liza",
+            "city": "Mossdeep City",
+            "type": "psychic",
+            "badge": "Mind Badge",
+            "symbol": "Mind Badge",
+            "sprite": "img/trainers/Tate_Liza.png",
+            "desc": "Gêmeos que lutam em dupla.",
+            "silverReq": "Líder de Ginásio (R/S)",
+            "silverTeam": [
+                {
+                    "id": 337,
+                    "level": 42,
+                    "name": "Lunatone",
+                    "types": [
+                        "rock",
+                        "psychic"
+                    ],
+                    "item": "Sitrus Berry",
+                    "ability": "Levitate",
+                    "moves": [
+                        "Light Screen",
+                        "Psychic",
+                        "Hypnosis",
+                        "Calm Mind"
+                    ]
+                },
+                {
+                    "id": 338,
+                    "level": 42,
+                    "name": "Solrock",
+                    "types": [
+                        "rock",
+                        "psychic"
+                    ],
+                    "item": "Sitrus Berry",
+                    "ability": "Levitate",
+                    "moves": [
+                        "Sunny Day",
+                        "Psychic",
+                        "Flamethrower",
+                        "Calm Mind"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Wallace",
+            "city": "Sootopolis City",
+            "type": "water",
+            "badge": "Rain Badge",
+            "symbol": "Rain Badge",
+            "sprite": "img/trainers/Wallace.png",
+            "desc": "Mestre da água, ilusionista e 8º Líder de Ginásio em Ruby & Sapphire.",
+            "silverReq": "Líder de Ginásio (R/S)",
+            "silverTeam": [
+                {
+                    "id": 370,
+                    "level": 40,
+                    "name": "Luvdisc",
+                    "types": [
+                        "water"
+                    ],
+                    "item": "Nenhum",
+                    "ability": "Swift Swim",
+                    "moves": [
+                        "Water Pulse",
+                        "Attract",
+                        "Sweet Kiss",
+                        "Flail"
+                    ]
+                },
+                {
+                    "id": 340,
+                    "level": 42,
+                    "name": "Whiscash",
+                    "types": [
+                        "water",
+                        "ground"
+                    ],
+                    "item": "Nenhum",
+                    "ability": "Oblivious",
+                    "moves": [
+                        "Water Pulse",
+                        "Earthquake",
+                        "Rain Dance",
+                        "Amnesia"
+                    ]
+                },
+                {
+                    "id": 364,
+                    "level": 40,
+                    "name": "Sealeo",
+                    "types": [
+                        "ice",
+                        "water"
+                    ],
+                    "item": "Nenhum",
+                    "ability": "Thick Fat",
+                    "moves": [
+                        "Water Pulse",
+                        "Encore",
+                        "Body Slam",
+                        "Aurora Beam"
+                    ]
+                },
+                {
+                    "id": 119,
+                    "level": 42,
+                    "name": "Seaking",
+                    "types": [
+                        "water"
+                    ],
+                    "item": "Nenhum",
+                    "ability": "Swift Swim",
+                    "moves": [
+                        "Water Pulse",
+                        "Horn Drill",
+                        "Rain Dance",
+                        "Supersonic"
+                    ]
+                },
+                {
+                    "id": 350,
+                    "level": 43,
+                    "name": "Milotic",
+                    "types": [
+                        "water"
+                    ],
+                    "item": "Sitrus Berry",
+                    "ability": "Marvel Scale",
+                    "moves": [
+                        "Water Pulse",
+                        "Recover",
+                        "Ice Beam",
+                        "Twister"
+                    ]
+                }
+            ]
+        }
+    ],
+    "elite": [
+        {
+            "name": "Sidney",
+            "type": "dark",
+            "sprite": "img/trainers/Sidney.png",
+            "desc": "Mestre das ilusões sombrias.",
+            "silverReq": "Elite 4 - R/S",
+            "silverTeam": [
+                {
+                    "id": 262,
+                    "level": 46,
+                    "name": "Mightyena",
+                    "types": [
+                        "dark"
+                    ],
+                    "item": "Nenhum",
+                    "ability": "Intimidate",
+                    "moves": [
+                        "Roar",
+                        "Double-Edge",
+                        "Sand Attack",
+                        "Crunch"
+                    ]
+                },
+                {
+                    "id": 275,
+                    "level": 48,
+                    "name": "Shiftry",
+                    "types": [
+                        "grass",
+                        "dark"
+                    ],
+                    "item": "Nenhum",
+                    "ability": "Chlorophyll",
+                    "moves": [
+                        "Torment",
+                        "Double Team",
+                        "Swagger",
+                        "Extrasensory"
+                    ]
+                },
+                {
+                    "id": 332,
+                    "level": 46,
+                    "name": "Cacturne",
+                    "types": [
+                        "grass",
+                        "dark"
+                    ],
+                    "item": "Nenhum",
+                    "ability": "Sand Veil",
+                    "moves": [
+                        "Leech Seed",
+                        "Faint Attack",
+                        "Spikes",
+                        "Needle Arm"
+                    ]
+                },
+                {
+                    "id": 319,
+                    "level": 48,
+                    "name": "Sharpedo",
+                    "types": [
+                        "water",
+                        "dark"
+                    ],
+                    "item": "Nenhum",
+                    "ability": "Rough Skin",
+                    "moves": [
+                        "Crunch",
+                        "Surf",
+                        "Taunt",
+                        "Swagger"
+                    ]
+                },
+                {
+                    "id": 359,
+                    "level": 49,
+                    "name": "Absol",
+                    "types": [
+                        "dark"
+                    ],
+                    "item": "Sitrus Berry",
+                    "ability": "Pressure",
+                    "moves": [
+                        "Aerial Ace",
+                        "Rock Slide",
+                        "Swords Dance",
+                        "Slash"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Phoebe",
+            "type": "ghost",
+            "sprite": "img/trainers/Phoebe.png",
+            "desc": "Possui uma profunda conexão com espíritos.",
+            "silverReq": "Elite 4 - R/S",
+            "silverTeam": [
+                {
+                    "id": 356,
+                    "level": 48,
+                    "name": "Dusclops",
+                    "types": [
+                        "ghost"
+                    ],
+                    "item": "Nenhum",
+                    "ability": "Pressure",
+                    "moves": [
+                        "Curse",
+                        "Confuse Ray",
+                        "Shadow Punch",
+                        "Future Sight"
+                    ]
+                },
+                {
+                    "id": 354,
+                    "level": 49,
+                    "name": "Banette",
+                    "types": [
+                        "ghost"
+                    ],
+                    "item": "Nenhum",
+                    "ability": "Insomnia",
+                    "moves": [
+                        "Spite",
+                        "Will-O-Wisp",
+                        "Shadow Ball",
+                        "Faint Attack"
+                    ]
+                },
+                {
+                    "id": 302,
+                    "level": 50,
+                    "name": "Sableye",
+                    "types": [
+                        "dark",
+                        "ghost"
+                    ],
+                    "item": "Nenhum",
+                    "ability": "Keen Eye",
+                    "moves": [
+                        "Night Shade",
+                        "Shadow Ball",
+                        "Faint Attack",
+                        "Recover"
+                    ]
+                },
+                {
+                    "id": 354,
+                    "level": 49,
+                    "name": "Banette",
+                    "types": [
+                        "ghost"
+                    ],
+                    "item": "Nenhum",
+                    "ability": "Insomnia",
+                    "moves": [
+                        "Skill Swap",
+                        "Toxic",
+                        "Shadow Ball",
+                        "Psychic"
+                    ]
+                },
+                {
+                    "id": 356,
+                    "level": 51,
+                    "name": "Dusclops",
+                    "types": [
+                        "ghost"
+                    ],
+                    "item": "Sitrus Berry",
+                    "ability": "Pressure",
+                    "moves": [
+                        "Ice Beam",
+                        "Shadow Ball",
+                        "Earthquake",
+                        "Confuse Ray"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Glacia",
+            "type": "ice",
+            "sprite": "img/trainers/Glacia.png",
+            "desc": "Congela até a alma de seus oponentes.",
+            "silverReq": "Elite 4 - R/S",
+            "silverTeam": [
+                {
+                    "id": 362,
+                    "level": 50,
+                    "name": "Glalie",
+                    "types": [
+                        "ice"
+                    ],
+                    "item": "Nenhum",
+                    "ability": "Inner Focus",
+                    "moves": [
+                        "Icy Wind",
+                        "Light Screen",
+                        "Crunch",
+                        "Ice Beam"
+                    ]
+                },
+                {
+                    "id": 364,
+                    "level": 50,
+                    "name": "Sealeo",
+                    "types": [
+                        "ice",
+                        "water"
+                    ],
+                    "item": "Nenhum",
+                    "ability": "Thick Fat",
+                    "moves": [
+                        "Hail",
+                        "Dive",
+                        "Encore",
+                        "Body Slam"
+                    ]
+                },
+                {
+                    "id": 364,
+                    "level": 52,
+                    "name": "Sealeo",
+                    "types": [
+                        "ice",
+                        "water"
+                    ],
+                    "item": "Nenhum",
+                    "ability": "Thick Fat",
+                    "moves": [
+                        "Hail",
+                        "Blizzard",
+                        "Dive",
+                        "Attract"
+                    ]
+                },
+                {
+                    "id": 362,
+                    "level": 52,
+                    "name": "Glalie",
+                    "types": [
+                        "ice"
+                    ],
+                    "item": "Nenhum",
+                    "ability": "Inner Focus",
+                    "moves": [
+                        "Ice Beam",
+                        "Shadow Ball",
+                        "Crunch",
+                        "Hail"
+                    ]
+                },
+                {
+                    "id": 365,
+                    "level": 53,
+                    "name": "Walrein",
+                    "types": [
+                        "ice",
+                        "water"
+                    ],
+                    "item": "Sitrus Berry",
+                    "ability": "Thick Fat",
+                    "moves": [
+                        "Ice Beam",
+                        "Surf",
+                        "Body Slam",
+                        "Sheer Cold"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Drake",
+            "type": "dragon",
+            "sprite": "img/trainers/Drake.png",
+            "desc": "O temível mestre dos dragões.",
+            "silverReq": "Elite 4 - R/S",
+            "silverTeam": [
+                {
+                    "id": 372,
+                    "level": 52,
+                    "name": "Shelgon",
+                    "types": [
+                        "dragon"
+                    ],
+                    "item": "Nenhum",
+                    "ability": "Rock Head",
+                    "moves": [
+                        "Protect",
+                        "Rock Tomb",
+                        "Double-Edge",
+                        "Dragon Claw"
+                    ]
+                },
+                {
+                    "id": 334,
+                    "level": 54,
+                    "name": "Altaria",
+                    "types": [
+                        "dragon",
+                        "flying"
+                    ],
+                    "item": "Nenhum",
+                    "ability": "Natural Cure",
+                    "moves": [
+                        "Dragon Dance",
+                        "Dragon Breath",
+                        "Take Down",
+                        "Refresh"
+                    ]
+                },
+                {
+                    "id": 330,
+                    "level": 53,
+                    "name": "Flygon",
+                    "types": [
+                        "ground",
+                        "dragon"
+                    ],
+                    "item": "Nenhum",
+                    "ability": "Levitate",
+                    "moves": [
+                        "Sand Attack",
+                        "Dragon Breath",
+                        "Crunch",
+                        "Flamethrower"
+                    ]
+                },
+                {
+                    "id": 330,
+                    "level": 53,
+                    "name": "Flygon",
+                    "types": [
+                        "ground",
+                        "dragon"
+                    ],
+                    "item": "Nenhum",
+                    "ability": "Levitate",
+                    "moves": [
+                        "Dragon Breath",
+                        "Crunch",
+                        "Sand Tomb",
+                        "Flamethrower"
+                    ]
+                },
+                {
+                    "id": 373,
+                    "level": 55,
+                    "name": "Salamence",
+                    "types": [
+                        "dragon",
+                        "flying"
+                    ],
+                    "item": "Sitrus Berry",
+                    "ability": "Intimidate",
+                    "moves": [
+                        "Dragon Claw",
+                        "Flamethrower",
+                        "Crunch",
+                        "Rock Slide"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Steven Stone",
+            "type": "steel",
+            "sprite": "img/trainers/Steven.png",
+            "desc": "O Campeão de Hoenn em Ruby & Sapphire, obcecado por pedras raras.",
+            "silverReq": "Campeão (R/S)",
+            "silverTeam": [
+                {
+                    "id": 227,
+                    "level": 57,
+                    "name": "Skarmory",
+                    "types": [
+                        "steel",
+                        "flying"
+                    ],
+                    "item": "Nenhum",
+                    "ability": "Keen Eye",
+                    "moves": [
+                        "Toxic",
+                        "Aerial Ace",
+                        "Spikes",
+                        "Steel Wing"
+                    ]
+                },
+                {
+                    "id": 344,
+                    "level": 55,
+                    "name": "Claydol",
+                    "types": [
+                        "ground",
+                        "psychic"
+                    ],
+                    "item": "Nenhum",
+                    "ability": "Levitate",
+                    "moves": [
+                        "Light Screen",
+                        "Reflect",
+                        "Earthquake",
+                        "Ancient Power"
+                    ]
+                },
+                {
+                    "id": 306,
+                    "level": 56,
+                    "name": "Aggron",
+                    "types": [
+                        "steel",
+                        "rock"
+                    ],
+                    "item": "Nenhum",
+                    "ability": "Sturdy",
+                    "moves": [
+                        "Thunder",
+                        "Earthquake",
+                        "Solar Beam",
+                        "Dragon Claw"
+                    ]
+                },
+                {
+                    "id": 346,
+                    "level": 56,
+                    "name": "Cradily",
+                    "types": [
+                        "rock",
+                        "grass"
+                    ],
+                    "item": "Nenhum",
+                    "ability": "Suction Cups",
+                    "moves": [
+                        "Giga Drain",
+                        "Ancient Power",
+                        "Confuse Ray",
+                        "Sludge Bomb"
+                    ]
+                },
+                {
+                    "id": 348,
+                    "level": 56,
+                    "name": "Armaldo",
+                    "types": [
+                        "rock",
+                        "bug"
+                    ],
+                    "item": "Nenhum",
+                    "ability": "Battle Armor",
+                    "moves": [
+                        "Water Pulse",
+                        "Aerial Ace",
+                        "Ancient Power",
+                        "Slash"
+                    ]
+                },
+                {
+                    "id": 376,
+                    "level": 58,
+                    "name": "Metagross",
+                    "types": [
+                        "steel",
+                        "psychic"
+                    ],
+                    "item": "Sitrus Berry",
+                    "ability": "Clear Body",
+                    "moves": [
+                        "Earthquake",
+                        "Meteor Mash",
+                        "Psychic",
+                        "Hyper Beam"
+                    ]
+                }
+            ]
+        }
+    ]
+},
+
     "firered-leafgreen": {
         "gyms": [
             {
