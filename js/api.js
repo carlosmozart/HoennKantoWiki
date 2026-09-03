@@ -25,6 +25,15 @@ const fetchWithCache = async (url, cacheKey) => {
         const response = await fetch(url);
         if (!response.ok) throw new Error('Not found');
         const data = await response.json();
+        
+        // Interceptar past_types para reverter o Tipo Fada (Gen 6+) para a Gen 3
+        if (data && data.types && data.past_types && data.past_types.length > 0) {
+            const oldTypes = data.past_types.find(pt => pt.generation.name === 'generation-v' || pt.generation.name === 'generation-iv');
+            if (oldTypes) {
+                data.types = oldTypes.types;
+            }
+        }
+        
         pokemonCache.set(cacheKey, data);
         saveCacheToLocal();
         return data;

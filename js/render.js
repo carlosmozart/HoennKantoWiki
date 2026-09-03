@@ -87,6 +87,8 @@ const parseEvolutionLinks = (node) => {
 
     node.evolves_to.forEach(evo => {
         const toId = parseInt(evo.species.url.split('/').slice(-2, -1)[0]);
+        if (toId > 386) return; // Filtra evoluções Pós-Gen 3 (ex: Leafeon, Glaceon, Sylveon)
+        
         const toName = evo.species.name;
         
         let method = "Level up";

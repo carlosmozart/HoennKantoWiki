@@ -1,4 +1,37 @@
 window.GUIDES_DATA = {
+    "weakness": {
+        "title": "Calculadora de Fraquezas (Gen 3)",
+        "content": `
+            <div style="text-align:center;">
+                <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom: 15px;">Selecione os tipos do Pokémon para ver suas fraquezas e resistências. Baseado na Geração 3 (Sem Fada).</p>
+                <div style="display:flex; gap:10px; justify-content:center; margin-bottom: 20px;">
+                    <select id="calc-type-1" class="input-select" style="text-transform:capitalize;"></select>
+                    <select id="calc-type-2" class="input-select" style="text-transform:capitalize;">
+                        <option value="none">-- Nenhum (Tipo Único) --</option>
+                    </select>
+                </div>
+                <div id="calc-result" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap:10px; text-align:left;">
+                    <!-- Preenchido via JS -->
+                </div>
+            </div>
+        `
+    },
+    "natures": {
+        "title": "Guia de Natures (Naturezas)",
+        "content": `
+            <div style="overflow-x: auto;">
+                <table class="moves-table" style="width:100%; text-align:center; min-width:500px;">
+                    <thead>
+                        <tr><th>Nature</th><th>Aumenta (+10%)</th><th>Diminui (-10%)</th><th>Sabor Favorito (Pokécubo)</th><th>Sabor Detestado</th></tr>
+                    </thead>
+                    <tbody id="natures-table-body">
+                        <!-- Injetado via JS -->
+                        <tr><td colspan="5">Carregando...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        `
+    },
     "berries": {
         "title": "Guia de Berries & Pokéblocks (Como evoluir Feebas)",
         "content": `
