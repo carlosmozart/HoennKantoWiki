@@ -3,7 +3,7 @@ window.FRONTIER_DATA = {
     overview: {
         title: "Battle Frontier",
         desc: "A Battle Frontier é um gigantesco parque de batalhas introduzido em Pokémon Emerald. Após vencer a Elite 4, você recebe o S.S. Ticket para viajar até esta ilha dedicada inteiramente a testar as habilidades dos Treinadores. Ela conta com 7 instalações únicas, cada uma com regras específicas. Ao vencer consecutivamente, você ganha Battle Points (BP) que podem ser trocados por prêmios, e eventualmente enfrenta os temíveis líderes locais: os Frontier Brains.",
-        image: "https://www.serebii.net/emerald/frontier.jpg"
+        image: "img/Battle_Frontier.png"
     },
     facilities: [
         {
