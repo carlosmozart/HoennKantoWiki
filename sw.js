@@ -1,15 +1,15 @@
 const CACHE_NAME = 'pokewiki-v2';
 const ASSETS_TO_CACHE = [
-  '/',
-  '/index.html',
-  '/css/style.css',
-  '/css/layout.css',
-  '/js/api.js',
-  '/js/app.js',
-  '/js/render.js',
-  '/js/translations.js',
-  '/favicons/favicon-16x16.png',
-  '/favicons/pokedex.png'
+  './',
+  './index.html',
+  './css/style.css',
+  './css/layout.css',
+  './js/api.js',
+  './js/app.js',
+  './js/render.js',
+  './js/translations.js',
+  './favicons/favicon-16x16.png',
+  './favicons/pokedex.png'
 ];
 
 // Instalação do Service Worker
