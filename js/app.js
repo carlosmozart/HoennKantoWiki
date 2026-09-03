@@ -118,6 +118,9 @@ const app = {
         } else if (hash === 'frontier') {
             this.switchView('frontier');
             if (window.renderFrontier) window.renderFrontier();
+        } else if (hash === 'extras') {
+            this.switchView('extras');
+            if (window.renderExtras) window.renderExtras();
         } else {
             this.switchView('pokedex');
             document.title = 'Hoenn & Kanto Wiki - RSE / FRLG';

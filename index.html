@@ -30,6 +30,7 @@
     <script defer src="./js/tms.js?v=1.0.2"></script>
     <script defer src="./js/render.js?v=1.0.2"></script>
     <script defer src="./js/frontier.js?v=1.0.2"></script>
+    <script defer src="./js/extras.js?v=1.0.0"></script>
     <script defer src="./js/app.js?v=1.0.2"></script>
     <script>
         if ('serviceWorker' in navigator) {
@@ -54,6 +55,7 @@
                 <button class="nav-btn" data-view="gyms">Líderes</button>
                 <button class="nav-btn" data-view="tms">TM / HM</button>
                 <button class="nav-btn" data-view="frontier">Battle Frontier</button>
+                <button class="nav-btn" data-view="extras">Emerald Extras</button>
             </nav>
             <div class="sidebar-footer">
                 <button id="lang-toggle" class="btn-icon" title="Alternar Idioma">🇧🇷</button>
@@ -295,6 +297,24 @@
                     </div>
 
                     <div class="grid-container" id="frontier-grid">
+                        <!-- Preenchido via JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Emerald Extras -->
+            <section id="view-extras" class="view-section hidden">
+                <div class="glass section-panel">
+                    <h2>Extras do Pokémon Emerald</h2>
+                    <p>Informações detalhadas sobre Pokémon presenteados (Gifts/Eventos), trocas no jogo (In-Game Trades) e exclusivos (Inobtíveis).</p>
+                    
+                    <div class="moves-tabs-header" style="margin: 20px 0;">
+                        <button class="move-tab-btn extras-main-tab active" data-tab="gifts">Presentes / Eventos</button>
+                        <button class="move-tab-btn extras-main-tab" data-tab="trades">Trocas In-Game</button>
+                        <button class="move-tab-btn extras-main-tab" data-tab="missing">Inobtíveis & Exclusivos</button>
+                    </div>
+
+                    <div class="grid-container" id="extras-grid">
                         <!-- Preenchido via JS -->
                     </div>
                 </div>
