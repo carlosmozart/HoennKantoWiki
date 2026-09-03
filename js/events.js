@@ -55,7 +55,7 @@ class LiveEvents {
         if (!clockEl || !shoalEl || !deptEl) return;
         
         const timeStr = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-        clockEl.textContent = \`Hora Local: \${timeStr}\`;
+        clockEl.textContent = `Hora Local: ${timeStr}`;
 
         // Lógica da Shoal Cave
         // Maré Alta: 09:00 as 15:00 e 21:00 as 03:00
