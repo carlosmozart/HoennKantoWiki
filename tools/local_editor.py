@@ -213,7 +213,7 @@ class EditorServer(ThreadingHTTPServer):
 
 
 class EditorHandler(BaseHTTPRequestHandler):
-    server_version = "WikiLocalEditor/2.0"
+    server_version = "WikiLocalEditor/2.1"
 
     def log_message(self, fmt, *args):
         # Nao registrar token, corpo dos documentos ou URLs privadas de previa.
@@ -255,11 +255,36 @@ class EditorHandler(BaseHTTPRequestHandler):
             raise ValueError("Caminho não autorizado.")
         return path
 
+    def backup_file(self, name, backup_id):
+        self.document(name)
+        pattern = r"\d{8}-\d{6}-\d{6}-" + re.escape(name.replace("/", "-"))
+        if not isinstance(backup_id, str) or not re.fullmatch(pattern, backup_id):
+            raise ValueError("Backup inválido para este documento.")
+        folder = self.server.backup_dir.resolve()
+        candidate = folder / backup_id
+        if candidate.is_symlink() or not candidate.resolve().is_relative_to(folder):
+            raise ValueError("Caminho de backup não autorizado.")
+        if not candidate.is_file() or candidate.stat().st_size > LIMIT:
+            raise ValueError("Backup indisponível ou muito grande.")
+        return candidate
+
     def do_GET(self):
         path = unquote(urlsplit(self.path).path)
         if not self.allowed(path.startswith("/api/")):
             return
         try:
+            if path.startswith("/api/backups/"):
+                name = path[len("/api/backups/"):]
+                self.document(name)
+                backups = []
+                for candidate in sorted(self.server.backup_dir.glob("*.json"), reverse=True):
+                    try:
+                        file = self.backup_file(name, candidate.name)
+                        stamp = datetime.strptime(candidate.name[:22], "%Y%m%d-%H%M%S-%f")
+                    except (ValueError, OSError):
+                        continue
+                    backups.append({"id": file.name, "date": stamp.isoformat(), "size": file.stat().st_size})
+                return self.respond(200, {"backups": backups})
             if path == "/api/catalog":
                 assets = [p.relative_to(self.server.root).as_posix()
                           for folder in ("img/trainers", "img/items", "img/badges", "img/uploads")
@@ -276,7 +301,7 @@ class EditorHandler(BaseHTTPRequestHandler):
                 return self.respond(200, b'<a href="/editor/">Abrir editor local</a>', "text/html; charset=utf-8")
             if path.startswith("/editor/"):
                 leaf = path[len("/editor/"):] or "index.html"
-                if leaf not in ("index.html", "editor.js", "editor.css", "theme.js", "dark.css", "media.js"):
+                if leaf not in ("index.html", "editor.js", "editor.css", "theme.js", "dark.css", "media.js", "review.js", "review.css"):
                     return self.respond(404, {"error": "Não encontrado."})
                 return self.serve_file(self.server.root / "tools/editor" / leaf)
             if path.startswith("/preview/"):
@@ -365,6 +390,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 with LOCK:
                     image = store_image(self.server.root, body.get("name"), body.get("png"))
                 return self.respond(200, image)
+            if route == "/api/backup":
+                name = body.get("name")
+                with LOCK:
+                    raw = self.backup_file(name, body.get("id")).read_bytes()
+                data = json.loads(raw)
+                self.server.check_document(name, data)
+                return self.respond(200, {"data": data})
             name, data = body.get("name"), body.get("data")
             self.document(name)
             self.server.check_document(name, data)

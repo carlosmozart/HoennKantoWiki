@@ -113,6 +113,6 @@ This project is open-source. Pokémon data and images belong to Nintendo / The P
 
 ## Editor local
 
-Para editar cards, times e textos sem alterar os arquivos manualmente, abra **Iniciar editor.cmd** (Python 3.10+). O editor 2.0 oferece modo claro/escuro, importação de imagens, criação de páginas e modelos, edição de textos da interface e correções persistentes da Pokédex. Inclui prévia, rascunhos e backup antes de salvar. A publicação continua pelo GitHub Desktop/Git.
+Para editar cards, times e textos sem alterar os arquivos manualmente, abra **Iniciar editor.cmd** (Python 3.10+). O editor 2.1 oferece modo claro/escuro, importação de imagens, criação de páginas e modelos, edição de textos da interface e correções persistentes da Pokédex. Inclui prévia, comparação antes de salvar, avisos de rascunhos não salvos e histórico para restaurar backups pelo próprio editor. A publicação continua pelo GitHub Desktop/Git.
 
 Consulte o [guia do editor local](docs/EDITOR-LOCAL.md).

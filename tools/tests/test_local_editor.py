@@ -81,6 +81,43 @@ class EditorTest(unittest.TestCase):
         self.assertEqual(response["revision"], digest(file.read_bytes()))
         self.assertEqual(self.request("/api/save", body)[0], 409)
 
+    def test_backup_history_restore_and_conflict(self):
+        body = self.payload()
+        original = copy.deepcopy(body["data"])
+        body["data"]["hoenn"][0]["category"] = "Editado"
+        saved = json.loads(self.request("/api/save", body)[1])
+        history = json.loads(self.request("/api/backups/key-items.json")[1])["backups"]
+        self.assertEqual(len(history), 1)
+        self.assertEqual(history[0]["id"], Path(saved["backup"]).name)
+        self.assertEqual(json.loads(self.request("/api/backups/gyms.json")[1])["backups"], [])
+        code, raw = self.request("/api/backup", {"name":body["name"], "id":history[0]["id"]})
+        self.assertEqual(code, 200, raw)
+        recovered = json.loads(raw)["data"]
+        self.assertEqual(recovered, original)
+        self.assertEqual(self.payload()["data"], body["data"])  # Reading never restores.
+        restore = self.payload()
+        restore["data"] = recovered
+        self.assertEqual(self.request("/api/save", restore)[0], 200)
+        self.assertEqual(self.payload()["data"], original)
+        self.assertEqual(len(list(self.server.backup_dir.glob("*.json"))), 2)
+        self.assertEqual(self.request("/api/save", restore)[0], 409)
+        self.assertTrue(any(json.loads(p.read_bytes()) == body["data"] for p in self.server.backup_dir.glob("*.json")))
+
+    def test_backup_history_rejects_wrong_document_paths_and_invalid_data(self):
+        body = self.payload()
+        body["data"]["hoenn"][0]["category"] = "Backup"
+        backup = Path(json.loads(self.request("/api/save", body)[1])["backup"])
+        for name, identifier in [("gyms.json", backup.name), ("key-items.json", "../"+backup.name),
+                                 ("../private.json", backup.name), ("key-items.json", "unknown.json")]:
+            self.assertEqual(self.request("/api/backup", {"name":name,"id":identifier})[0], 400)
+        self.assertEqual(self.request("/api/backups/key-items.json", headers={"X-Editor-Token":""})[0], 403)
+        self.assertEqual(self.request("/api/backup", {"name":body["name"],"id":backup.name},
+                                      headers={"Origin":"https://example.com"})[0], 403)
+        backup.write_text('{"bad":true}', encoding="utf-8")
+        self.assertEqual(self.request("/api/backup", {"name":body["name"],"id":backup.name})[0], 400)
+        backup.write_bytes(b"x" * 2_000_001)
+        self.assertEqual(self.request("/api/backup", {"name":body["name"],"id":backup.name})[0], 400)
+
     def test_preview_does_not_write(self):
         body = self.payload()
         before = (self.root / "data/key-items.json").read_bytes()

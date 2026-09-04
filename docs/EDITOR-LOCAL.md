@@ -1,4 +1,4 @@
-# Editor local · WikiGen3 2.0
+# Editor local · WikiGen3 2.1
 
 O editor roda no seu computador. Requer **Python 3.10 ou superior**, sem instalar pacotes, banco de dados ou ferramentas de desenvolvimento adicionais. O site continua sendo publicado como arquivos estáticos no GitHub Pages.
 
@@ -27,7 +27,9 @@ O serviço aceita conexões apenas em **127.0.0.1** e usa uma sessão local. Abr
 3. Use **Adicionar**, **Duplicar**, **Mover**, **Remover**, **Desfazer** e **Refazer**.
 4. Nos guias, edite o texto diretamente; a barra insere títulos, parágrafos, listas, cards e imagens.
 5. Use **Atualizar prévia** para conferir o rascunho. **Celular** limita a largura a 375 px; **Abrir ampla** abre outra aba.
-6. Clique em **Salvar no projeto**. O editor valida, verifica conflitos, faz backup e grava o arquivo.
+6. Clique em **Salvar no projeto** para comparar os valores **Antes** e **Depois**. Use **Voltar à edição** para cancelar ou **Confirmar e salvar** para gravar. O editor valida, verifica conflitos e faz backup antes da gravação.
+
+A comparação mostra os campos adicionados, removidos e alterados. Listas usam posições a partir de 1; mover um card pode gerar várias diferenças. Textos HTML são exibidos como código, sem execução. Em documentos com muitas mudanças, são exibidas as primeiras 300 diferenças, com aviso; exporte o rascunho para conferir o conteúdo completo.
 
 Salvar afeta somente o documento aberto. A prévia usa esse rascunho e os demais arquivos já salvos. As 25 prévias mais recentes ficam disponíveis enquanto o servidor estiver aberto. O Service Worker da PWA não é registrado nas prévias.
 
@@ -109,13 +111,15 @@ As listas substituem a lista original inteira. Objetos, como status, podem conte
 
 Rascunhos ficam neste navegador. Ao reabrir um documento, o editor oferece recuperar o rascunho. Limpar os dados do navegador pode apagá-lo. Use **Exportar rascunho** para obter uma cópia JSON e **Importar JSON** para recuperá-la.
 
+Ao trocar de documento com alterações, o editor pede confirmação e guarda o rascunho. Trocar de card ou seção mantém as edições no mesmo documento. Ao fechar ou recarregar a aba, o aviso considera também rascunhos de outros documentos deste projeto. O navegador controla a aparência desse aviso; exporte os rascunhos antes de limpar dados ou trocar de PC. O campo **HTML avançado** guarda a digitação imediatamente no rascunho, sem precisar sair do campo.
+
 Antes de cada salvamento com alteração, o arquivo anterior fica em:
 
 ~~~text
 ../HoennKantoWiki-backups/editor/AAAAMMDD-HHMMSS-microssegundos-nome-do-arquivo.json
 ~~~
 
-Para restaurar, abra o documento correspondente, importe seu backup, confira e salve. A versão substituída também ganha um backup. Se o arquivo tiver mudado em outro programa ou aba, o editor recusa sobrescrevê-lo; exporte o rascunho, reabra o arquivo e reaplique as mudanças.
+Para restaurar, abra o documento correspondente e clique em **Histórico de backups**. A lista mostra somente backups desse documento, do mais recente ao mais antigo. Escolha a data, compare com o rascunho atual e clique em **Carregar como rascunho**. Você pode usar **Desfazer**, conferir a prévia ou continuar editando. A restauração só grava no disco depois de **Salvar no projeto → Confirmar e salvar**. A versão substituída também ganha um backup. Backups com conteúdo inválido são recusados; **Importar JSON** continua disponível para cópias externas. Se o arquivo tiver mudado em outro programa ou aba, o editor recusa sobrescrevê-lo; exporte o rascunho, reabra o arquivo e reaplique as mudanças.
 
 Backups completos anteriores às implementações ficam em **HoennKantoWiki-backups**, ao lado do repositório. Extraia um ZIP em uma pasta separada para conferir antes de substituir o diretório de trabalho.
 
@@ -140,7 +144,8 @@ Os guias antigos preservam seu HTML. A calculadora e tabela de naturezas têm se
 
 ## Verificação técnica
 
-- tools/local_editor.py: servidor, sessão, documentos, conflitos e backups.
+- tools/local_editor.py: servidor, sessão, documentos, conflitos e histórico de backups.
+- tools/editor/review.js: comparação antes de salvar ou restaurar, com exibição segura dos valores.
 - tools/editor_extensions.py: imagens e validação de páginas/correções.
 - tools/editor/: interface, temas e schemas versionados.
 - js/ui/interface.js e js/views/custom-pages.js: integração no site estático.

@@ -1,0 +1,10 @@
+.review-columns{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+.review-change{border:1px solid var(--line);border-radius:8px;padding:12px;margin-bottom:12px}
+.review-change h3{overflow-wrap:anywhere}.review-columns>div{min-width:0}
+.review-columns pre{white-space:pre-wrap;overflow-wrap:anywhere;font:12px/1.6 ui-monospace,monospace;max-height:240px;overflow:auto;border-left:3px solid var(--line);padding:8px}
+#review-list{max-height:52vh;overflow:auto}#review-dialog{width:min(1000px,94vw)}
+.dialog-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px;margin-top:18px}
+#backup-list{display:flex;flex-direction:column;gap:8px;max-height:50vh;overflow:auto}
+#backup-list button{text-align:left;overflow-wrap:anywhere}
+#backup-status{overflow-wrap:anywhere}
+@media(max-width:600px){.review-columns{grid-template-columns:1fr}#review-dialog{padding:16px}}

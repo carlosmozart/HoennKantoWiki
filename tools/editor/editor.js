@@ -1,4 +1,5 @@
 import { importImage } from "./media.js";
+import { reviewChanges } from "./review.js";
 
 const $ = (id) => document.getElementById(id);
 const clone = (data) => structuredClone(data);
@@ -75,11 +76,20 @@ function setAt(path, value) {
 const dirty = () => JSON.stringify(doc) !== original;
 const draftKey = () => 'wiki-editor-draft:' + catalog.project + ':' + filename;
 function persistDraft() {
-  if (!filename) return;
+  if (!filename) return true;
   try {
     if (dirty()) localStorage.setItem(draftKey(), JSON.stringify({revision,data:doc}));
     else localStorage.removeItem(draftKey());
-  } catch { status('Rascunho não pôde ser guardado no navegador. Exporte uma cópia antes de fechar.', true); }
+    return true;
+  } catch { status('Rascunho não pôde ser guardado no navegador. Exporte uma cópia antes de fechar.', true); return false; }
+}
+function hasPendingDrafts() {
+  if (doc && dirty()) return true;
+  if (!catalog) return false;
+  try {
+    const prefix = 'wiki-editor-draft:' + catalog.project + ':';
+    return Object.keys(localStorage).some(key => key.startsWith(prefix) && key !== draftKey());
+  } catch { return true; }
 }
 function updateState() {
   $('dirty').textContent = dirty() ? 'Rascunho não salvo' : 'Sem alterações';
@@ -235,7 +245,7 @@ function richField(parent, path, value) {
   const advanced = el('details'), source = el('textarea',{className:'rich-source',value,'aria-label':'HTML do conteúdo'});
   advanced.append(el('summary',{},'HTML avançado'));
   advanced.addEventListener('toggle', () => {if (advanced.open) source.value = at(path);});
-  source.addEventListener('change', () => {
+  source.addEventListener('input', () => {
     change(() => setAt(path, source.value));
     // Nao executar nem inserir HTML arbitrario antes da validacao do servidor.
     status('HTML atualizado no rascunho. Use Atualizar prévia para validar. Reabra o card após validar para edição visual.');
@@ -345,7 +355,8 @@ async function openDocument(name, force = false) {
   if (filename && dirty() && !force && !confirm('Trocar de arquivo? Seu rascunho ficará guardado neste navegador.')) {
     $('document').value=filename;return;
   }
-  clearTimeout(draftTimer);persistDraft();
+  clearTimeout(draftTimer);
+  if (!persistDraft()) {$('document').value=filename;return;}
   const request = ++sequence;
   loading=true;$('document').disabled=true;status('Carregando conteúdo…');
   try {
@@ -361,7 +372,7 @@ async function openDocument(name, force = false) {
     $('section').replaceChildren(...sections.map((s,i) => el('option',{value:i},s.title)));
     sectionPath=sections[0].path;selected=entries()[0]?.path || null;
     $('search').value='';
-    for(const id of ['section','export','import','reload','preview']) $(id).disabled=false;
+    for(const id of ['section','export','import','reload','preview','backups']) $(id).disabled=false;
     $('document').value=filename;
     status('Arquivo aberto. Edições ficam em rascunho até você salvar.');
     render();
@@ -469,6 +480,16 @@ $('remove').onclick=()=>{const e=currentEntry();if(confirm('Remover “'+entryNa
 $('undo').onclick=()=>{if(!undoStack.length)return;redoStack.push(clone(doc));doc=undoStack.pop();if(!currentEntry())selected=entries()[0]?.path||null;render();};
 $('redo').onclick=()=>{if(!redoStack.length)return;undoStack.push(clone(doc));doc=redoStack.pop();if(!currentEntry())selected=entries()[0]?.path||null;render();};
 $('save').onclick=async()=>{
+  if(loading || !dirty())return;
+  const reviewedName=filename, reviewedRevision=revision, reviewed=clone(doc);
+  const accepted=await reviewChanges(JSON.parse(original),reviewed,{
+    title:'Revisar antes de salvar',confirmText:'Confirmar e salvar',
+    description:'Confira o que será alterado em '+catalog.documents[filename]+'. A versão anterior terá um backup.',label
+  });
+  if(!accepted)return;
+  if(filename!==reviewedName || revision!==reviewedRevision || JSON.stringify(doc)!==JSON.stringify(reviewed)) {
+    status('O rascunho mudou. Revise novamente antes de salvar.',true);return;
+  }
   loading=true;$('document').disabled=true;$('section').disabled=true;renderList();updateState();
   const snapshot=clone(doc),savedName=filename;
   try {
@@ -478,6 +499,42 @@ $('save').onclick=async()=>{
   } catch(error){status(error.message,true);}
   finally{loading=false;$('document').disabled=false;$('section').disabled=false;renderList();updateState();}
 };
+$('backups').onclick=async()=>{
+  const name=filename;
+  $('backup-list').replaceChildren();
+  $('backup-status').textContent='Carregando backups.';
+  $('backups-dialog').showModal();
+  try {
+    const result=await api('backups/'+name);
+    $('backup-status').textContent=result.backups.length ? result.backups.length+' versões disponíveis para '+catalog.documents[name]+'.' : 'Ainda não há backups deste documento. Eles são criados antes de cada alteração salva.';
+    for(const backup of result.backups) {
+      const entry=button(new Date(backup.date).toLocaleString('pt-BR')+' · '+Math.ceil(backup.size/1024)+' KB',async()=>{
+        entry.disabled=true;
+        try {
+          const result=await api('backup',{name,id:backup.id});
+          const before=clone(doc);
+          const accepted=await reviewChanges(before,result.data,{
+            title:'Comparar com o backup',confirmText:'Carregar como rascunho',
+            description:'Antes: rascunho atual. Depois: backup de '+new Date(backup.date).toLocaleString('pt-BR')+'. Você poderá desfazer a restauração.',label
+          });
+          if(!accepted)return;
+          if(filename!==name || JSON.stringify(doc)!==JSON.stringify(before))throw new Error('O rascunho mudou. Reabra o histórico.');
+          change(()=>{doc=result.data;});
+          sections=collectSections(doc,schema);
+          $('section').replaceChildren(...sections.map((s,i)=>el('option',{value:i},s.title)));
+          sectionPath=sections[0].path;selected=entries()[0]?.path||null;
+          $('search').value='';render();persistDraft();
+          $('backups-dialog').close();
+          await preview();
+          status('Backup carregado como rascunho. Confira a prévia e clique em Salvar no projeto para restaurar.');
+        }catch(error){$('backup-status').textContent=error.message;}
+        finally{entry.disabled=false;}
+      });
+      $('backup-list').append(entry);
+    }
+  }catch(error){$('backup-status').textContent=error.message;}
+};
+$('close-backups').onclick=()=>$('backups-dialog').close();
 $('export').onclick=()=>{
   persistDraft();
   const url=URL.createObjectURL(new Blob([JSON.stringify(doc,null,2)+'\n'],{type:'application/json'}));
@@ -514,8 +571,9 @@ $('image-file').onchange=async()=>{
   }catch(error){$('gallery-status').textContent=error.message;}
   finally{$('upload-image').disabled=false;$('image-file').value='';}
 };
-window.addEventListener('beforeunload',event=>{if(doc&&dirty()){persistDraft();event.preventDefault();event.returnValue='';}});
+window.addEventListener('beforeunload',event=>{if(loading||hasPendingDrafts()){persistDraft();event.preventDefault();event.returnValue='';}});
 window.addEventListener('pagehide',()=>{if(doc)persistDraft();});
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&doc)persistDraft();});
 try {
   catalog=await api('catalog');
   $('backup-help').textContent='Backups por gravação: '+catalog.backupDir;

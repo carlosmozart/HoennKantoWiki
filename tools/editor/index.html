@@ -8,6 +8,7 @@
 <script src="/editor/theme.js"></script>
 <link rel="stylesheet" href="/editor/editor.css">
 <link rel="stylesheet" href="/editor/dark.css">
+<link rel="stylesheet" href="/editor/review.css">
 <script type="module" src="/editor/editor.js"></script>
 </head>
 <body>
@@ -31,7 +32,7 @@
     <div class="content-heading"><div><p class="eyebrow" id="breadcrumb">EDITOR LOCAL</p><h1 id="title">Preparando sua biblioteca</h1></div><span id="dirty" class="pill">Sem alterações</span></div>
     <div class="toolbar">
       <button id="duplicate" disabled>Duplicar</button><button id="move-up" disabled>↑ Mover</button><button id="move-down" disabled>↓ Mover</button><button id="remove" class="danger" disabled>Remover</button>
-      <span class="spacer"></span><button id="export" disabled>Exportar rascunho</button><button id="import" disabled>Importar JSON</button><button id="reload" disabled>Reabrir arquivo</button>
+      <span class="spacer"></span><button id="export" disabled>Exportar rascunho</button><button id="import" disabled>Importar JSON</button><button id="reload" disabled>Reabrir arquivo</button><button id="backups" disabled>Histórico de backups</button>
       <input id="import-file" type="file" accept=".json,application/json" hidden>
     </div>
     <div class="editor-layout">
@@ -47,6 +48,8 @@
 </div>
 <dialog id="gallery"><div class="dialog-heading"><h2>Escolher imagem local</h2><button id="close-gallery" aria-label="Fechar seleção de imagens">✕</button></div><label for="gallery-search">Buscar imagem ou Pokémon</label><input id="gallery-search" type="search"><div class="upload-tools"><button id="upload-image">Importar imagem</button><input id="image-file" type="file" accept="image/png,image/jpeg,image/webp" hidden><p>PNG, JPEG ou WebP · até 8 MB. A imagem será adicionada ao projeto.</p></div><p id="gallery-status" role="status"></p><div id="gallery-items"></div></dialog>
 <dialog id="template-dialog"><h2>Adicionar card de um modelo</h2><p>O card será uma cópia independente, que você poderá editar.</p><div id="template-list"></div><button id="close-template">Fechar</button></dialog>
-<dialog id="help-dialog"><h2>Seu fluxo de edição</h2><ol><li>Escolha o conteúdo e a seção na biblioteca.</li><li>Edite campos, listas, times ou textos dos guias.</li><li>Use <strong>Atualizar prévia</strong> para conferir o rascunho.</li><li>Clique em <strong>Salvar no projeto</strong>. Uma cópia do arquivo anterior será guardada antes de cada gravação.</li><li>Revise as alterações no GitHub Desktop e faça commit/push quando quiser publicar.</li></ol><p>Rascunhos são recuperáveis neste navegador. Use “Exportar rascunho” para guardar uma cópia independente.</p><p id="backup-help"></p><p>Para recuperar uma versão, selecione o conteúdo correspondente e use “Importar JSON” com o backup desse arquivo. Confira a prévia e salve.</p><p>O editor também cria páginas e modelos de cards, importa imagens e edita textos da interface. As correções da Pokédex ficam separadas dos dados gerados. Para trocar de PC, salve e envie os arquivos pelo Git; rascunhos podem ser exportados.</p><button id="close-help" class="primary">Entendi</button></dialog>
+<dialog id="help-dialog"><h2>Seu fluxo de edição</h2><ol><li>Escolha o conteúdo e a seção na biblioteca.</li><li>Edite campos, listas, times ou textos dos guias.</li><li>Use <strong>Atualizar prévia</strong> para conferir o rascunho.</li><li>Clique em <strong>Salvar no projeto</strong>. Uma cópia do arquivo anterior será guardada antes de cada gravação.</li><li>Revise as alterações no GitHub Desktop e faça commit/push quando quiser publicar.</li></ol><p>Rascunhos são recuperáveis neste navegador. Use “Exportar rascunho” para guardar uma cópia independente.</p><p id="backup-help"></p><p>Para recuperar uma versão, use “Histórico de backups”, compare e carregue como rascunho. Confira a prévia e salve.</p><p>O editor também cria páginas e modelos de cards, importa imagens e edita textos da interface. As correções da Pokédex ficam separadas dos dados gerados. Para trocar de PC, salve e envie os arquivos pelo Git; rascunhos podem ser exportados.</p><button id="close-help" class="primary">Entendi</button></dialog>
+<dialog id="review-dialog" aria-labelledby="review-title"><h2 id="review-title">Revisar alterações</h2><p id="review-description"></p><p id="review-count"></p><div id="review-list"></div><div class="dialog-actions"><button id="cancel-review">Voltar à edição</button><button id="confirm-review" class="primary">Confirmar</button></div></dialog>
+<dialog id="backups-dialog" aria-labelledby="backups-title"><h2 id="backups-title">Histórico de backups</h2><p>Escolha uma versão para comparar com o rascunho atual. O arquivo só será substituído quando você salvar no projeto.</p><p id="backup-status" role="status"></p><div id="backup-list"></div><div class="dialog-actions"><button id="close-backups">Fechar</button></div></dialog>
 </body>
 </html>
