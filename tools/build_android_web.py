@@ -36,8 +36,10 @@ def build(root=ROOT):
                     target.parent.mkdir(parents=True,exist_ok=True)
                     shutil.copy2(source,target)
         for file in FILES: shutil.copy2(root/file,stage/file)
-        subprocess.run(["node", str(root/"node_modules/esbuild/bin/esbuild"), str(root/"native/main.js"),
-                        "--bundle", "--format=iife", "--target=chrome89", "--outfile="+str(stage/"native.js")],
+        bundle_script=("require('esbuild').buildSync({entryPoints:[process.argv[1]],bundle:true,"
+                       "format:'iife',target:'chrome89',outfile:process.argv[2]})")
+        subprocess.run(["node", "--input-type=commonjs", "-e", bundle_script,
+                        str(root/"native/main.js"), str(stage/"native.js")],
                        cwd=root, stdin=subprocess.DEVNULL, check=True)
         # Native packages ship a complete snapshot; a web SW must not replace it.
         index = stage/"index.html"
