@@ -23,8 +23,49 @@ O projeto consome dados diretamente da **PokéAPI** para exibir informações de
 
 ## Tecnologias Utilizadas
 
-- **HTML5, CSS3, JavaScript (ES6)**
-- **PokéAPI** (REST API)
+- **HTML5, CSS3, JavaScript (Módulos ES)** — sem dependências nem etapa de build
+- **PokéAPI** — consumida em tempo de *build*, não em tempo de execução
+
+## Estrutura
+
+```
+index.html          único HTML; carrega js/main.js como módulo
+css/                style.css (tema e componentes) + layout.css (grid e responsivo)
+js/
+  main.js           ponto de entrada: compõe o objeto `app` e inicia
+  core/             dataset, estado, armazenamento, rotas, idioma, tabela de tipos
+  ui/               DOM, tema, layout, som
+  views/            uma por seção (pokedex, pokemon, team, trainers, ...)
+  widgets/          modal de treinamento e relógio de eventos
+data/               dados estáticos (ver abaixo)
+tools/              scripts de build (Python/Node), não vão para o site
+sw.js               Service Worker (offline)
+```
+
+## Dados
+
+O app **não chama a PokéAPI em tempo de execução**. Antes, abrir uma ficha
+disparava ~135 requisições (uma por golpe, uma por habilidade, mais espécie,
+evolução e locais). Hoje é **um arquivo de ~6 KB**.
+
+```
+data/pokedex.json        índice dos 386 (nome, tipos, stats)
+data/pokemon/<id>.json   ficha completa, com evoluções e locais embutidos
+data/moves.json          golpes da Gen 3
+data/abilities.json      habilidades
+data/i18n/{pt,en}.json   dicionários (só o idioma em uso é baixado)
+data/*.json              ginásios, tutores, guias, itens, TMs, frontier, extras
+```
+
+Para regenerar o dataset a partir da PokéAPI:
+
+```bash
+python tools/build_data.py        # respostas ficam em cache fora do repo
+python tools/update_sw_precache.py  # atualiza a lista do Service Worker
+```
+
+A tipagem gravada é a da **Geração 3**: Pokémon reclassificados como Fada
+(Clefairy, Gardevoir, Mawile...) voltam ao tipo que tinham na época.
 
 ## Hospedagem (GitHub Pages)
 

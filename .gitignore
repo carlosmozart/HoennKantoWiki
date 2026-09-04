@@ -1,0 +1,6 @@
+# Ferramentas locais do editor
+.claude/
+
+# Cache do build de dados (fica fora do repo, mas por segurança)
+tools/__pycache__/
+*.pyc

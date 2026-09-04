@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pokewiki-v10';
+const CACHE_NAME = 'pokewiki-v11';
 const API_CACHE_NAME = 'pokewiki-api-cache';
 
 // Os <script>/<link> do index usam querystring (?v=1.0.2) para cache busting.
@@ -6,30 +6,57 @@ const API_CACHE_NAME = 'pokewiki-api-cache';
 // é encontrado e o modo offline não funciona.
 const MATCH_OPTS = { ignoreSearch: true };
 
-// Shell do app: o mínimo para abrir e navegar offline.
-// Fora daqui, de propósito: gyms.js (172 KB) e translations.js (dicionário em
-// inglês). Os dois são baixados sob demanda por loadScript() e ficam no cache
-// pelo handler de fetch na primeira vez que forem usados — assim quem nunca
-// abre a aba Treinadores nem troca de idioma não paga por eles.
+// Shell do app: modulos, estilos e os dados de uso comum.
+// A lista e gerada por tools/update_sw_precache.py a partir dos arquivos reais.
+// Fora dela, de proposito:
+//   data/pokemon/<id>.json  386 arquivos, 2,3 MB. Cada ficha entra no cache na
+//                           primeira visita, entao o offline vai ficando
+//                           completo conforme o uso.
+//   data/i18n/en.json       so baixado se o usuario trocar de idioma.
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './manifest.json',
   './css/style.css',
   './css/layout.css',
-  './js/translations_pt.js',
-  './js/api.js',
-  './js/tms.js',
-  './js/render.js',
-  './js/frontier.js',
-  './js/extras.js',
-  './js/tutors.js',
-  './js/events.js',
-  './js/guides.js',
-  './js/map.js',
-  './js/training.js',
-  './js/items.js',
-  './js/app.js',
+  './js/app/events.js',
+  './js/app/lifecycle.js',
+  './js/core/dataset.js',
+  './js/core/i18n.js',
+  './js/core/router.js',
+  './js/core/state.js',
+  './js/core/storage.js',
+  './js/core/types.js',
+  './js/main.js',
+  './js/ui/dom.js',
+  './js/ui/layout.js',
+  './js/ui/sound.js',
+  './js/ui/theme.js',
+  './js/views/extras.js',
+  './js/views/frontier.js',
+  './js/views/guides.js',
+  './js/views/items.js',
+  './js/views/machines.js',
+  './js/views/map.js',
+  './js/views/pokedex.js',
+  './js/views/pokemon-render.js',
+  './js/views/pokemon.js',
+  './js/views/settings.js',
+  './js/views/team.js',
+  './js/views/trainers.js',
+  './js/widgets/live-events.js',
+  './js/widgets/training-modal.js',
+  './data/pokedex.json',
+  './data/moves.json',
+  './data/abilities.json',
+  './data/i18n/pt.json',
+  './data/gyms.json',
+  './data/tutors.json',
+  './data/guides.json',
+  './data/machines.json',
+  './data/key-items.json',
+  './data/extras.json',
+  './data/frontier.json',
   './images/miss.png',
   './favicons/favicon-16x16.png',
   './favicons/icon-192.png',

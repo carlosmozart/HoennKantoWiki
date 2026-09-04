@@ -25,43 +25,32 @@
     <link rel="apple-touch-icon" href="./favicons/icon-192.png">
 
     <!-- Estilos (com ?v= anti-cache) -->
-    <link rel="stylesheet" href="./css/style.css?v=3.6">
-    <link rel="stylesheet" href="./css/layout.css?v=3.6">
+    <link rel="stylesheet" href="./css/style.css?v=4.0">
+    <link rel="stylesheet" href="./css/layout.css?v=4.0">
     
     <script>
         // Fonte única da versão usada no cache busting (lida por js/api.js).
-        window.ASSET_VERSION = '3.6';
+        window.ASSET_VERSION = '4.0';
 
         // O dicionário do idioma salvo é pedido só depois que o app.js roda.
         // O preload adianta o download e evita essa requisição em cascata.
         (function () {
             try {
                 var lang = localStorage.getItem('wiki-lang') || 'pt';
-                var file = lang === 'pt' ? './js/translations_pt.js' : './js/translations.js';
+                var file = lang === 'pt' ? './data/i18n/pt.json' : './data/i18n/en.json';
                 var link = document.createElement('link');
                 link.rel = 'preload';
-                link.as = 'script';
+                link.as = 'fetch';
+                link.crossOrigin = 'anonymous';
                 link.href = file + '?v=' + window.ASSET_VERSION;
                 document.head.appendChild(link);
             } catch (e) {}
         })();
     </script>
 
-    <!-- Scripts (com ?v= anti-cache)
-         translations.js, translations_pt.js e gyms.js NÃO entram aqui:
-         são baixados sob demanda por loadScript() em js/api.js. -->
-    <script defer src="./js/api.js?v=3.6"></script>
-    <script defer src="./js/tms.js?v=3.6"></script>
-    <script defer src="./js/render.js?v=3.6"></script>
-    <script defer src="./js/frontier.js?v=3.6"></script>
-    <script defer src="./js/extras.js?v=3.6"></script>
-    <script defer src="js/tutors.js?v=3.6"></script>
-    <script defer src="js/events.js?v=3.6"></script>
-    <script defer src="js/guides.js?v=3.6"></script>
-    <script defer src="js/map.js?v=3.6"></script>
-    <script defer src="js/training.js?v=3.6"></script>
-    <script defer src="js/items.js?v=3.6"></script>
-    <script defer src="./js/app.js?v=3.6"></script>
+    <!-- Um unico ponto de entrada; o resto vem por import ES.
+         Dados (Pokedex, golpes, ginasios, traducoes) ficam em data/*.json. -->
+    <script type="module" src="./js/main.js?v=4.0"></script>
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
         if ('serviceWorker' in navigator) {
