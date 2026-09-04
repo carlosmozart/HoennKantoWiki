@@ -163,6 +163,25 @@ class EditorTest(unittest.TestCase):
             body["data"]["emerald"]["gyms"][0]["silverTeam"][0][key] = value
             self.assertEqual(self.request("/api/save", body)[0], 400)
 
+    def test_blue_has_all_frlg_battle_variants(self):
+        body = self.payload("gyms.json")
+        blue = body["data"]["firered-leafgreen"]["rivals"][0]
+        battles = blue["battles"]
+        self.assertEqual(len(battles), 9)
+        self.assertTrue(all(len(battle["variants"]) == 3 for battle in battles))
+        self.assertTrue(all(
+            {variant["playerStarter"] for variant in battle["variants"]}
+            == {"Bulbasaur", "Charmander", "Squirtle"}
+            for battle in battles
+        ))
+        self.assertEqual([len(variant["team"]) for variant in battles[-1]["variants"]], [6, 6, 6])
+        self.assertEqual(battles[-1]["battleItems"], [{"name": "Full Restore", "quantity": 4}])
+        self.assertTrue(all(
+            any(pokemon["item"] == "Sitrus Berry" for pokemon in battle["variants"][0]["team"])
+            for battle in battles[-2:]
+        ))
+        self.server.check_document("gyms.json", body["data"])
+
     def test_empty_lists_keep_models_after_restart(self):
         body = self.payload()
         body["data"]["hoenn"] = []

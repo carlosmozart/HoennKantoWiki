@@ -1,7 +1,7 @@
 // Lideres de ginasio, Elite Four, rivais e vilaes.
 // Metodos compostos no objeto `app` (js/main.js), por isso `this` continua valido.
 
-import { spriteCheio, spriteInsignia, imgItem } from '../core/sprites.js';
+import { spritePokemon, spriteInsignia, imgItem } from '../core/sprites.js';
 
 import { getGinasios } from '../core/dataset.js';
 import { TYPE_TRANSLATIONS } from '../core/types.js';
@@ -57,7 +57,7 @@ export default {
                 <div class="frontier-team-grid">`;
             
             for (let poke of teamArr) {
-                const spriteUrl = `${spriteCheio(poke.id)}`;
+                const spriteUrl = spritePokemon(poke.id, { versao: vg });
                 
                 let typesHtml = '';
                 if (poke.types) {
@@ -114,7 +114,7 @@ export default {
                     <span class="starter-seta">→</span>
                     <span class="starter-rival">${v.rival}</span>
                     <span class="starter-linha">${v.linha.map(id =>
-                        `<img src="${spriteCheio(id)}" alt="" loading="lazy" decoding="async">`).join('')}</span>
+                        `<img src="${spritePokemon(id, { versao: vg })}" alt="" loading="lazy" decoding="async">`).join('')}</span>
                 </div>`).join('');
             return `<div class="starter-rule">
                         <strong>${r.titulo}</strong>
@@ -124,11 +124,54 @@ export default {
         };
 
         const listaBatalhas = (t) => {
+            if (t.battles?.length) return '';
             if (!t.battleList) return '';
             return `<div class="battle-list">
                         <strong data-ui=labels.text_4a446a8671>Confrontos ao longo do jogo</strong>
                         <ol>${t.battleList.map(b => `<li>${b}</li>`).join('')}</ol>
                     </div>`;
+        };
+
+        const batalhasDoRival = (t) => {
+            if (!t.battles?.length) return '';
+            const iniciais = t.battles[0].variants.map(v => v.playerStarter);
+            const itensDaBatalha = (itens) => {
+                if (!itens?.length) return '';
+                return `<div class="rival-battle-items">
+                    <strong>Itens do Blue:</strong>
+                    ${itens.map(item => `<span>${imgItem(item.name, { tamanho: 24 })}${item.name} ×${item.quantity}</span>`).join('')}
+                </div>`;
+            };
+
+            return `<section class="rival-battle-guide" aria-label="Times do Blue por confronto">
+                <div class="rival-starter-picker">
+                    <div>
+                        <strong>Qual foi o seu inicial?</strong>
+                        <small>O time correto será aplicado a todos os confrontos.</small>
+                    </div>
+                    <div class="rival-starter-buttons" role="group" aria-label="Inicial escolhido pelo jogador">
+                        ${iniciais.map((nome, index) => `<button type="button" class="rival-starter-btn${index === 0 ? ' active' : ''}" data-player-starter="${nome}" aria-pressed="${index === 0}">${nome}</button>`).join('')}
+                    </div>
+                </div>
+                <div class="rival-battle-timeline">
+                    ${t.battles.map((battle, index) => `<details class="rival-battle"${index === 0 ? ' open' : ''}>
+                        <summary>
+                            <span class="rival-battle-number">${index + 1}</span>
+                            <span class="rival-battle-heading">
+                                <strong>${battle.title.replace(/^\d+\.\s*/, '')}</strong>
+                                <small>${battle.location} · Prêmio: ₽${battle.prize}${battle.optional ? ' · Opcional' : ''}</small>
+                            </span>
+                        </summary>
+                        <div class="rival-battle-content">
+                            ${battle.note ? `<p class="rival-battle-note">${battle.note}</p>` : ''}
+                            ${itensDaBatalha(battle.battleItems)}
+                            ${battle.variants.map((variant, variantIndex) => `<div class="rival-variant-panel" data-player-starter="${variant.playerStarter}"${variantIndex === 0 ? '' : ' hidden'}>
+                                ${renderTeam(variant.team, `Seu inicial: ${variant.playerStarter} · Inicial do Blue: ${variant.rivalStarter}`)}
+                            </div>`).join('')}
+                        </div>
+                    </details>`).join('')}
+                </div>
+            </section>`;
         };
 
         for (let leader of leaders) {
@@ -167,8 +210,9 @@ export default {
                     </div>
                     
                     <div class="frontier-teams-container">
-                        ${renderTeam(leader.silverTeam, leader.silverReq)}
-                        ${renderTeam(leader.goldTeam, leader.goldReq)}
+                        ${batalhasDoRival(leader)}
+                        ${leader.battles?.length ? '' : renderTeam(leader.silverTeam, leader.silverReq)}
+                        ${leader.battles?.length ? '' : renderTeam(leader.goldTeam, leader.goldReq)}
                     </div>
                 </div>
             `;
@@ -176,5 +220,22 @@ export default {
         
         html += '</div>'; // close frontier-grid
         container.innerHTML = html;
+
+        container.querySelectorAll('.rival-battle-guide').forEach(guide => {
+            guide.querySelectorAll('.rival-starter-btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    playClickSound();
+                    const starter = button.dataset.playerStarter;
+                    guide.querySelectorAll('.rival-starter-btn').forEach(candidate => {
+                        const selected = candidate.dataset.playerStarter === starter;
+                        candidate.classList.toggle('active', selected);
+                        candidate.setAttribute('aria-pressed', String(selected));
+                    });
+                    guide.querySelectorAll('.rival-variant-panel').forEach(panel => {
+                        panel.hidden = panel.dataset.playerStarter !== starter;
+                    });
+                });
+            });
+        });
     }
 };

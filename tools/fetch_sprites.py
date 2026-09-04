@@ -100,6 +100,15 @@ def nomes_de_itens():
                         item = (p.get('item') or '').strip()
                         if item and item.lower() not in ('nenhum', 'none', '-', ''):
                             nomes.add(slug(item))
+                for batalha in t.get('battles') or []:
+                    for item in batalha.get('battleItems') or []:
+                        if item.get('name'):
+                            nomes.add(slug(item['name']))
+                    for variacao in batalha.get('variants') or []:
+                        for p in variacao.get('team') or []:
+                            item = (p.get('item') or '').strip()
+                            if item and item.lower() not in ('nenhum', 'none', '-', ''):
+                                nomes.add(slug(item))
 
     # itens de evolucao citados nas fichas
     for i in range(1, MAX_ID + 1):

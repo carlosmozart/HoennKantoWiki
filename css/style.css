@@ -1188,11 +1188,166 @@ summary:focus-visible,
 .battle-list ol { margin: 6px 0 0 18px; color: var(--text-muted); }
 .battle-list li { padding: 2px 0; }
 
+/* Cronologia dos rivais com times que mudam conforme o inicial do jogador */
+.rival-battle-guide {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 100%;
+}
+
+.rival-starter-picker {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px;
+    background: var(--stat-cell-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+}
+
+.rival-starter-picker small {
+    display: block;
+    margin-top: 3px;
+    color: var(--text-muted);
+}
+
+.rival-starter-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 7px;
+}
+
+.rival-starter-btn {
+    min-height: 40px;
+    padding: 8px 12px;
+    color: var(--text-color);
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    font: inherit;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.rival-starter-btn:hover { background: var(--btn-hover); }
+
+.rival-starter-btn.active {
+    color: var(--primary-on);
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.rival-battle-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.rival-battle {
+    overflow: hidden;
+    background: rgba(255,255,255,0.025);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+}
+
+.rival-battle > summary {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    min-height: 58px;
+    padding: 10px 14px;
+    color: var(--text-color);
+    cursor: pointer;
+    list-style: none;
+}
+
+.rival-battle > summary::-webkit-details-marker { display: none; }
+.rival-battle > summary:hover { background: var(--btn-hover); }
+
+.rival-battle-number {
+    display: grid;
+    place-items: center;
+    flex: 0 0 34px;
+    width: 34px;
+    height: 34px;
+    color: var(--primary-on);
+    background: var(--primary-color);
+    border-radius: 50%;
+    font-weight: 800;
+}
+
+.rival-battle-heading {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.rival-battle-heading small {
+    margin-top: 2px;
+    color: var(--text-muted);
+    font-size: 0.78rem;
+}
+
+.rival-battle > summary::after {
+    content: '›';
+    color: var(--primary-color);
+    font-size: 1.5rem;
+    transition: transform 0.2s ease;
+}
+
+.rival-battle[open] > summary::after { transform: rotate(90deg); }
+
+.rival-battle-content {
+    padding: 0 10px 10px;
+    border-top: 1px solid var(--glass-border);
+}
+
+.rival-battle-note {
+    margin: 10px 4px 0;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+.rival-battle-items {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 10px 4px 0;
+}
+
+.rival-battle-items span {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 9px;
+    background: var(--stat-cell-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 18px;
+    font-size: 0.82rem;
+}
+
+.rival-variant-panel > .frontier-team-section {
+    margin-top: 10px;
+    padding: 10px;
+}
+
 @media (max-width: 600px) {
     .trainer-card .frontier-brain-sprite,
     .frontier-facility-card .frontier-brain-sprite { height: 120px; max-width: 110px; }
     .starter-linha { margin-left: 0; width: 100%; }
     .starter-seu, .starter-rival { min-width: 0; }
+    .rival-starter-picker { align-items: stretch; flex-direction: column; }
+    .rival-starter-buttons { display: grid; grid-template-columns: repeat(3, 1fr); }
+    .rival-starter-btn { min-width: 0; padding-inline: 7px; font-size: 0.72rem; }
+    .rival-battle > summary { align-items: flex-start; padding-inline: 10px; }
+    .rival-battle-heading small { line-height: 1.35; }
+    .rival-battle-content { padding-inline: 6px; }
+    .rival-variant-panel > .frontier-team-section { padding: 8px; }
 }
 
 /* Pokémon especiais da Battle Frontier: grade em vez de lista empilhada */
