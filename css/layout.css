@@ -461,6 +461,8 @@ body {
     .main-content { max-width: 100%; padding: 10px; }
     .section-panel { padding: 15px; }
     .grid-container { padding: 10px; gap: 10px; }
+    #tms-grid { grid-template-columns: 1fr; }
+    .machine-card { padding: 14px; }
     .search-form { flex-direction: column; }
     .search-form .input-select { width: 100%; }
 

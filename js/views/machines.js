@@ -2,6 +2,28 @@
 // Metodos compostos no objeto `app` (js/main.js), por isso `this` continua valido.
 
 import { getMaquinas, getTutores } from '../core/dataset.js';
+import { TYPE_TRANSLATIONS } from '../core/types.js';
+
+const normalizarGolpe = (nome = '') => nome
+    .replace(/([a-z])([A-Z])/g, '$1 $2')
+    .replace(/[-_]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+const chaveGolpe = (nome = '') => {
+    const chave = normalizarGolpe(nome).toLowerCase();
+    return chave === 'softboiled' ? 'soft boiled' : chave;
+};
+
+const capitalizarGolpe = (nome = '') => normalizarGolpe(nome)
+    .split(' ')
+    .map(palavra => palavra.charAt(0).toUpperCase() + palavra.slice(1).toLowerCase())
+    .join(' ');
+
+const pilulaTipo = (tipo = 'normal') => `
+    <span class="pokemon-type-badge machine-type-pill badge-${tipo}">
+        ${TYPE_TRANSLATIONS[tipo] || tipo}
+    </span>`;
 
 export default {
     async renderTMs() {
@@ -30,27 +52,28 @@ export default {
                         location = locObj[this.state.versionGroup] || locObj["emerald"] || location;
                     }
 
-                    const nameCap = machine.move.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+                    const nameCap = capitalizarGolpe(machine.move);
                     
                     const isChecked = this.loadScopedData(`tm-${machine.id}`, false) ? 'checked' : '';
                     const opacity = isChecked ? '0.5' : '1';
                     
                     html += `
-                        <div class="grid-card machine-card tm-card-${machine.id}" style="opacity: ${opacity}; display:flex; flex-direction:column; gap:8px; padding:15px; border-radius:12px; background:var(--glass-bg); border:1px solid var(--glass-border); box-sizing:border-box; transition: opacity 0.3s;">
-                            <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <div style="display:flex; align-items:center; gap:12px;">
-                                    <strong>${machine.id}</strong>
-                                    <span class="badge-${machine.type}" style="padding: 2px 6px; border-radius: 4px; font-size: 0.8rem; text-transform: uppercase;">${machine.type}</span>
+                        <article class="grid-card machine-card tm-card-${machine.id}" style="opacity: ${opacity};">
+                            <div class="machine-card-header">
+                                <div class="machine-card-identity">
+                                    <strong class="machine-code">${machine.id}</strong>
+                                    ${pilulaTipo(machine.type)}
                                 </div>
-                                <input type="checkbox" class="tm-checkbox" data-tmid="${machine.id}" ${isChecked} style="width: 20px; height: 20px; cursor: pointer;">
+                                <input type="checkbox" class="tm-checkbox" data-tmid="${machine.id}" ${isChecked} aria-label="Marcar ${machine.id} como encontrada">
                             </div>
-                            <h4 style="margin: 0; font-size: 1.1rem; word-wrap: break-word;">${nameCap}</h4>
-                            <p style="font-size: 0.85rem; color: var(--text-muted); margin:0; text-align: justify; flex: 1;">${desc}</p>
+                            <h3 class="machine-card-title">${nameCap}</h3>
+                            <p class="machine-card-description">${desc}</p>
                             
-                            <div style="margin-top:auto; padding-top:8px; border-top:1px solid rgba(255,255,255,0.1); font-size:0.8rem;">
-                                <strong style="color:var(--text-color);" data-ui=labels.text_b325505115>📍 Encontrar:</strong> <span style="color:var(--text-muted);">${location}</span>
+                            <div class="machine-card-meta">
+                                <strong data-ui="labels.text_b325505115">📍 Encontrar:</strong>
+                                <span>${location}</span>
                             </div>
-                        </div>
+                        </article>
                     `;
                 });
             }
@@ -86,23 +109,23 @@ export default {
                     `;
                     cat.tutors.forEach(t => {
                         let desc = "Sem descrição.";
-                        const tMoveLower = t.move.toLowerCase().replace(' ', '-');
-                        if (window.TRANSLATIONS && window.TRANSLATIONS.moves && window.TRANSLATIONS.moves[tMoveLower]) {
-                            desc = window.TRANSLATIONS.moves[tMoveLower];
+                        const tMoveKey = chaveGolpe(t.move);
+                        if (window.TRANSLATIONS && window.TRANSLATIONS.moves && window.TRANSLATIONS.moves[tMoveKey]) {
+                            desc = window.TRANSLATIONS.moves[tMoveKey];
                         }
                         
-                        let locHtml = t.location ? `<div style="margin-top:auto; padding-top:8px; border-top:1px solid rgba(255,255,255,0.1); font-size:0.8rem;"><strong style="color:var(--text-color);" data-ui=labels.text_b325505115>📍 Encontrar:</strong> <span style="color:var(--text-muted);">${t.location}</span></div>` : '';
+                        let locHtml = t.location ? `<div class="machine-card-meta"><strong data-ui="labels.text_b325505115">📍 Encontrar:</strong><span>${t.location}</span></div>` : '';
                         
                         html += `
-                            <div class="grid-card machine-card" style="display:flex; flex-direction:column; gap:8px; padding:15px; border-radius:12px; background:var(--glass-bg); border:1px solid var(--glass-border); box-sizing:border-box;">
-                                <div style="display:flex; justify-content:space-between; align-items:center;">
-                                    <span class="badge-${t.type}" style="padding: 2px 6px; border-radius: 4px; font-size: 0.8rem; text-transform: uppercase;">${t.type}</span>
-                                    <strong style="color:var(--text-color); font-size:0.9rem;">${t.cost}</strong>
+                            <article class="grid-card machine-card">
+                                <div class="machine-card-header">
+                                    ${pilulaTipo(t.type)}
+                                    <strong class="machine-cost">${t.cost}</strong>
                                 </div>
-                                <h4 style="margin: 0; font-size: 1.1rem; word-wrap: break-word;">${t.move}</h4>
-                                <p style="font-size: 0.85rem; color: var(--text-muted); margin:0; text-align: justify; flex: 1;">${desc}</p>
+                                <h3 class="machine-card-title">${capitalizarGolpe(t.move)}</h3>
+                                <p class="machine-card-description">${desc}</p>
                                 ${locHtml}
-                            </div>
+                            </article>
                         `;
                     });
                     html += `</div></div>`;
