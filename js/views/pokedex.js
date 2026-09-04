@@ -77,6 +77,37 @@ export default {
     // Shoal Cave, loteria de Lilycove e Mirage Island são de Hoenn:
     // o relógio e o checklist não valem para FireRed/LeafGreen.
 
+    /**
+     * Recolhe a grade de tipos enquanto ha texto na busca.
+     * No celular sao 18 botoes em ~6 linhas: digitando um nome, os resultados
+     * ficavam empurrados para fora da tela. O usuario pode reabrir pelo titulo
+     * do painel, e a escolha manual vence ate a busca ser limpa.
+     */
+    atualizarPainelDeFiltros() {
+        const painel = document.querySelector('.filters-panel');
+        if (!painel) return;
+
+        const buscando = Boolean(this.state.searchTerm);
+        painel.classList.toggle('busca-ativa', buscando);
+        if (!buscando) painel.classList.remove('tipos-forcados');
+
+        const recolhido = buscando && !painel.classList.contains('tipos-forcados');
+        const btn = document.getElementById('btn-toggle-tipos');
+        if (btn) btn.setAttribute('aria-expanded', String(!recolhido));
+
+        // Com os tipos escondidos, o filtro ativo precisa continuar visivel
+        const resumo = document.getElementById('filtro-tipo-resumo');
+        if (!resumo) return;
+        const ativo = document.querySelector('.type-filter-btn.active:not(.type-all)');
+        if (recolhido && ativo) {
+            resumo.innerHTML = `<span class="filtro-tipo-chip ${ativo.className.replace('active', '')}">`
+                + `Tipo: ${ativo.textContent}</span>`;
+            resumo.classList.remove('hidden');
+        } else {
+            resumo.classList.add('hidden');
+        }
+    },
+
     applyFilters() {
         const termo = this.state.searchTerm || '';
         const tipoPermitido = this.state.typeFilterNames; // null = todos os tipos
@@ -89,6 +120,7 @@ export default {
             card.style.display = (casaBusca && casaTipo) ? 'flex' : 'none';
         });
 
+        this.atualizarPainelDeFiltros();
         this.updateEmptyState();
     },
 

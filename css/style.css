@@ -1266,3 +1266,73 @@ summary:focus-visible,
     line-height: 1;
     cursor: pointer;
 }
+
+/* ==========================================
+   PAINEL DE FILTROS
+   ========================================== */
+/* O título vira botão para reabrir os tipos durante a busca. */
+.filtros-titulo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    margin-bottom: 15px;
+    padding: 6px;
+    background: none;
+    border: none;
+    color: var(--text-color);
+    font-size: 1.1rem;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+}
+
+.filtros-chevron {
+    color: var(--primary-color);
+    transition: transform 0.25s ease;
+    display: none;
+}
+
+.filtro-tipo-resumo { margin-bottom: 12px; }
+
+.filtro-tipo-chip {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 16px;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+/* No celular são 18 botões em ~6 linhas: enquanto se digita um nome, eles
+   empurram os resultados para fora da tela. O grid recolhe sozinho e volta
+   assim que a busca é limpa. */
+@media (max-width: 900px) {
+    .filters-panel .filtros-chevron { display: inline-block; }
+
+    .filters-panel #type-filters {
+        overflow: hidden;
+        /* proximo da altura real (~300px no celular): com um teto muito alto,
+           metade da animacao passa sem nada visivel acontecer */
+        max-height: 420px;
+        opacity: 1;
+        transition: max-height 0.28s ease, opacity 0.18s ease, margin 0.28s ease;
+    }
+
+    .filters-panel.busca-ativa:not(.tipos-forcados) #type-filters {
+        max-height: 0;
+        opacity: 0;
+        margin: 0;
+        pointer-events: none;
+    }
+
+    .filters-panel.busca-ativa:not(.tipos-forcados) .filtros-chevron {
+        transform: rotate(-90deg);
+    }
+
+    /* Sem os tipos na tela, o painel inteiro encolhe */
+    .filters-panel.busca-ativa:not(.tipos-forcados) {
+        padding-bottom: 10px !important;
+        margin-bottom: 14px !important;
+    }
+}

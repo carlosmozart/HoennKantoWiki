@@ -32,12 +32,12 @@
     <meta name="mobile-web-app-capable" content="yes">
 
     <!-- Estilos (com ?v= anti-cache) -->
-    <link rel="stylesheet" href="./css/style.css?v=4.2">
-    <link rel="stylesheet" href="./css/layout.css?v=4.2">
+    <link rel="stylesheet" href="./css/style.css?v=4.4">
+    <link rel="stylesheet" href="./css/layout.css?v=4.4">
     
     <script>
         // Fonte única da versão usada no cache busting (lida por js/api.js).
-        window.ASSET_VERSION = '4.2';
+        window.ASSET_VERSION = '4.4';
 
         // O dicionário do idioma salvo é pedido só depois que o app.js roda.
         // O preload adianta o download e evita essa requisição em cascata.
@@ -57,7 +57,7 @@
 
     <!-- Um unico ponto de entrada; o resto vem por import ES.
          Dados (Pokedex, golpes, ginasios, traducoes) ficam em data/*.json. -->
-    <script type="module" src="./js/main.js?v=4.2"></script>
+    <script type="module" src="./js/main.js?v=4.4"></script>
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
         if ('serviceWorker' in navigator) {
@@ -186,10 +186,14 @@
                     </details>
 
                     <div class="bento-item filters-panel" style="margin-bottom: 25px; text-align: center; padding: 20px;">
-                        <h3 style="margin-bottom: 15px; font-size: 1.1rem; color: var(--text-color);">Filtros de Pesquisa</h3>
+                        <button type="button" id="btn-toggle-tipos" class="filtros-titulo" aria-expanded="true" aria-controls="type-filters">
+                            <span>Filtros de Pesquisa</span>
+                            <span class="filtros-chevron" aria-hidden="true">▾</span>
+                        </button>
+                        <div id="filtro-tipo-resumo" class="filtro-tipo-resumo hidden"></div>
                         
                         <div style="margin-bottom: 15px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-                            <button class="btn-filter-status active" data-status="all" style="padding: 8px 15px; border-radius: 20px; border: 1px solid var(--glass-border); background: var(--primary-surface); color: var(--primary-on); color: #fff; cursor: pointer; transition: 0.2s;">Todos</button>
+                            <button class="btn-filter-status active" data-status="all" style="padding: 8px 15px; border-radius: 20px; border: 1px solid var(--glass-border); background: var(--primary-surface); color: var(--primary-on); cursor: pointer; transition: 0.2s;">Todos</button>
                             <button class="btn-filter-status" data-status="caught" style="padding: 8px 15px; border-radius: 20px; border: 1px solid var(--glass-border); background: var(--glass-bg); color: var(--text-color); cursor: pointer; transition: 0.2s;">Capturados</button>
                             <button class="btn-filter-status" data-status="uncaught" style="padding: 8px 15px; border-radius: 20px; border: 1px solid var(--glass-border); background: var(--glass-bg); color: var(--text-color); cursor: pointer; transition: 0.2s;">Não Capturados</button>
                         </div>

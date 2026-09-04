@@ -253,6 +253,17 @@ export default {
             }, 150); // 150ms delay
         });
 
+        // Reabrir os tipos manualmente durante a busca
+        const btnTipos = document.getElementById('btn-toggle-tipos');
+        if (btnTipos) {
+            btnTipos.addEventListener('click', () => {
+                const painel = document.querySelector('.filters-panel');
+                if (!painel) return;
+                painel.classList.toggle('tipos-forcados');
+                this.atualizarPainelDeFiltros();
+            });
+        }
+
         // Status Filters (Todos, Capturados, Não Capturados)
         document.querySelectorAll('.btn-filter-status').forEach(btn => {
             btn.addEventListener('click', (e) => {

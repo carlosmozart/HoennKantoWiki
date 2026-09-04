@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pokewiki-v13';
+const CACHE_NAME = 'pokewiki-v15';
 const API_CACHE_NAME = 'pokewiki-api-cache';
 
 // Os <script>/<link> do index usam querystring (?v=1.0.2) para cache busting.
@@ -69,8 +69,14 @@ self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       // addAll aborta tudo se um único arquivo falhar; cacheamos um a um.
+      // cache: 'reload' ignora o cache HTTP do navegador. Sem isso, uma
+      // versao nova do Service Worker podia reaproveitar arquivos velhos que
+      // ainda estivessem validos ali (o GitHub Pages serve com max-age=600) —
+      // e como os imports ES nao carregam o ?v= do index, davam modulos de
+      // versoes diferentes convivendo na mesma pagina.
       .then(cache => Promise.all(
-        ASSETS_TO_CACHE.map(url => cache.add(url).catch(() => null))
+        ASSETS_TO_CACHE.map(url =>
+          cache.add(new Request(url, { cache: 'reload' })).catch(() => null))
       ))
       .then(() => self.skipWaiting())
   );
@@ -107,9 +113,11 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // Assets próprios: Network First com fallback para o cache (offline)
+  // Assets próprios: Network First com fallback para o cache (offline).
+  // 'no-cache' revalida com o servidor (resposta 304 quando nada mudou), em
+  // vez de aceitar o que estiver no cache HTTP sem perguntar.
   event.respondWith(
-    fetch(request).then(networkResponse => {
+    fetch(request, { cache: 'no-cache' }).then(networkResponse => {
       if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
         const copy = networkResponse.clone();
         caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
