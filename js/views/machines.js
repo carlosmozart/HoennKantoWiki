@@ -48,7 +48,7 @@ export default {
                             <p style="font-size: 0.85rem; color: var(--text-muted); margin:0; text-align: justify; flex: 1;">${desc}</p>
                             
                             <div style="margin-top:auto; padding-top:8px; border-top:1px solid rgba(255,255,255,0.1); font-size:0.8rem;">
-                                <strong style="color:var(--text-color);">📍 Encontrar:</strong> <span style="color:var(--text-muted);">${location}</span>
+                                <strong style="color:var(--text-color);" data-ui=labels.text_b325505115>📍 Encontrar:</strong> <span style="color:var(--text-muted);">${location}</span>
                             </div>
                         </div>
                     `;
@@ -91,7 +91,7 @@ export default {
                             desc = window.TRANSLATIONS.moves[tMoveLower];
                         }
                         
-                        let locHtml = t.location ? `<div style="margin-top:auto; padding-top:8px; border-top:1px solid rgba(255,255,255,0.1); font-size:0.8rem;"><strong style="color:var(--text-color);">📍 Encontrar:</strong> <span style="color:var(--text-muted);">${t.location}</span></div>` : '';
+                        let locHtml = t.location ? `<div style="margin-top:auto; padding-top:8px; border-top:1px solid rgba(255,255,255,0.1); font-size:0.8rem;"><strong style="color:var(--text-color);" data-ui=labels.text_b325505115>📍 Encontrar:</strong> <span style="color:var(--text-muted);">${t.location}</span></div>` : '';
                         
                         html += `
                             <div class="grid-card machine-card" style="display:flex; flex-direction:column; gap:8px; padding:15px; border-radius:12px; background:var(--glass-bg); border:1px solid var(--glass-border); box-sizing:border-box;">
@@ -108,7 +108,7 @@ export default {
                     html += `</div></div>`;
                 });
             } else {
-                html = '<p>Dados de tutores não encontrados.</p>';
+                html = '<p data-ui=labels.text_2f2964c576>Dados de tutores não encontrados.</p>';
             }
             gridTutor.innerHTML = html;
         }

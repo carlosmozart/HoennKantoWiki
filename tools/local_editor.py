@@ -18,6 +18,7 @@ from html.parser import HTMLParser
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import unquote, urlsplit
 import webbrowser
+from editor_extensions import store_image, check_extensions
 
 ROOT = Path(__file__).resolve().parents[1]
 DOCUMENTS = {
@@ -28,6 +29,9 @@ DOCUMENTS = {
     "extras.json": "Presentes, trocas e exclusivos",
     "machines.json": "TMs e HMs",
     "tutors.json": "Tutores de golpes",
+    "pages.json": "Páginas e modelos de cards",
+    "interface.json": "Textos da interface",
+    "pokemon-overrides.json": "Correções da Pokédex",
     "i18n/pt.json": "Traduções · Português",
     "i18n/en.json": "Traduções · Inglês",
 }
@@ -91,6 +95,8 @@ def validate(value, schema, path="conteúdo"):
     allowed = schema["types"]
     if allowed and actual not in allowed:
         raise ValueError(f"{path}: tipo inválido ({actual}).")
+    if "enum" in schema and value not in schema["enum"]:
+        raise ValueError(f"{path}: opção inválida.")
     if isinstance(value, dict):
         if any(k in value for k in ("__proto__", "prototype", "constructor")):
             raise ValueError(f"{path}: chave inválida.")
@@ -113,6 +119,10 @@ def validate(value, schema, path="conteúdo"):
         if len(value) > 300_000 or "\x00" in value:
             raise ValueError(f"{path}: texto inválido ou muito longo.")
         key = path.rsplit("/", 1)[-1]
+        if not value and schema.get("allowEmpty"):
+            return
+        if key == "link" and value and not re.match(r"^(https?://|#(?:page|pokemon)/)", value):
+            raise ValueError("Use um link http(s), #page/endereco ou #pokemon/numero.")
         if key in ("sprite", "spriteAlt", "brainSprite", "image"):
             if not re.fullmatch(r"(?:\./)?(?:img|images)/[A-Za-z0-9_./ -]+\.(?:png|gif|jpe?g|webp)", value):
                 raise ValueError(f"{path}: selecione uma imagem local.")
@@ -127,6 +137,10 @@ def validate(value, schema, path="conteúdo"):
             raise ValueError(f"{path}: tipo da geração 3 inválido.")
     elif isinstance(value, (float, int)) and not isinstance(value, bool):
         key = path.rsplit("/", 1)[-1]
+        if ("minimum" in schema and value < schema["minimum"]) or ("maximum" in schema and value > schema["maximum"]):
+            raise ValueError(f"{path}: valor fora do limite.")
+        if key == "pokemonId" and type(value) is not int:
+            raise ValueError("Escolha um número inteiro de Pokémon.")
         if key == "id" and (not isinstance(value, int) or not 1 <= value <= 386):
             raise ValueError(f"{path}: número do Pokémon entre 1 e 386.")
         if key == "level" and (not isinstance(value, int) or not 1 <= value <= 100):
@@ -189,6 +203,7 @@ class EditorServer(ThreadingHTTPServer):
         if not isinstance(name, str) or name not in DOCUMENTS:
             raise ValueError("Arquivo fora da lista editável.")
         validate(data, self.schemas[name])
+        check_extensions(name, data)
         if name == "guides.json":
             for guide, required in {"weakness": ["calc-type-1", "calc-type-2", "calc-result"],
                                     "natures": ["natures-table-body"]}.items():
@@ -198,7 +213,7 @@ class EditorServer(ThreadingHTTPServer):
 
 
 class EditorHandler(BaseHTTPRequestHandler):
-    server_version = "WikiLocalEditor/1.0"
+    server_version = "WikiLocalEditor/2.0"
 
     def log_message(self, fmt, *args):
         # Nao registrar token, corpo dos documentos ou URLs privadas de previa.
@@ -233,7 +248,7 @@ class EditorHandler(BaseHTTPRequestHandler):
         return True
 
     def document(self, name):
-        if name not in DOCUMENTS:
+        if not isinstance(name, str) or name not in DOCUMENTS:
             raise ValueError("Arquivo fora da lista editável.")
         path = (self.server.root / "data" / name).resolve()
         if not path.is_relative_to(self.server.root / "data"):
@@ -247,7 +262,7 @@ class EditorHandler(BaseHTTPRequestHandler):
         try:
             if path == "/api/catalog":
                 assets = [p.relative_to(self.server.root).as_posix()
-                          for folder in ("img/trainers", "img/items", "img/badges")
+                          for folder in ("img/trainers", "img/items", "img/badges", "img/uploads")
                           for p in sorted((self.server.root / folder).glob("*.png"))]
                 return self.respond(200, {"documents": DOCUMENTS, "assets": assets,
                     "pokemon": json.loads((self.server.root / "data/pokedex.json").read_text(encoding="utf-8")),
@@ -261,7 +276,7 @@ class EditorHandler(BaseHTTPRequestHandler):
                 return self.respond(200, b'<a href="/editor/">Abrir editor local</a>', "text/html; charset=utf-8")
             if path.startswith("/editor/"):
                 leaf = path[len("/editor/"):] or "index.html"
-                if leaf not in ("index.html", "editor.js", "editor.css"):
+                if leaf not in ("index.html", "editor.js", "editor.css", "theme.js", "dark.css", "media.js"):
                     return self.respond(404, {"error": "Não encontrado."})
                 return self.serve_file(self.server.root / "tools/editor" / leaf)
             if path.startswith("/preview/"):
@@ -339,11 +354,17 @@ document.addEventListener('DOMContentLoaded', () => {
             if self.headers.get_content_type() != "application/json":
                 return self.respond(415, {"error": "Envie JSON."})
             size = int(self.headers.get("Content-Length", "0"))
-            if size < 1 or size > LIMIT:
+            route = urlsplit(self.path).path
+            maximum = 12 * 1024 * 1024 if route == "/api/upload" else LIMIT
+            if size < 1 or size > maximum:
                 return self.respond(413, {"error": "Conteúdo muito grande ou vazio."})
             body = json.loads(self.rfile.read(size))
             if not isinstance(body, dict):
                 raise ValueError("Envie um objeto JSON.")
+            if route == "/api/upload":
+                with LOCK:
+                    image = store_image(self.server.root, body.get("name"), body.get("png"))
+                return self.respond(200, image)
             name, data = body.get("name"), body.get("data")
             self.document(name)
             self.server.check_document(name, data)
@@ -352,6 +373,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 context = body.get("context", {})
                 if not isinstance(context, dict):
                     raise ValueError("Contexto de prévia inválido.")
+                if name == "pages.json":
+                    data = copy.deepcopy(data)
+                    template = context.get("templateIndex")
+                    if type(template) is int and 0 <= template < len(data["templates"]):
+                        card = copy.deepcopy(data["templates"][template])
+                        data["pages"] = []
+                        data["pages"].append({"slug":"modelo-preview","title":card["title"],
+                            "description":"Prévia do modelo de card","menuLabel":"Modelo",
+                            "visible":True,"versions":[],"cards":[card],"en":{}})
+                    for page in data["pages"]:
+                        if page["slug"] == context.get("pageSlug"):
+                            page["visible"] = True
                 snapshot_id = secrets.token_urlsafe(18)
                 with LOCK:
                     if len(self.server.snapshots) >= 25:

@@ -19,7 +19,7 @@ export default {
             try {
                 window.GYM_LEADERS = await getGinasios();
             } catch (e) {
-                container.innerHTML = '<p>Não foi possível carregar os dados dos treinadores. Verifique sua conexão.</p>';
+                container.innerHTML = '<p data-ui=labels.text_3e60596e7a>Não foi possível carregar os dados dos treinadores. Verifique sua conexão.</p>';
                 return;
             }
         }
@@ -29,7 +29,7 @@ export default {
         const regionData = window.GYM_LEADERS[vg];
         
         if (!regionData) {
-            container.innerHTML = '<p>Dados não encontrados.</p>';
+            container.innerHTML = '<p data-ui=labels.text_719f96b12a>Dados não encontrados.</p>';
             return;
         }
 
@@ -37,7 +37,7 @@ export default {
         const leaders = regionData[tab];
 
         if (!leaders || leaders.length === 0) {
-            container.innerHTML = '<p>Nenhum dado disponível.</p>';
+            container.innerHTML = '<p data-ui=labels.text_600b92b8b5>Nenhum dado disponível.</p>';
             return;
         }
 
@@ -70,7 +70,7 @@ export default {
                 // Pokemon que seguram item ganham a sprite ao lado do nome
                 const itemHtml = (item) => {
                     const nome = (item || '').trim();
-                    if (!nome || ['-', 'nenhum', 'none'].includes(nome.toLowerCase())) return '<span class="sem-item">Nenhum</span>';
+                    if (!nome || ['-', 'nenhum', 'none'].includes(nome.toLowerCase())) return '<span class="sem-item" data-ui=labels.text_997c23481b>Nenhum</span>';
                     return `${imgItem(nome, { tamanho: 20 })}<span>${nome}</span>`;
                 };
 
@@ -91,8 +91,8 @@ export default {
                             </div>
                         </div>
                         <div class="frontier-poke-details">
-                            <div class="detail-row"><strong>Habilidade:</strong> ${poke.ability || '-'}</div>
-                            <div class="detail-row detail-item"><strong>Item:</strong> ${itemHtml(poke.item)}</div>
+                            <div class="detail-row"><strong data-ui=labels.text_c2a6efc53e>Habilidade:</strong> ${poke.ability || '-'}</div>
+                            <div class="detail-row detail-item"><strong data-ui=labels.text_ab12e73f5e>Item:</strong> ${itemHtml(poke.item)}</div>
                         </div>
                         <div class="frontier-poke-moves">
                             ${movesHtml}
@@ -126,7 +126,7 @@ export default {
         const listaBatalhas = (t) => {
             if (!t.battleList) return '';
             return `<div class="battle-list">
-                        <strong>Confrontos ao longo do jogo</strong>
+                        <strong data-ui=labels.text_4a446a8671>Confrontos ao longo do jogo</strong>
                         <ol>${t.battleList.map(b => `<li>${b}</li>`).join('')}</ol>
                     </div>`;
         };

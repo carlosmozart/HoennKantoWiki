@@ -1,7 +1,18 @@
+import { importImage } from "./media.js";
+
 const $ = (id) => document.getElementById(id);
 const clone = (data) => structuredClone(data);
 const TYPES = ['normal','fire','water','electric','grass','ice','fighting','poison','ground','flying','psychic','bug','rock','ghost','dragon','dark','steel'];
 const labels = {
+  pages:'Páginas',templates:'Modelos de cards',slug:'Endereço da página',menuLabel:'Nome no menu',
+  description:'Descrição',visible:'Publicar página',versions:'Jogos (vazio = todos)',cards:'Cards',
+  layout:'Disposição',accent:'Cor de destaque',fields:'Campos adicionais',label:'Rótulo',value:'Valor',
+  link:'Link',linkLabel:'Texto do link',en:'Inglês (opcional)',pt:'Português',pokemonId:'Número do Pokémon',
+  corrections:'Correções',changes:'Dados a corrigir',translations:'Textos por idioma',
+  navigation:'Navegação',sections:'Títulos e textos',labels:'Rótulos',placeholders:'Campos de pesquisa',
+  nome:'Nome identificador',tipos:'Tipos',altura:'Altura (decímetros)',peso:'Peso (hectogramas)',
+  stats:'Status base',evs:'EVs concedidos',habilidades:'Habilidades',gruposOvo:'Grupos de ovo',
+  golpes:'Golpes por jogo',evolucoes:'Evoluções',locais:'Encontros',cries:'Áudios',oculta:'Oculta',
   name:'Nome',city:'Cidade / local',type:'Tipo',types:'Tipos',badge:'Insígnia',symbol:'Símbolo',
   sprite:'Imagem do treinador',spriteAlt:'Segunda imagem',spriteLabels:'Nomes das imagens',desc:'Descrição',
   silverReq:'Título da primeira batalha / prata',goldReq:'Título da revanche / ouro',
@@ -23,7 +34,7 @@ const token = location.hash.slice(1) || sessionStorage.getItem('wiki-editor-toke
 if (token) sessionStorage.setItem('wiki-editor-token', token);
 history.replaceState(null, '', location.pathname);
 let catalog, filename, doc, original, revision, schema, sections = [], sectionPath = [], selected = null;
-let undoStack = [], redoStack = [], loading = false, sequence = 0, previewSequence = 0, draftTimer, galleryCallback;
+let undoStack = [], redoStack = [], loading = false, sequence = 0, previewSequence = 0, draftTimer, galleryCallback, refreshGallery;
 const savedRange = new WeakMap();
 
 function el(tag, attrs = {}, text) {
@@ -88,8 +99,9 @@ function change(action, redraw = false) {
   if (redraw) render();
 }
 function fallback(s, key = '') {
+  if ('default' in s) return clone(s.default);
   if (s.types.includes('object')) return Object.fromEntries((s.required || []).map(k => [k, fallback(s.properties[k], k)]));
-  if (s.types.includes('array')) return key === 'types' ? ['normal'] : [];
+  if (s.types.includes('array')) return ['types','tipos'].includes(key) ? ['normal'] : [];
   if (s.types.includes('number')) return key === 'id' ? 1 : key === 'level' ? 5 : 0;
   if (s.types.includes('boolean')) return false;
   if (s.types.includes('string')) return key === 'type' ? 'normal' : '';
@@ -100,13 +112,14 @@ function collectSections(data, s, path = []) {
   if (!data || typeof data !== 'object') return [{path, title:path.map(label).join(' · ')}];
   if (path.length && ('content' in data || 'desc' in data || 'title' in data || 'name' in data))
     return [{path, title:path.map(label).join(' · '), single:true}];
-  if (filename.startsWith('i18n/') && path.length)
+  if ((filename === 'interface.json' && path.length === 2) || (filename.startsWith('i18n/') && path.length))
     return [{path, title:path.map(label).join(' · '), dictionary:true}];
   return Object.entries(data).flatMap(([key, value]) => collectSections(value, s.properties[key], [...path,key]));
 }
 function activeSection() { return sections.find(s => JSON.stringify(s.path) === JSON.stringify(sectionPath)); }
 function entryName(value, key) {
   if (typeof value === 'string') return String(key) + ' · ' + value.replace(/<[^>]+>/g,'').slice(0,50);
+  if (value?.pokemonId && filename === 'pokemon-overrides.json') return '#'+value.pokemonId+' · '+(catalog.pokemon.find(p=>p.id===value.pokemonId)?.nome || 'Pokémon');
   return value?.name || value?.title || value?.category || value?.move || label(String(key));
 }
 function entries() {
@@ -143,7 +156,11 @@ function render() {
   $('title').textContent = entry ? entryName(entry.value,entry.key) : 'Nenhum card nesta seção';
   $('breadcrumb').textContent = catalog.documents[filename] + ' / ' + activeSection().title;
   $('form').replaceChildren();
-  if (entry) renderValue($('form'), entry.path, schemaAt(entry.path), entry.key);
+  if (entry) {
+    if(filename === 'pages.json') $('form').append(el('p',{className:'field-help'},'Páginas aparecem no menu após salvar e publicar. Modelos são cópias iniciais: alterações no modelo não modificam cards já criados.'));
+    if(filename === 'pokemon-overrides.json') $('form').append(el('p',{className:'field-help'},'Adicione somente os campos que deseja corrigir. Os arquivos gerados continuam intactos; remover esta correção restaura os dados originais.'));
+    renderValue($('form'), entry.path, schemaAt(entry.path), entry.key);
+  }
   else $('form').append(el('p',{className:'empty'},'Use “Adicionar” para criar o primeiro card.'));
   updateState();
 }
@@ -230,7 +247,16 @@ function renderValue(parent, path, s, key) {
   const value = at(path);
   if (Array.isArray(value)) {
     const box = el('fieldset'), head = el('div',{className:'array-header'});
-    head.append(el('label',{},label(key)),button('+ Adicionar', () => change(() => value.push(fallback(s.items,key === 'types' ? 'type' : '')), true)));
+    head.append(el('label',{},label(key)),button('+ Adicionar', () => change(() => value.push(fallback(s.items,['types','tipos'].includes(key) ? 'type' : '')), true)));
+    if (filename === 'pages.json' && key === 'cards') {
+      head.append(button('Adicionar de modelo', () => {
+        $('template-list').replaceChildren(...doc.templates.map(template => button(template.title, () => {
+          change(() => value.push(clone(template)), true);
+          $('template-dialog').close();
+        })));
+        $('template-dialog').showModal();
+      }));
+    }
     box.append(head);
     value.forEach((item,i) => {
       const p = [...path,i];
@@ -241,12 +267,13 @@ function renderValue(parent, path, s, key) {
         button('Duplicar', () => change(() => value.splice(i+1,0,clone(item)),true)),
         button('Remover', () => {if(confirm('Remover esta entrada da lista?')) change(() => value.splice(i,1),true);},{className:'danger'}),
       );
+      if (filename === 'pages.json' && key === 'cards') actions.append(button('Guardar como modelo', () => change(() => doc.templates.push(clone(item)), true)));
       if (item && typeof item === 'object') {
         const details = el('details');
         details.append(el('summary',{},entryName(item,i+1)),actions);
         const fields = el('div',{className:'fields'});renderValue(fields,p,s.items,i+1);details.append(fields);box.append(details);
       } else {
-        const row = el('div');renderValue(row,p,s.items,key === 'types' ? 'type' : i+1);row.append(actions);box.append(row);
+        const row = el('div');renderValue(row,p,s.items,['types','tipos'].includes(key) ? 'type' : i+1);row.append(actions);box.append(row);
       }
     });
     if (!value.length) box.append(el('p',{className:'empty'},'Lista vazia. Você pode adicionar entradas.'));
@@ -271,14 +298,14 @@ function renderValue(parent, path, s, key) {
     return;
   }
   const field = el('div',{className:'field'}), id = 'field-' + path.map(String).join('-');
-  field.append(el('label',{htmlFor:id},label(key)));
+  field.append(el('label',{htmlFor:id},(s.label || label(key))));
   if (key === 'content' || key === 'desc') {
     richField(field,path,value || '');parent.append(field);return;
   }
   let input;
-  if (key === 'type') {
+  if (s.enum || key === 'type') {
     input=el('select',{id});
-    [...new Set([...TYPES,value])].forEach(t => input.append(el('option',{value:t},t)));
+    [...new Set([...(s.enum || TYPES),value])].forEach(t => input.append(el('option',{value:t},t)));
     input.value=value;
   } else if (typeof value === 'boolean') {
     input=el('input',{id,type:'checkbox',checked:value});input.style.width='auto';
@@ -287,7 +314,9 @@ function renderValue(parent, path, s, key) {
     input=el(long ? 'textarea' : 'input',{id,value:value ?? '',...(long ? {} : {type:typeof value === 'number' ? 'number' : 'text'})});
     if (typeof value === 'number') {
       input.step='1';
-      if (key === 'id') {input.min='1';input.max='386';}
+      if (['id','pokemonId'].includes(key)) {input.min=String(s.minimum ?? 1);input.max='386';}
+      if ('minimum' in s) input.min=String(s.minimum);
+      if ('maximum' in s) input.max=String(s.maximum);
       if (key === 'level') {input.min='1';input.max='100';}
     }
   }
@@ -296,8 +325,8 @@ function renderValue(parent, path, s, key) {
     change(() => setAt(path,next));
   });
   const row = el('div',{className:'field-row'});row.append(input);
-  if (key === 'id' && typeof value === 'number') {
-    row.append(el('img',{src:'/img/pokemon/full/'+value+'.png',alt:'Sprite do Pokémon'}));
+  if (['id','pokemonId'].includes(key) && typeof value === 'number') {
+    if(value) row.append(el('img',{src:'/img/pokemon/full/'+value+'.png',alt:'Sprite do Pokémon'}));
     row.append(button('Escolher', () => openGallery(asset => change(() => {
       setAt(path,asset.id);
       const poke = catalog.pokemon.find(p => p.id === asset.id), obj=at(path.slice(0,-1));
@@ -318,7 +347,7 @@ async function openDocument(name, force = false) {
   }
   clearTimeout(draftTimer);persistDraft();
   const request = ++sequence;
-  loading=true;$('document').disabled=true;
+  loading=true;$('document').disabled=true;status('Carregando conteúdo…');
   try {
     const result=await api('document/'+name);
     if(request!==sequence)return;
@@ -358,18 +387,36 @@ function context() {
   if(filename==='machines.json')Object.assign(out,{route:'tms',tmTab:'tms'});
   if(filename==='tutors.json')Object.assign(out,{route:'tms',tmTab:'tutors'});
   if(filename.startsWith('i18n/'))out.route='pokemon/1';
+  if(filename==='interface.json') {out.lang=group;out.route='gyms';}
+  if(filename==='pokemon-overrides.json')out.route='pokemon/'+(currentEntry()?.value.pokemonId || 1);
+  if(filename==='pages.json') {
+    if(group==='templates') {out.route='page/modelo-preview';out.templateIndex=currentEntry()?.key;}
+    else {
+      const page=currentEntry()?.value;
+      out.pageSlug=page?.slug || '';
+      out.route=page?'page/'+page.slug:'';
+    }
+  }
   return out;
 }
 async function preview() {
   if(!doc)return;
   const request=++previewSequence;
-  $('preview').disabled=true;
+  $('preview').disabled=true;status('Validando e preparando a prévia…');
   try {
     const c=context();
     const result=await api('preview',{name:filename,data:doc,context:c});
     if(request!==previewSequence)return;
-    $('preview-frame').src=result.url+'#'+c.route;
+    const frame=$('preview-frame');
+    const loaded=new Promise(resolve=>{
+      const done=()=>{clearTimeout(timer);frame.removeEventListener('load',done);resolve();};
+      const timer=setTimeout(done,15000);
+      frame.addEventListener('load',done);
+    });
+    frame.src=result.url+'#'+c.route;
     $('preview-empty').hidden=true;
+    await loaded;
+    if(request!==previewSequence)return;
     $('wide').disabled=false;
     status('Prévia atualizada com o rascunho. Nenhum arquivo foi gravado.');
   } catch(error){status('Prévia não atualizada: '+error.message,true);}
@@ -389,6 +436,11 @@ function openGallery(callback, mode='all') {
       b.append(el('img',{src:'/'+asset.path,alt:'',loading:'lazy'}),el('span',{},asset.label));return b;
     }));
   };
+  refreshGallery = () => {
+    for(const path of catalog.assets) if(mode !== 'pokemon' && !assets.some(a=>a.path===path)) assets.push({label:path.split('/').at(-1),path});
+    draw();
+  };
+  $('upload-image').hidden=mode==='pokemon';$('gallery-status').textContent='';
   $('gallery-search').value='';$('gallery-search').oninput=draw;draw();$('gallery').showModal();$('gallery-search').focus();
 }
 $('document').addEventListener('change',()=>openDocument($('document').value));
@@ -400,8 +452,18 @@ $('preview-version').onchange=preview;
 $('mobile').onclick=()=>{const mobile=$('preview-wrap').classList.toggle('mobile');$('mobile').setAttribute('aria-pressed',String(mobile));};
 $('wide').disabled=true;
 $('wide').onclick=()=>{if($('preview-frame').getAttribute('src'))window.open($('preview-frame').src,'_blank','noopener');};
-$('add').onclick=()=>change(()=>{const list=at(sectionPath);list.push(fallback(schemaAt(sectionPath).items));selected=[...sectionPath,list.length-1];$('search').value='';},true);
-$('duplicate').onclick=()=>change(()=>{const e=currentEntry(),list=at(sectionPath);list.splice(e.key+1,0,clone(e.value));selected=[...sectionPath,e.key+1];},true);
+function uniquePageSlug(base) {
+  const used=new Set(doc.pages.map(page=>page.slug));
+  let slug=base,number=2;
+  while(used.has(slug))slug=base+'-'+number++;
+  return slug;
+}
+$('add').onclick=()=>change(()=>{
+  const list=at(sectionPath),value=fallback(schemaAt(sectionPath).items);
+  if(filename==='pages.json' && sectionPath[0]==='pages')value.slug=uniquePageSlug('nova-pagina');
+  list.push(value);selected=[...sectionPath,list.length-1];$('search').value='';
+},true);
+$('duplicate').onclick=()=>change(()=>{const e=currentEntry(),list=at(sectionPath);const value=clone(e.value);if(filename==='pages.json'&&sectionPath[0]==='pages')value.slug=uniquePageSlug(value.slug+'-copia');list.splice(e.key+1,0,value);selected=[...sectionPath,e.key+1];},true);
 for(const [id,offset] of [['move-up',-1],['move-down',1]]) $(id).onclick=()=>change(()=>{const e=currentEntry(),list=at(sectionPath),next=e.key+offset;[list[e.key],list[next]]=[list[next],list[e.key]];selected=[...sectionPath,next];},true);
 $('remove').onclick=()=>{const e=currentEntry();if(confirm('Remover “'+entryName(e.value,e.key)+'”? Você poderá desfazer antes de salvar.'))change(()=>{at(sectionPath).splice(e.key,1);selected=entries()[Math.max(0,e.key-1)]?.path||null;},true);};
 $('undo').onclick=()=>{if(!undoStack.length)return;redoStack.push(clone(doc));doc=undoStack.pop();if(!currentEntry())selected=entries()[0]?.path||null;render();};
@@ -438,6 +500,20 @@ $('reload').onclick=()=>{if(!dirty()||confirm('Descartar o rascunho e reabrir a 
 $('help').onclick=e=>{e.preventDefault();$('help-dialog').showModal();};
 $('close-help').onclick=()=>$('help-dialog').close();
 $('close-gallery').onclick=()=>$('gallery').close();
+$('close-template').onclick=()=>$('template-dialog').close();
+$('upload-image').onclick=()=>$('image-file').click();
+$('image-file').onchange=async()=>{
+  const file=$('image-file').files[0];if(!file)return;
+  $('upload-image').disabled=true;$('gallery-status').textContent='Importando imagem…';
+  try {
+    const result=await importImage(file,api);
+    if(!catalog.assets.includes(result.path))catalog.assets.push(result.path);
+    $('gallery-search').value=result.path.split('/').at(-1);
+    refreshGallery?.();
+    $('gallery-status').textContent='Imagem adicionada ao projeto. Clique nela para usar e inclua o arquivo no próximo commit.';
+  }catch(error){$('gallery-status').textContent=error.message;}
+  finally{$('upload-image').disabled=false;$('image-file').value='';}
+};
 window.addEventListener('beforeunload',event=>{if(doc&&dirty()){persistDraft();event.preventDefault();event.returnValue='';}});
 window.addEventListener('pagehide',()=>{if(doc)persistDraft();});
 try {

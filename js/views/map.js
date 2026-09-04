@@ -36,7 +36,7 @@ class MapExplorer {
         
         const container = document.getElementById('map-encounters-container');
         if (container) {
-            container.innerHTML = '<div style="text-align:center; padding:40px; color:var(--text-muted);"><p>Selecione um local acima para ver os Pokémon.</p></div>';
+            container.innerHTML = '<div style="text-align:center; padding:40px; color:var(--text-muted);"><p data-ui=labels.text_d7fd4c1d56>Selecione um local acima para ver os Pokémon.</p></div>';
         }
         
         this.loadRegionData();
@@ -82,7 +82,7 @@ class MapExplorer {
         if (!select || !container || !select.value) return;
 
         const locUrl = select.value;
-        container.innerHTML = '<div class="spinner"></div><p style="text-align:center;">Mapeando área...</p>';
+        container.innerHTML = '<div class="spinner"></div><p style="text-align:center;" data-ui=labels.text_886f6d44c2>Mapeando área...</p>';
 
         try {
             // Fetch Location details to get Areas
@@ -90,7 +90,7 @@ class MapExplorer {
             const locData = await locRes.json();
             
             if (!locData.areas || locData.areas.length === 0) {
-                container.innerHTML = '<p style="text-align:center; color:var(--type-fire);">Nenhum Pokémon selvagem encontrado neste local.</p>';
+                container.innerHTML = '<p style="text-align:center; color:var(--type-fire);" data-ui=labels.text_a89e8098b0>Nenhum Pokémon selvagem encontrado neste local.</p>';
                 return;
             }
 
@@ -143,13 +143,13 @@ class MapExplorer {
 
         } catch (err) {
             console.error(err);
-            container.innerHTML = '<p style="text-align:center; color:red;">Erro ao processar os encontros.</p>';
+            container.innerHTML = '<p style="text-align:center; color:red;" data-ui=labels.text_034c23337f>Erro ao processar os encontros.</p>';
         }
     }
 
     renderEncounters(groupedEncounters, container) {
         if (Object.keys(groupedEncounters).length === 0) {
-            container.innerHTML = '<p style="text-align:center; color:var(--text-muted);">Nenhum Pokémon disponível nesta versão do jogo.</p>';
+            container.innerHTML = '<p style="text-align:center; color:var(--text-muted);" data-ui=labels.text_301e4537bc>Nenhum Pokémon disponível nesta versão do jogo.</p>';
             return;
         }
 

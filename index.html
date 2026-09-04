@@ -32,12 +32,13 @@
     <meta name="mobile-web-app-capable" content="yes">
 
     <!-- Estilos (com ?v= anti-cache) -->
-    <link rel="stylesheet" href="./css/style.css?v=4.4">
-    <link rel="stylesheet" href="./css/layout.css?v=4.4">
+    <link rel="stylesheet" href="./css/style.css?v=4.5">
+    <link rel="stylesheet" href="./css/layout.css?v=4.5">
+    <link rel="stylesheet" href="./css/custom-pages.css?v=4.5">
     
     <script>
         // Fonte única da versão usada no cache busting (lida por js/api.js).
-        window.ASSET_VERSION = '4.4';
+        window.ASSET_VERSION = '4.5';
 
         // O dicionário do idioma salvo é pedido só depois que o app.js roda.
         // O preload adianta o download e evita essa requisição em cascata.
@@ -57,7 +58,7 @@
 
     <!-- Um unico ponto de entrada; o resto vem por import ES.
          Dados (Pokedex, golpes, ginasios, traducoes) ficam em data/*.json. -->
-    <script type="module" src="./js/main.js?v=4.4"></script>
+    <script type="module" src="./js/main.js?v=4.5"></script>
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
         if ('serviceWorker' in navigator) {
@@ -70,25 +71,26 @@
     </script>
 </head>
 <body>
-    <div id="dynamic-bg" class="type-normal"></div>
+    <div id="dynamic-bg" class="bg-default"></div>
 
     <div class="wiki-container">
         <!-- Sidebar de Navegação -->
         <aside class="sidebar glass">
-            <h1 class="logo">WikiGen3</h1>
+            <h1 class="logo" data-ui="sections.text_6363a4f062">WikiGen3</h1>
             <div class="nav-scroller">
             <nav class="nav-links" aria-label="Seções da wiki">
-                <button class="nav-btn active" data-view="pokedex">Pokédex</button>
-                <button class="nav-btn" data-view="team">Minha Equipe</button>
-                <button class="nav-btn" data-view="gyms">Treinadores</button>
-                <button class="nav-btn" data-view="tms">TMs & HMs</button>
-                <button class="nav-btn" data-view="map">Mapa Múndi</button>
-                <button class="nav-btn" data-view="frontier">Battle Frontier</button>
-                <button class="nav-btn" data-view="extras">Extras & Códigos</button>
-                <button class="nav-btn" data-view="items">Itens Importantes</button>
-                <button class="nav-btn" data-view="guides">Guias de Jogo</button>
-                <button class="nav-btn" data-view="settings">Configurações</button>
+                <button class="nav-btn active" data-view="pokedex" data-ui="navigation.pokedex">Pokédex</button>
+                <button class="nav-btn" data-view="team" data-ui="navigation.team">Minha Equipe</button>
+                <button class="nav-btn" data-view="gyms" data-ui="navigation.gyms">Treinadores</button>
+                <button class="nav-btn" data-view="tms" data-ui="navigation.tms">TMs & HMs</button>
+                <button class="nav-btn" data-view="map" data-ui="navigation.map">Mapa Múndi</button>
+                <button class="nav-btn" data-view="frontier" data-ui="navigation.frontier">Battle Frontier</button>
+                <button class="nav-btn" data-view="extras" data-ui="navigation.extras">Extras & Códigos</button>
+                <button class="nav-btn" data-view="items" data-ui="navigation.items">Itens Importantes</button>
+                <button class="nav-btn" data-view="guides" data-ui="navigation.guides">Guias de Jogo</button>
+                <button class="nav-btn" data-view="settings" data-ui="navigation.settings">Configurações</button>
             </nav>
+            <nav id="custom-navigation" class="custom-navigation" aria-label="Páginas adicionais" hidden></nav>
             </div>
             <div class="sidebar-footer" style="display: none;">
             </div>
@@ -108,7 +110,7 @@
                         <button type="button" id="btn-install-app" class="btn-icon btn-install hidden" title="Instalar Aplicativo" aria-label="Instalar WikiGen3">📱</button>
                     </div>
                     <div class="search-input-wrapper">
-                        <input type="search" id="input-search" class="input-search" placeholder="Buscar Pokémon por Nome ou Nº (Gen 1-3)..." required>
+                        <input type="search" id="input-search" class="input-search" placeholder="Buscar Pokémon por Nome ou Nº (Gen 1-3)..." data-ui-placeholder="placeholders.text_51b10b3294" required>
                         <button type="submit" class="btn-search" title="Buscar" aria-label="Buscar">🔍</button>
                         <button type="button" id="btn-layout" class="btn-icon" title="Alternar Modo Compacto">📱</button>
                     </div>
@@ -118,19 +120,19 @@
             <!-- Loading Global -->
             <div id="loading-overlay" class="loading-overlay hidden">
                 <div class="spinner"></div>
-                <p>Carregando...</p>
+                <p data-ui="sections.text_9e0a4030b8">Carregando...</p>
             </div>
 
             <!-- Dashboard Inicial (Lista de Pokémons) -->
             <section id="view-dashboard" class="view-section active">
                 <div class="glass section-panel">
-                    <h2>Pokédex (Gen 1 a 3)</h2>
+                    <h2 data-ui="sections.text_b1bc4d31bb">Pokédex (Gen 1 a 3)</h2>
 
                     <!-- Painel do Treinador: recolhido por padrão para que a grade
                          de Pokémon fique visível já na primeira tela. -->
                     <details id="trainer-panel" class="collapsible-panel">
                         <summary class="collapsible-summary">
-                            <span class="collapsible-title">Painel do Treinador</span>
+                            <span class="collapsible-title" data-ui="labels.text_620d9c793d">Painel do Treinador</span>
                             <span id="trainer-panel-digest" class="collapsible-digest"></span>
                         </summary>
                         <div class="collapsible-body">
@@ -163,7 +165,7 @@
                     <!-- Checklist Diário -->
                     <div id="daily-checklist-container" style="background:var(--stat-cell-bg); border-radius:12px; padding:15px; margin-bottom:20px; border:1px solid var(--glass-border);">
                         <h4 style="margin: 0 0 10px 0; color:var(--stat-tm); display:flex; justify-content:space-between;">
-                            <span>⏱️ Eventos Diários (RSE)</span>
+                            <span data-ui="labels.text_89cbc32a60">⏱️ Eventos Diários (RSE)</span>
                             <span id="daily-reset-timer" style="font-size:0.8rem; color:var(--text-muted); font-weight:normal;">Reseta à meia-noite</span>
                         </h4>
                         <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap:10px;">
@@ -187,15 +189,15 @@
 
                     <div class="bento-item filters-panel" style="margin-bottom: 25px; text-align: center; padding: 20px;">
                         <button type="button" id="btn-toggle-tipos" class="filtros-titulo" aria-expanded="true" aria-controls="type-filters">
-                            <span>Filtros de Pesquisa</span>
+                            <span data-ui="labels.text_7b8cbdafe4">Filtros de Pesquisa</span>
                             <span class="filtros-chevron" aria-hidden="true">▾</span>
                         </button>
                         <div id="filtro-tipo-resumo" class="filtro-tipo-resumo hidden"></div>
                         
                         <div style="margin-bottom: 15px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-                            <button class="btn-filter-status active" data-status="all" style="padding: 8px 15px; border-radius: 20px; border: 1px solid var(--glass-border); background: var(--primary-surface); color: var(--primary-on); cursor: pointer; transition: 0.2s;">Todos</button>
-                            <button class="btn-filter-status" data-status="caught" style="padding: 8px 15px; border-radius: 20px; border: 1px solid var(--glass-border); background: var(--glass-bg); color: var(--text-color); cursor: pointer; transition: 0.2s;">Capturados</button>
-                            <button class="btn-filter-status" data-status="uncaught" style="padding: 8px 15px; border-radius: 20px; border: 1px solid var(--glass-border); background: var(--glass-bg); color: var(--text-color); cursor: pointer; transition: 0.2s;">Não Capturados</button>
+                            <button class="btn-filter-status active" data-status="all" style="padding: 8px 15px; border-radius: 20px; border: 1px solid var(--glass-border); background: var(--primary-surface); color: var(--primary-on); cursor: pointer; transition: 0.2s;" data-ui="labels.text_a4114a83f4">Todos</button>
+                            <button class="btn-filter-status" data-status="caught" style="padding: 8px 15px; border-radius: 20px; border: 1px solid var(--glass-border); background: var(--glass-bg); color: var(--text-color); cursor: pointer; transition: 0.2s;" data-ui="labels.text_ba78d7b2be">Capturados</button>
+                            <button class="btn-filter-status" data-status="uncaught" style="padding: 8px 15px; border-radius: 20px; border: 1px solid var(--glass-border); background: var(--glass-bg); color: var(--text-color); cursor: pointer; transition: 0.2s;" data-ui="labels.text_9153f2ac2d">Não Capturados</button>
                         </div>
 
                         <div id="type-filters" class="type-filters-container" style="margin: 0;">
@@ -212,20 +214,20 @@
             <!-- Team Builder -->
             <section id="view-team" class="view-section">
                 <div class="glass section-panel">
-                    <h2>Montador de Equipes</h2>
-                    <p>Monte sua equipe dos sonhos (até 6 Pokémon) e veja as fraquezas combinadas!</p>
+                    <h2 data-ui="sections.text_6ebbb53bfd">Montador de Equipes</h2>
+                    <p data-ui="sections.text_df53128230">Monte sua equipe dos sonhos (até 6 Pokémon) e veja as fraquezas combinadas!</p>
                     
                     <div class="team-grid" id="team-grid">
                         <!-- Slots da equipe injetados via JS -->
                     </div>
                     <div style="text-align:center; margin-top: 20px;">
-                        <button class="nav-btn" id="btn-export-team" style="background:var(--primary-surface); color:var(--primary-on);">📸 Baixar Imagem da Equipe</button>
+                        <button class="nav-btn" id="btn-export-team" style="background:var(--primary-surface); color:var(--primary-on);" data-ui="labels.text_c764438dbf">📸 Baixar Imagem da Equipe</button>
                     </div>
                 </div>
 
                 <div class="glass section-panel mt-3" style="margin-top: 20px;">
-                    <h3>Análise de Fraquezas da Equipe</h3>
-                    <p class="text-muted" style="margin-bottom: 10px;">Mostra o número de Pokémon na equipe vulneráveis a cada tipo.</p>
+                    <h3 data-ui="sections.text_96cafbd125">Análise de Fraquezas da Equipe</h3>
+                    <p class="text-muted" style="margin-bottom: 10px;" data-ui="sections.text_0fe518ef67">Mostra o número de Pokémon na equipe vulneráveis a cada tipo.</p>
                     <div class="team-analysis" id="team-analysis">
                         <!-- Matchups da equipe injetados via JS -->
                     </div>
@@ -235,14 +237,14 @@
             <!-- Gym Leaders & Elite Four -->
             <section id="view-gyms" class="view-section">
                 <div class="glass section-panel">
-                    <h2>Treinadores & Batalhas Importantes</h2>
-                    <p>Conheça os líderes, a Elite Four, os rivais e os chefes das equipes vilãs.</p>
+                    <h2 data-ui="sections.text_8b8887ed3e">Treinadores & Batalhas Importantes</h2>
+                    <p data-ui="sections.text_0d66447c1b">Conheça os líderes, a Elite Four, os rivais e os chefes das equipes vilãs.</p>
                     
                     <div class="frontier-tabs" style="display:flex; gap:10px; margin-bottom:20px; justify-content:center; flex-wrap:wrap;">
-                        <button class="nav-btn btn-gym-tab" data-tab="gyms" style="background:var(--primary-surface); color:var(--primary-on);">Líderes de Ginásio</button>
-                        <button class="nav-btn btn-gym-tab" data-tab="e4">Elite Four & Campeão</button>
-                        <button class="nav-btn btn-gym-tab" data-tab="rivals">Rivais</button>
-                        <button class="nav-btn btn-gym-tab" data-tab="villains">Equipes Vilãs</button>
+                        <button class="nav-btn btn-gym-tab" data-tab="gyms" style="background:var(--primary-surface); color:var(--primary-on);" data-ui="labels.text_85dd12c488">Líderes de Ginásio</button>
+                        <button class="nav-btn btn-gym-tab" data-tab="e4" data-ui="labels.text_9ef9bd51ed">Elite Four & Campeão</button>
+                        <button class="nav-btn btn-gym-tab" data-tab="rivals" data-ui="labels.text_b9b82d1bd8">Rivais</button>
+                        <button class="nav-btn btn-gym-tab" data-tab="villains" data-ui="labels.text_5407146f64">Equipes Vilãs</button>
                     </div>
 
                     <div class="gyms-container" id="gyms-container">
@@ -289,24 +291,24 @@
 
                     <!-- Desc Box -->
                     <div class="bento-item bento-desc">
-                        <h3>Descrição</h3>
+                        <h3 data-ui="sections.text_469768598e">Descrição</h3>
                         <p class="pokemon-description">Descrição da PokéAPI</p>
                     </div>
 
                     <!-- Info Box -->
                     <div class="bento-item bento-info">
-                        <h3>Informações</h3>
+                        <h3 data-ui="sections.text_a3ac937762">Informações</h3>
                         <div class="info-grid">
-                            <div class="info-cell"><span>Altura</span><strong class="pokemon-height">--</strong></div>
-                            <div class="info-cell"><span>Peso</span><strong class="pokemon-weight">--</strong></div>
-                            <div class="info-cell"><span>Hab.</span><strong class="pokemon-ability">--</strong></div>
-                            <div class="info-cell"><span>EV</span><strong class="pokemon-evs">--</strong></div>
+                            <div class="info-cell"><span data-ui="labels.text_34d9e38867">Altura</span><strong class="pokemon-height">--</strong></div>
+                            <div class="info-cell"><span data-ui="labels.text_94598c9bdf">Peso</span><strong class="pokemon-weight">--</strong></div>
+                            <div class="info-cell"><span data-ui="labels.text_95d322bdfd">Hab.</span><strong class="pokemon-ability">--</strong></div>
+                            <div class="info-cell"><span data-ui="labels.text_ef29ed353f">EV</span><strong class="pokemon-evs">--</strong></div>
                         </div>
                     </div>
 
                     <!-- Stats Box -->
                     <div class="bento-item bento-stats">
-                        <h3>Status Base</h3>
+                        <h3 data-ui="sections.text_df1cd3c4c0">Status Base</h3>
                         <div class="pokemon-stats">
                             <!-- Preenchido via JS -->
                         </div>
@@ -315,26 +317,26 @@
                     <!-- Defesa e ataque separados: antes tudo vinha numa lista
                          so, misturando o que machuca com o que ele resiste. -->
                     <div class="bento-item bento-matchups bento-fraquezas">
-                        <h3>Fraquezas</h3>
-                        <p class="matchup-legenda">Tipos que causam dano aumentado nele.</p>
+                        <h3 data-ui="sections.text_32fba88ae4">Fraquezas</h3>
+                        <p class="matchup-legenda" data-ui="sections.text_0c290eaa82">Tipos que causam dano aumentado nele.</p>
                         <div class="matchups-container" id="matchups-fraquezas"></div>
                     </div>
 
                     <div class="bento-item bento-matchups bento-resiste">
-                        <h3>Resiste</h3>
-                        <p class="matchup-legenda">Tipos que causam dano reduzido ou nenhum.</p>
+                        <h3 data-ui="sections.text_02b321837a">Resiste</h3>
+                        <p class="matchup-legenda" data-ui="sections.text_30ac8836b0">Tipos que causam dano reduzido ou nenhum.</p>
                         <div class="matchups-container" id="matchups-resiste"></div>
                     </div>
 
                     <div class="bento-item bento-matchups bento-vantagem">
-                        <h3>Vantagem</h3>
-                        <p class="matchup-legenda">Tipos contra os quais os golpes dele são super efetivos.</p>
+                        <h3 data-ui="sections.text_5025a260d8">Vantagem</h3>
+                        <p class="matchup-legenda" data-ui="sections.text_5cd11ae6f8">Tipos contra os quais os golpes dele são super efetivos.</p>
                         <div class="matchups-container" id="matchups-vantagem"></div>
                     </div>
 
                     <!-- Evolutions Box -->
                     <div class="bento-item bento-evolutions">
-                        <h3>Cadeia Evolutiva</h3>
+                        <h3 data-ui="sections.text_512300afae">Cadeia Evolutiva</h3>
                         <div class="evolution-container">
                             <!-- Preenchido via JS -->
                         </div>
@@ -342,7 +344,7 @@
 
                     <!-- Locations Box -->
                     <div class="bento-item bento-locations">
-                        <h3>Onde Encontrar</h3>
+                        <h3 data-ui="sections.text_0910c2f4cc">Onde Encontrar</h3>
                         <div class="encounters-container">
                             <!-- Preenchido via JS -->
                         </div>
@@ -350,15 +352,15 @@
 
                     <!-- Moves Box -->
                     <div class="bento-item bento-moves">
-                        <h3>Ataques (Moveset Geração 3)</h3>
-                        <p class="text-muted">Ataques aprendidos nas versões Ruby, Sapphire, Emerald, FireRed e LeafGreen.</p>
+                        <h3 data-ui="sections.text_263b1744d6">Ataques (Moveset Geração 3)</h3>
+                        <p class="text-muted" data-ui="sections.text_f9d1a89768">Ataques aprendidos nas versões Ruby, Sapphire, Emerald, FireRed e LeafGreen.</p>
 
                         <div class="moves-container tabs-container">
                             <div class="moves-tabs-header">
-                                <button class="move-tab-btn active" data-target="move-tab-level">Nível</button>
-                                <button class="move-tab-btn" data-target="move-tab-machine">TM / HM</button>
-                                <button class="move-tab-btn" data-target="move-tab-egg">Cruzamento</button>
-                                <button class="move-tab-btn" data-target="move-tab-tutor">Tutor</button>
+                                <button class="move-tab-btn active" data-target="move-tab-level" data-ui="labels.text_87dc673f43">Nível</button>
+                                <button class="move-tab-btn" data-target="move-tab-machine" data-ui="labels.text_3d54f35b0c">TM / HM</button>
+                                <button class="move-tab-btn" data-target="move-tab-egg" data-ui="labels.text_048aa4224c">Cruzamento</button>
+                                <button class="move-tab-btn" data-target="move-tab-tutor" data-ui="labels.text_e5d6380834">Tutor</button>
                             </div>
                             <div class="moves-tabs-body">
                                 <!-- Tabela Level Up -->
@@ -401,12 +403,12 @@
             <!-- TM / HM -->
             <section id="view-tms" class="view-section">
                 <div class="glass section-panel">
-                    <h2>Máquinas Técnicas, Ocultas e Tutores</h2>
-                    <p>Lista completa das 58 máquinas da Geração 3 e os Tutores de Ataque.</p>
+                    <h2 data-ui="sections.text_d4caf5d0e5">Máquinas Técnicas, Ocultas e Tutores</h2>
+                    <p data-ui="sections.text_5c8bc2b374">Lista completa das 58 máquinas da Geração 3 e os Tutores de Ataque.</p>
                     
                     <div class="frontier-tabs" style="display:flex; gap:10px; margin-bottom:20px; justify-content:center; flex-wrap:wrap;">
-                        <button class="nav-btn btn-tm-tab" data-tab="tms" style="background:var(--primary-surface); color:var(--primary-on);">TMs & HMs</button>
-                        <button class="nav-btn btn-tm-tab" data-tab="tutors">Move Tutors</button>
+                        <button class="nav-btn btn-tm-tab" data-tab="tms" style="background:var(--primary-surface); color:var(--primary-on);" data-ui="labels.text_a23cbc63df">TMs & HMs</button>
+                        <button class="nav-btn btn-tm-tab" data-tab="tutors" data-ui="labels.text_1e8198c562">Move Tutors</button>
                     </div>
 
                     <div class="grid-container" id="tms-grid">
@@ -422,14 +424,14 @@
             <!-- Battle Frontier -->
             <section id="view-frontier" class="view-section">
                 <div class="glass section-panel">
-                    <h2>Battle Frontier</h2>
-                    <p>Guia completo do parque de batalhas em Pokémon Emerald.</p>
+                    <h2 data-ui="sections.text_b0e6208f1d">Battle Frontier</h2>
+                    <p data-ui="sections.text_9f36c34534">Guia completo do parque de batalhas em Pokémon Emerald.</p>
                     
                     <div class="moves-tabs-header" style="margin: 20px 0;">
-                        <button class="move-tab-btn frontier-main-tab active" data-tab="overview">Overview</button>
-                        <button class="move-tab-btn frontier-main-tab" data-tab="facilities">Líderes (Facilities)</button>
-                        <button class="move-tab-btn frontier-main-tab" data-tab="shops">Lojas (BP)</button>
-                        <button class="move-tab-btn frontier-main-tab" data-tab="pokemon">Pokémon Especiais</button>
+                        <button class="move-tab-btn frontier-main-tab active" data-tab="overview" data-ui="labels.text_0efc2e6be4">Overview</button>
+                        <button class="move-tab-btn frontier-main-tab" data-tab="facilities" data-ui="labels.text_f627ba304f">Líderes (Facilities)</button>
+                        <button class="move-tab-btn frontier-main-tab" data-tab="shops" data-ui="labels.text_2cb0beac96">Lojas (BP)</button>
+                        <button class="move-tab-btn frontier-main-tab" data-tab="pokemon" data-ui="labels.text_4fd870fdcb">Pokémon Especiais</button>
                     </div>
 
                     <div class="grid-container" id="frontier-grid">
@@ -441,13 +443,13 @@
             <!-- Emerald Extras -->
             <section id="view-extras" class="view-section">
                 <div class="glass section-panel">
-                    <h2>Extras & Códigos (Gen 3)</h2>
-                    <p>Informações detalhadas sobre Pokémon presenteados (Gifts/Eventos), trocas no jogo (In-Game Trades) e exclusivos (Inobtíveis).</p>
+                    <h2 data-ui="sections.extrasTitle">Extras & Códigos (Gen 3)</h2>
+                    <p data-ui="sections.text_80f58b4237">Informações detalhadas sobre Pokémon presenteados (Gifts/Eventos), trocas no jogo (In-Game Trades) e exclusivos (Inobtíveis).</p>
 
                     <div class="moves-tabs-header" style="margin: 20px 0;">
-                        <button class="move-tab-btn extras-main-tab active" data-tab="gifts">Presentes / Eventos</button>
-                        <button class="move-tab-btn extras-main-tab" data-tab="trades">Trocas In-Game</button>
-                        <button class="move-tab-btn extras-main-tab" data-tab="missing">Inobtíveis & Exclusivos</button>
+                        <button class="move-tab-btn extras-main-tab active" data-tab="gifts" data-ui="labels.text_6004e2913d">Presentes / Eventos</button>
+                        <button class="move-tab-btn extras-main-tab" data-tab="trades" data-ui="labels.text_ee0de2af00">Trocas In-Game</button>
+                        <button class="move-tab-btn extras-main-tab" data-tab="missing" data-ui="labels.text_2b900c8380">Inobtíveis & Exclusivos</button>
                     </div>
 
                     <div class="grid-container" id="extras-grid">
@@ -459,8 +461,8 @@
             <!-- Key Items Section -->
             <section id="view-items" class="view-section">
                 <div class="glass section-panel">
-                    <h2>Itens Importantes</h2>
-                    <p style="color:var(--text-muted); margin-bottom: 20px;">Localização e métodos de obtenção dos principais itens da sua aventura.</p>
+                    <h2 data-ui="sections.text_1a97d04e3a">Itens Importantes</h2>
+                    <p style="color:var(--text-muted); margin-bottom: 20px;" data-ui="sections.text_edae76d287">Localização e métodos de obtenção dos principais itens da sua aventura.</p>
                     <div id="view-items-content" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
                         <!-- Renderizado via items.js -->
                     </div>
@@ -470,11 +472,11 @@
             <!-- Settings Section -->
             <section id="view-settings" class="view-section">
                 <div class="glass section-panel">
-                    <h2>Configurações</h2>
+                    <h2 data-ui="sections.text_871f24c4cd">Configurações</h2>
                     <div style="margin-top:20px; display: flex; flex-direction: column; gap: 20px;">
                         <div class="bento-item" style="padding: 20px;">
-                            <h3>Gerenciar Perfil</h3>
-                            <p style="color:var(--text-muted); font-size: 0.9rem; margin-bottom:10px;">Crie ou troque de perfil. O progresso é salvo separadamente para cada perfil e jogo.</p>
+                            <h3 data-ui="sections.text_694112a996">Gerenciar Perfil</h3>
+                            <p style="color:var(--text-muted); font-size: 0.9rem; margin-bottom:10px;" data-ui="sections.text_1cbad5b5c5">Crie ou troque de perfil. O progresso é salvo separadamente para cada perfil e jogo.</p>
                             <div style="display: flex; gap: 10px; align-items: center;">
                                 <select id="profile-select" class="custom-select" style="flex:1;">
                                     <!-- Renderizado via JS -->
@@ -485,21 +487,21 @@
                         </div>
 
                         <div class="bento-item" style="padding: 20px;">
-                            <h3>Aparência e Idioma</h3>
+                            <h3 data-ui="sections.text_3820b411bb">Aparência e Idioma</h3>
                             <div style="display: flex; gap: 15px; margin-top:10px;">
-                                <button id="theme-toggle" class="btn-primary" style="flex:1;">Alternar Tema 🌙</button>
+                                <button id="theme-toggle" class="btn-primary" style="flex:1;" data-ui="labels.text_383e1b624a">Alternar Tema 🌙</button>
                                 <button id="lang-toggle" class="btn-primary" style="flex:1;">Alternar Idioma 🇧🇷</button>
                             </div>
                         </div>
                         
                         <div class="bento-item" style="padding: 20px;">
-                            <h3>Cloud Save</h3>
-                            <p style="font-size:0.85rem; color:var(--text-muted);">Salve seu progresso para importar em outro dispositivo.</p>
-                            <button id="btn-export-save" class="nav-btn" style="background:var(--primary-surface); color:var(--primary-on); margin-bottom:15px;">Gerar Código de Save</button>
-                            <textarea id="save-export-output" readonly style="width:100%; height:100px; background:rgba(0,0,0,0.3); color:white; border:1px solid var(--glass-border); border-radius:8px; padding:10px; font-family:monospace; font-size:0.8rem; resize:none;" placeholder="Seu código aparecerá aqui..."></textarea>
-                            <button id="btn-copy-save" class="nav-btn hidden" style="margin-top:10px; background:var(--btn-bg);">📋 Copiar Código</button>
-                            <textarea id="save-import-input" style="width:100%; height:100px; background:rgba(0,0,0,0.3); color:white; border:1px solid var(--glass-border); border-radius:8px; padding:10px; font-family:monospace; font-size:0.8rem; resize:none; margin:15px 0;" placeholder="Cole seu código de save aqui..."></textarea>
-                            <button id="btn-import-save" class="nav-btn" style="background:var(--type-electric);">Carregar Progresso</button>
+                            <h3 data-ui="sections.text_04a9ea108b">Cloud Save</h3>
+                            <p style="font-size:0.85rem; color:var(--text-muted);" data-ui="sections.text_5413362426">Salve seu progresso para importar em outro dispositivo.</p>
+                            <button id="btn-export-save" class="nav-btn" style="background:var(--primary-surface); color:var(--primary-on); margin-bottom:15px;" data-ui="labels.text_ba7b085f3e">Gerar Código de Save</button>
+                            <textarea id="save-export-output" readonly style="width:100%; height:100px; background:rgba(0,0,0,0.3); color:white; border:1px solid var(--glass-border); border-radius:8px; padding:10px; font-family:monospace; font-size:0.8rem; resize:none;" placeholder="Seu código aparecerá aqui..." data-ui-placeholder="placeholders.text_d9bd00a826"></textarea>
+                            <button id="btn-copy-save" class="nav-btn hidden" style="margin-top:10px; background:var(--btn-bg);" data-ui="labels.text_7c36ac1258">📋 Copiar Código</button>
+                            <textarea id="save-import-input" style="width:100%; height:100px; background:rgba(0,0,0,0.3); color:white; border:1px solid var(--glass-border); border-radius:8px; padding:10px; font-family:monospace; font-size:0.8rem; resize:none; margin:15px 0;" placeholder="Cole seu código de save aqui..." data-ui-placeholder="placeholders.text_489d961cae"></textarea>
+                            <button id="btn-import-save" class="nav-btn" style="background:var(--type-electric);" data-ui="labels.text_1ca84e9c56">Carregar Progresso</button>
                         </div>
                     </div>
                 </div>
@@ -508,8 +510,8 @@
             <!-- Map Section -->
             <section id="view-map" class="view-section">
                 <div class="glass section-panel">
-                    <h2>Explorador de Região</h2>
-                    <p>Selecione uma rota ou cidade para ver os Pokémon encontrados na região atual.</p>
+                    <h2 data-ui="sections.text_2296c7e1d7">Explorador de Região</h2>
+                    <p data-ui="sections.text_87140af31b">Selecione uma rota ou cidade para ver os Pokémon encontrados na região atual.</p>
                     
                     <div style="text-align:center; margin-bottom: 20px;">
                         <img id="map-image-display" src="img/Hoenn_Map.png" alt="Mapa da Região" loading="lazy" decoding="async" style="max-width:100%; height:auto; border-radius:15px; box-shadow:0 8px 24px rgba(0,0,0,0.6); max-height:400px; object-fit:contain; background:rgba(0,0,0,0.3);">
@@ -517,19 +519,19 @@
 
                     <div style="background:var(--glass-bg); padding:15px; border-radius:12px; border:1px solid var(--glass-border); margin-bottom:20px;">
                         <div style="display:flex; flex-direction:column; gap:10px;">
-                            <label for="map-location-select" style="font-weight:bold; color:var(--primary-color);">Selecione um Local:</label>
+                            <label for="map-location-select" style="font-weight:bold; color:var(--primary-color);" data-ui="labels.text_050c4e392f">Selecione um Local:</label>
                             <div style="display:flex; gap:10px;">
                                 <select id="map-location-select" class="input-select" style="flex:1;">
                                     <option value="">Carregando locais...</option>
                                 </select>
-                                <button id="btn-search-location" class="nav-btn" style="background:var(--primary-surface); color:var(--primary-on);">Explorar</button>
+                                <button id="btn-search-location" class="nav-btn" style="background:var(--primary-surface); color:var(--primary-on);" data-ui="labels.text_af5aec0ee2">Explorar</button>
                             </div>
                         </div>
                     </div>
 
                     <div id="map-encounters-container" style="min-height:200px;">
                         <div style="text-align:center; padding:40px; color:var(--text-muted);">
-                            <p>Selecione um local acima para ver os Pokémon.</p>
+                            <p data-ui="sections.text_d7fd4c1d56">Selecione um local acima para ver os Pokémon.</p>
                         </div>
                     </div>
                 </div>
@@ -538,19 +540,19 @@
             <!-- Guides Section -->
             <section id="view-guides" class="view-section">
                 <div class="glass section-panel">
-                    <h2>Guias Práticos</h2>
-                    <p>Manuais detalhados para ajudar na sua jornada.</p>
+                    <h2 data-ui="sections.text_1fbe4e6c10">Guias Práticos</h2>
+                    <p data-ui="sections.text_0a08aadfd2">Manuais detalhados para ajudar na sua jornada.</p>
                     
                     <div class="frontier-tabs" style="display:flex; gap:10px; margin-bottom:20px; justify-content:center; flex-wrap:wrap;">
-                        <button class="nav-btn btn-guide-tab active" data-tab="stones" style="background:var(--primary-surface); color:var(--primary-on);">Itens & Pedras</button>
-                        <button class="nav-btn btn-guide-tab" data-tab="natures">Natures</button>
-                        <button class="nav-btn btn-guide-tab" data-tab="weakness">Calculadora de Tipos</button>
-                        <button class="nav-btn btn-guide-tab" data-tab="berries">Evoluir Feebas</button>
-                        <button class="nav-btn btn-guide-tab" data-tab="ev">Treino de EVs</button>
-                        <button class="nav-btn btn-guide-tab" data-tab="frontier">Battle Frontier</button>
-                        <button class="nav-btn btn-guide-tab" data-tab="bases">Bases Secretas</button>
-                        <button class="nav-btn btn-guide-tab" data-tab="safari">Safari Zone</button>
-                        <button class="nav-btn btn-guide-tab" data-tab="sevii">Sevii Islands</button>
+                        <button class="nav-btn btn-guide-tab active" data-tab="stones" style="background:var(--primary-surface); color:var(--primary-on);" data-ui="labels.text_519e03bedc">Itens & Pedras</button>
+                        <button class="nav-btn btn-guide-tab" data-tab="natures" data-ui="labels.text_4f223e4575">Natures</button>
+                        <button class="nav-btn btn-guide-tab" data-tab="weakness" data-ui="labels.text_ef13a161d8">Calculadora de Tipos</button>
+                        <button class="nav-btn btn-guide-tab" data-tab="berries" data-ui="labels.text_1642af80df">Evoluir Feebas</button>
+                        <button class="nav-btn btn-guide-tab" data-tab="ev" data-ui="labels.text_6d045ae66e">Treino de EVs</button>
+                        <button class="nav-btn btn-guide-tab" data-tab="frontier" data-ui="labels.text_b0e6208f1d">Battle Frontier</button>
+                        <button class="nav-btn btn-guide-tab" data-tab="bases" data-ui="labels.text_58e1396317">Bases Secretas</button>
+                        <button class="nav-btn btn-guide-tab" data-tab="safari" data-ui="labels.text_27b39867ad">Safari Zone</button>
+                        <button class="nav-btn btn-guide-tab" data-tab="sevii" data-ui="labels.text_f433293afd">Sevii Islands</button>
                     </div>
 
                     <div class="guides-container" id="guides-container" style="padding: 10px; border-radius:12px;">
@@ -558,12 +560,13 @@
                     </div>
                 </div>
             </section>
+            <section id="view-custom" class="view-section"><div id="custom-page-content" class="glass section-panel"></div></section>
         </main>
     </div>
     <!-- Modal de Treinamento (EV/IV) -->
     <div id="training-modal" class="modal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:9999; display:none; justify-content:center; align-items:center;">
         <div class="glass" style="width:90%; max-width:500px; background:var(--glass-bg); padding:25px; border-radius:20px; border:1px solid var(--glass-border); position:relative;">
-            <button id="btn-close-training" class="btn-icon" style="position:absolute; top:15px; right:15px; font-size:1.5rem; background:none; border:none; color:white; cursor:pointer;">&times;</button>
+            <button id="btn-close-training" class="btn-icon" style="position:absolute; top:15px; right:15px; font-size:1.5rem; background:none; border:none; color:white; cursor:pointer;" data-ui="labels.text_67fba2f357">&times;</button>
             <h2 id="training-modal-title" style="margin-top:0; color:var(--primary-color);">Ficha de Treinamento</h2>
             
             <div style="display:flex; gap:15px; align-items:center; margin-bottom:20px;">
@@ -575,13 +578,13 @@
             </div>
 
             <div style="margin-bottom:15px;">
-                <label style="display:block; font-size:0.9rem; color:var(--text-muted); margin-bottom:5px;">Natureza (Nature):</label>
+                <label style="display:block; font-size:0.9rem; color:var(--text-muted); margin-bottom:5px;" data-ui="labels.text_1bf78eb91b">Natureza (Nature):</label>
                 <select id="training-nature" class="input-select" style="width:100%;"></select>
             </div>
 
             <div style="background:rgba(0,0,0,0.3); border-radius:10px; padding:15px;">
                 <h4 style="margin:0 0 10px 0; color:var(--text-color); display:flex; justify-content:space-between;">
-                    <span>Esforço (EVs)</span>
+                    <span data-ui="labels.text_76079f4558">Esforço (EVs)</span>
                     <span id="ev-total" style="color:var(--text-muted); font-size:0.8rem;">0/510</span>
                 </h4>
                 
@@ -590,7 +593,7 @@
                 </div>
             </div>
             
-            <p style="font-size:0.75rem; color:var(--text-muted); text-align:center; margin-top:15px;">
+            <p style="font-size:0.75rem; color:var(--text-muted); text-align:center; margin-top:15px;" data-ui="sections.text_52d58d00c8">
                 *Os Status calculados são baseados no Nível 50 com IVs perfeitos (31).
             </p>
         </div>

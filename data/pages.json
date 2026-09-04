@@ -1,0 +1,65 @@
+{
+  "pages": [],
+  "templates": [
+    {
+      "title": "Texto e imagem",
+      "content": "<p>Escreva aqui.</p>",
+      "image": "",
+      "pokemonId": 0,
+      "item": "",
+      "layout": "vertical",
+      "accent": "grass",
+      "link": "",
+      "linkLabel": "Saiba mais",
+      "fields": [],
+      "en": {
+        "title": "",
+        "content": "",
+        "linkLabel": ""
+      }
+    },
+    {
+      "title": "Pokémon em destaque",
+      "content": "<p>Escreva aqui.</p>",
+      "image": "",
+      "pokemonId": 1,
+      "item": "",
+      "layout": "horizontal",
+      "accent": "grass",
+      "link": "",
+      "linkLabel": "Saiba mais",
+      "fields": [
+        {
+          "label": "Local",
+          "value": "Onde encontrar",
+          "en": {
+            "label": "",
+            "value": ""
+          }
+        }
+      ],
+      "en": {
+        "title": "",
+        "content": "",
+        "linkLabel": ""
+      }
+    },
+    {
+      "title": "Aviso importante",
+      "content": "<p>Escreva aqui.</p>",
+      "image": "",
+      "pokemonId": 0,
+      "item": "",
+      "layout": "destaque",
+      "accent": "electric",
+      "link": "",
+      "linkLabel": "Saiba mais",
+      "fields": [],
+      "en": {
+        "title": "",
+        "content": "",
+        "linkLabel": ""
+      }
+    }
+  ]
+}

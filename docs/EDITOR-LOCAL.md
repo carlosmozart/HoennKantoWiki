@@ -1,100 +1,151 @@
-# Editor local · WikiGen3 1.0
+# Editor local · WikiGen3 2.0
 
-O editor roda no seu computador e grava os JSONs de conteúdo do projeto. Não precisa de conta, senha, banco de dados, Node ou instalação de pacotes. Requer **Python 3.10 ou superior**.
+O editor roda no seu computador. Requer **Python 3.10 ou superior**, sem instalar pacotes, banco de dados ou ferramentas de desenvolvimento adicionais. O site continua sendo publicado como arquivos estáticos no GitHub Pages.
 
-## Abrir
+## Abrir e escolher o tema
 
-No Windows, dê dois cliques em **Iniciar editor.cmd**, na raiz do projeto. Mantenha a janela do terminal aberta enquanto edita.
-
-Alternativa pelo terminal, na pasta do projeto:
+Dê dois cliques em **Iniciar editor.cmd**, na raiz do projeto. Mantenha o terminal aberto enquanto edita. Pelo terminal:
 
 ~~~powershell
 python tools/local_editor.py --open
 ~~~
 
-O navegador abre no endereço local com a sessão de edição. Se a porta estiver ocupada:
+O botão **Modo escuro / Modo claro**, no cabeçalho, muda o tema do editor. A escolha fica salva neste navegador. Na primeira visita, acompanha a preferência do sistema. O tema da prévia do site é independente.
+
+Para encerrar o servidor, use **Ctrl+C**. Após atualizar o código pelo Git, encerre o servidor antigo e abra o atalho novamente. Se a porta estiver ocupada, use:
 
 ~~~powershell
 python tools/local_editor.py --open --port 8766
 ~~~
 
-Para encerrar, pressione **Ctrl+C** no terminal. O serviço aceita conexões apenas em **127.0.0.1**. Não altere o endereço para expor esse servidor na rede.
+O serviço aceita conexões apenas em **127.0.0.1** e usa uma sessão local. Abra o endereço completo exibido pelo terminal.
 
-## Editar e salvar
+## Fluxo de edição
 
-1. Selecione o conteúdo e a seção/versão do jogo na biblioteca.
-2. Escolha o card e edite os campos. Times, golpes e itens ficam em listas expansíveis.
-3. Use **Adicionar**, **Duplicar**, **Mover** e **Remover** para organizar os cards. **Desfazer/Refazer** recuperam alterações do arquivo aberto.
-4. Nos guias, edite o texto diretamente. A barra permite inserir títulos, parágrafos, listas, cards e imagens locais. Para remover um card, clique dentro dele e use **Remover card**.
-5. Use **Atualizar prévia**. Ela usa os mesmos renderizadores do site e uma cópia do rascunho em memória; não salva os arquivos. **Celular** limita a largura a 375 px, e **Abrir ampla** abre a prévia em outra aba.
-6. Clique em **Salvar no projeto**. O editor valida o conteúdo, verifica se o arquivo mudou externamente, guarda o arquivo anterior em backup e grava a nova versão.
+1. Escolha o conteúdo e a seção/versão do jogo na biblioteca.
+2. Edite os campos. Listas, times e configurações adicionais ficam em blocos expansíveis.
+3. Use **Adicionar**, **Duplicar**, **Mover**, **Remover**, **Desfazer** e **Refazer**.
+4. Nos guias, edite o texto diretamente; a barra insere títulos, parágrafos, listas, cards e imagens.
+5. Use **Atualizar prévia** para conferir o rascunho. **Celular** limita a largura a 375 px; **Abrir ampla** abre outra aba.
+6. Clique em **Salvar no projeto**. O editor valida, verifica conflitos, faz backup e grava o arquivo.
 
-Cada botão Salvar afeta somente o arquivo aberto. Alterações em outros documentos continuam como rascunho até serem salvas.
+Salvar afeta somente o documento aberto. A prévia usa esse rascunho e os demais arquivos já salvos. As 25 prévias mais recentes ficam disponíveis enquanto o servidor estiver aberto. O Service Worker da PWA não é registrado nas prévias.
 
-A prévia inclui apenas o rascunho do documento aberto; os demais conteúdos vêm dos arquivos salvos. Ela não registra o Service Worker da PWA, evitando mostrar versões antigas. As 25 prévias mais recentes ficam disponíveis enquanto o servidor está aberto.
+## Bibliotecas
 
-## Conteúdos disponíveis
-
-| Biblioteca | Arquivo | Edição |
+| Conteúdo | Arquivo | O que editar |
 |---|---|---|
-| Treinadores e times | data/gyms.json | Ginásios, Elite Four, rivais, vilões, times, requisitos e retratos |
+| Treinadores e times | data/gyms.json | Ginásios, Elite Four, rivais, vilões, times e retratos |
 | Itens importantes | data/key-items.json | Categorias, itens e descrições |
-| Guias, Safari e Sevii | data/guides.json | Títulos, texto formatado, imagens e blocos/cards dos guias existentes |
-| Battle Frontier | data/frontier.json | Instalações, líderes, times, lojas, tutores e Pokémon especiais |
-| Presentes, trocas e exclusivos | data/extras.json | Cards por jogo e tipo de encontro |
-| TMs/HMs e tutores | data/machines.json e data/tutors.json | Entradas, categorias, tipos e locais |
-| Traduções | data/i18n/pt.json e en.json | Valores das chaves existentes |
+| Guias, Safari e Sevii | data/guides.json | Títulos, textos, imagens e cards dos guias |
+| Battle Frontier | data/frontier.json | Instalações, líderes, times, lojas e Pokémon especiais |
+| Presentes, trocas e exclusivos | data/extras.json | Cards por jogo |
+| TMs/HMs e tutores | data/machines.json e data/tutors.json | Golpes, categorias, tipos e locais |
+| Traduções | data/i18n/pt.json e en.json | Valores dos dicionários existentes |
+| Páginas e modelos de cards | data/pages.json | Novas páginas no menu e modelos reutilizáveis |
+| Textos da interface | data/interface.json | Navegação, cabeçalhos, rótulos, placeholders e mensagens marcadas |
+| Correções da Pokédex | data/pokemon-overrides.json | Correções que sobrevivem à regeneração da PokéAPI |
 
-O seletor de Pokémon usa o índice local e preenche nome e tipos. Confira manualmente nível, habilidade, item e golpes após trocar o Pokémon: esses campos não são substituídos automaticamente.
+O seletor de Pokémon preenche nome e tipos quando esses campos estão no card. Confira manualmente nível, habilidade, item e golpes depois de trocar o Pokémon.
 
-As imagens do seletor já pertencem ao projeto. Nos guias, sprites de Pokémon inseridos pelo editor usam a versão escolhida na prévia. Não há upload de novos arquivos nesta versão.
+## Importar imagens
 
-Os textos editoriais mantêm o idioma em que foram escritos, seguindo o funcionamento atual do site. O editor não traduz automaticamente textos novos.
+Em um campo de imagem, clique em **Escolher → Importar imagem**. Nos guias, use **+ Imagem → Importar imagem**.
 
-## Rascunhos e recuperação
+- Aceita PNG, JPEG e WebP, até 8 MB, 4096 pixels por lado e 8 milhões de pixels.
+- O navegador converte a imagem para PNG. A imagem convertida também precisa caber em 8 MB.
+- O servidor valida a estrutura e os pixels antes de gravar.
+- Os arquivos entram em **img/uploads/**, com nome seguro e hash do conteúdo. Imagens existentes não são substituídas.
+- Clique na imagem importada para usá-la no campo ou texto.
 
-Rascunhos são guardados no navegador deste computador. Ao reabrir um documento com rascunho, o editor oferece recuperá-lo. Limpar os dados do navegador apaga esses rascunhos. **Exportar rascunho** baixa uma cópia JSON independente.
+A importação já grava o arquivo de imagem, mesmo antes de salvar o documento. Inclua as imagens novas no próximo commit. O editor não apaga arquivos de imagem ao remover cards, pois podem estar em uso em outras páginas.
 
-Antes de cada gravação com alteração, o arquivo anterior é guardado em:
+Sprites de Pokémon inseridos nos guias usam a versão selecionada na prévia. Nos cards novos com um número de Pokémon, a sprite acompanha o jogo escolhido pelo visitante.
+
+## Criar páginas e modelos
+
+Escolha **Páginas e modelos de cards → Páginas → Adicionar**.
+
+Defina o título, o nome no menu e um endereço único, por exemplo **meu-guia**. A página terá a rota **#page/meu-guia**. Com **Publicar página** marcado, aparece no menu do site depois de salvar e enviar as mudanças ao GitHub.
+
+A lista **Jogos** restringe a página às versões escolhidas. Vazia, permite todos os jogos. Na prévia do editor, uma página desmarcada ainda pode ser visualizada; no site público ela fica indisponível.
+
+Em **Cards**, crie uma entrada ou clique em **Adicionar de modelo**. Os cards permitem:
+
+- Título, texto formatado, imagem, Pokémon e item.
+- Disposição **vertical**, **horizontal** ou **destaque** de largura completa.
+- Cor de destaque.
+- Link e texto do link.
+- Campos adicionais com rótulo e valor.
+
+Em **Modelos de cards**, crie seus próprios modelos com essas opções. **Guardar como modelo**, dentro de um card, copia sua configuração para a biblioteca.
+
+**Modelos são pontos de partida:** mudar o modelo depois não altera os cards já criados. É possível editar, duplicar, ordenar e remover modelos.
+
+Os campos em **Inglês (opcional)** são usados quando o site está em inglês. Se estiverem vazios, o conteúdo em português é exibido.
+
+## Textos da interface
+
+Escolha **Textos da interface**, o idioma e o grupo. Existem 135 entradas para navegação, títulos, textos fixos, rótulos e mensagens das seções.
+
+Os valores são texto simples, sem HTML. O campo inglês vazio usa o português como alternativa. Preserve **{jogo}** quando quiser que o texto mostre automaticamente o nome da versão selecionada.
+
+Esses textos se integram à troca de idioma existente. Conteúdos editoriais antigos continuam no idioma em que foram escritos; não existe tradução automática.
+
+## Corrigir a Pokédex sem perder mudanças
+
+Escolha **Correções da Pokédex → Adicionar**, selecione o Pokémon e expanda:
+
+- **Textos por idioma:** descrição e categoria em português/inglês.
+- **Dados a corrigir:** adicione somente os campos necessários, como tipos, status, habilidades, golpes, evoluções ou locais.
+
+O arquivo **data/pokemon-overrides.json** é aplicado sobre os dados originais em tempo de leitura. **tools/build_data.py** não o sobrescreve. Nome, tipos e status corrigidos também são refletidos no índice usado pela busca e pelas listas.
+
+Há uma correção por Pokémon. Removê-la restaura os dados gerados. Tipos precisam pertencer à geração 3; status base devem estar entre 1 e 255. Altura e peso usam as unidades do dataset: decímetros e hectogramas.
+
+As listas substituem a lista original inteira. Objetos, como status, podem conter apenas as propriedades que você deseja corrigir. Textos editoriais por idioma têm prioridade sobre a descrição/categoria existente.
+
+## Rascunhos, backups e outros PCs
+
+Rascunhos ficam neste navegador. Ao reabrir um documento, o editor oferece recuperar o rascunho. Limpar os dados do navegador pode apagá-lo. Use **Exportar rascunho** para obter uma cópia JSON e **Importar JSON** para recuperá-la.
+
+Antes de cada salvamento com alteração, o arquivo anterior fica em:
 
 ~~~text
 ../HoennKantoWiki-backups/editor/AAAAMMDD-HHMMSS-microssegundos-nome-do-arquivo.json
 ~~~
 
-O caminho completo aparece na mensagem de salvamento e na ajuda do editor.
+Para restaurar, abra o documento correspondente, importe seu backup, confira e salve. A versão substituída também ganha um backup. Se o arquivo tiver mudado em outro programa ou aba, o editor recusa sobrescrevê-lo; exporte o rascunho, reabra o arquivo e reaplique as mudanças.
 
-Para restaurar:
+Backups completos anteriores às implementações ficam em **HoennKantoWiki-backups**, ao lado do repositório. Extraia um ZIP em uma pasta separada para conferir antes de substituir o diretório de trabalho.
 
-1. Abra o documento correspondente na biblioteca.
-2. Use **Importar JSON** e selecione o backup desse documento.
-3. Confira a prévia e clique em **Salvar no projeto**. A versão substituída também ganhará um backup.
+Para mudar de computador:
 
-Se o arquivo mudar em outro programa ou em outra aba, o editor recusa sobrescrevê-lo. Exporte seu rascunho, use **Reabrir arquivo** e reaplique ou importe as mudanças que quiser manter. A importação substitui o conteúdo do documento; não mescla automaticamente versões.
+1. No PC atual, salve os documentos e faça **commit + Push** dos JSONs e imagens novas.
+2. No outro PC, clone o projeto ou faça **Fetch/Pull** pelo GitHub Desktop.
+3. Com Python instalado, abra **Iniciar editor.cmd**.
+4. Antes de voltar ao primeiro PC, repita o fluxo de salvar, commit e Push.
 
-Antes da implementação também foi criado um **ZIP completo do projeto, incluindo .git**, com hashes verificados, em **HoennKantoWiki-backups**, ao lado do repositório. Para recuperar o projeto inteiro, extraia o ZIP em uma pasta separada e confira essa cópia antes de substituir seu diretório de trabalho.
+Rascunhos, preferências de tema e backups externos não são sincronizados pelo Git. Para transportar um rascunho sem publicar, exporte ou importe o JSON e transfira também as imagens que ele usa. Evite editar o mesmo arquivo simultaneamente em computadores diferentes.
 
-## Publicar pelo GitHub Pages
+## Publicação e limites
 
-Salvar no editor não faz commit nem push. Abra o GitHub Desktop, revise os JSONs alterados, faça commit e depois **Push origin**, como já faz para publicar o projeto.
+**Salvar não faz commit nem push.** Revise os arquivos no GitHub Desktop e use **Push origin** quando quiser publicar. Em outro PC, receba as alterações com **Pull**.
 
-O painel é servido pelo Python em uma rota local. Ele não é carregado pelo index.html público. Os arquivos da ferramenta podem ser versionados no repositório sem criar uma API de edição no GitHub Pages. Nenhuma credencial GitHub é utilizada.
+O painel não é carregado pelo site público. O GitHub Pages serve os conteúdos publicados sem executar o servidor de edição. Nenhuma credencial GitHub é utilizada pelo editor.
 
-O editor local é uma ferramenta de desenvolvimento. Qualquer pessoa que já tenha acesso à sua sessão do computador ou aos arquivos do projeto pode editá-los; ele não substitui as permissões do Windows.
+Os modelos combinam opções visuais e campos existentes; não são um construtor de CSS/JavaScript arbitrário. Alterar mecânicas, funções, novas espécies ou tipos de componentes ainda exige código. Alertas de operação e textos sem marca de conteúdo continuam no código.
 
-## Limites desta primeira versão
+Os guias antigos preservam seu HTML. A calculadora e tabela de naturezas têm seus identificadores protegidos; confira a prévia após alterações avançadas. Esta versão não inclui administração pela internet nem sincronização automática com Android.
 
-- Edita os modelos existentes, sem construir páginas ou layouts arbitrários.
-- Textos fixos da navegação e do JavaScript não fazem parte da biblioteca.
-- A Pokédex gerada, dados de golpes/habilidades e estatísticas não são editáveis aqui, para evitar que uma regeneração apague alterações manuais.
-- Guias preservam seu HTML legado. Componentes identificados da calculadora e tabela de naturezas são protegidos. Mudanças avançadas no HTML exigem conferir o comportamento na prévia.
-- As chaves de tradução e os modelos dos campos são definidos pelo projeto. Criar um novo modelo de card ou uma nova aba ainda exige código.
-- Não publica, autentica pela internet nem sincroniza alterações com Android.
+## Verificação técnica
 
-## Estrutura e validação
-
-- tools/local_editor.py: servidor local, sessão, validação, conflitos e gravação atômica.
-- tools/editor/: interface e modelos versionados em schema.json. Os modelos permanecem disponíveis mesmo se uma lista for esvaziada.
-- tools/tests/: testes isolados, que não gravam nos dados reais.
+- tools/local_editor.py: servidor, sessão, documentos, conflitos e backups.
+- tools/editor_extensions.py: imagens e validação de páginas/correções.
+- tools/editor/: interface, temas e schemas versionados.
+- js/ui/interface.js e js/views/custom-pages.js: integração no site estático.
+- js/core/editorial.js: aplicação das correções da Pokédex.
+- tools/tests/: testes em cópias temporárias, sem alterar os dados reais.
 
 Teste do servidor, sem dependências:
 
@@ -102,7 +153,7 @@ Teste do servidor, sem dependências:
 python -B -m unittest discover -s tools/tests -p test_local_editor.py -v
 ~~~
 
-O teste opcional de navegador exige Node, Playwright e Edge/Chromium. O Playwright pode ser instalado fora do repositório; informe o caminho por WIKI_PLAYWRIGHT e, se necessário, o navegador por WIKI_BROWSER:
+O teste opcional de navegador exige Node, Playwright e Edge/Chromium. O Playwright pode ficar fora do repositório:
 
 ~~~powershell
 $env:WIKI_PLAYWRIGHT = "C:/caminho/temporario/node_modules/playwright"
@@ -110,4 +161,4 @@ $env:WIKI_BROWSER = "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.ex
 node tools/tests/editor_browser.cjs
 ~~~
 
-Os testes verificam a prévia, criação/edição de cards, rascunhos, backup, conflitos, validação, falha na gravação, interface mobile e componentes dos guias.
+A verificação cobre o editor e uma cópia do site servida apenas como arquivos estáticos.

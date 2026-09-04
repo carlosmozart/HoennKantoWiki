@@ -1,10 +1,15 @@
 // Roteamento por hash e troca de secao visivel.
 // Metodos compostos no objeto `app` (js/main.js), por isso `this` continua valido.
 
+import { renderCustomPage } from '../views/custom-pages.js';
+
 export default {
     handleRouting() {
         const hash = window.location.hash.replace('#', '');
-        if (hash.startsWith('pokemon/')) {
+        if (hash.startsWith('page/')) {
+            this.switchView('custom');
+            renderCustomPage(hash.slice(5));
+        } else if (hash.startsWith('pokemon/')) {
             const id = parseInt(hash.split('/')[1]);
             if (!isNaN(id)) {
                 this.loadPokemon(id);

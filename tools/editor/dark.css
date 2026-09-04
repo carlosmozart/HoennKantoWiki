@@ -1,0 +1,52 @@
+html[data-editor-theme="dark"] {
+  --green: #83d9ae;
+  --line: #344b3e;
+  --muted: #a3b8aa;
+  --surface: #18271f;
+  background: #101a15;
+  color: #e4eee7;
+}
+[data-editor-theme="dark"] :is(.topbar,.sidebar,.form-panel,.preview-panel,dialog) {
+  background: var(--surface);
+  color: #e4eee7;
+}
+[data-editor-theme="dark"] :is(input,select,textarea,button,.rich) {
+  background: #122018;
+  color: #e4eee7;
+  border-color: #42634e;
+}
+[data-editor-theme="dark"] button:hover:not(:disabled) { background: #2a4935; border-color: #82bc96; }
+[data-editor-theme="dark"] button.primary { background: #83d9ae; color: #10291d; }
+[data-editor-theme="dark"] button.danger { color: #ffaba0; }
+[data-editor-theme="dark"] :is(label,footer strong) { color: #b6cdbe; }
+[data-editor-theme="dark"] :is(.eyebrow,.local-badge) { color: #a3c0ac; }
+[data-editor-theme="dark"] :is(.panel-heading,details) { background: #1b2e22; }
+[data-editor-theme="dark"] legend { color: #b6cdbe; }
+[data-editor-theme="dark"] #entries button { color: #d4e4d9; }
+[data-editor-theme="dark"] #entries button.active { background: #284934; color: #d8ffe4; border-color: #61936e; }
+[data-editor-theme="dark"] #status { background: #203c2b; color: #c5e8cf; }
+[data-editor-theme="dark"] #status.error { background: #492b25; color: #ffd0b7; }
+[data-editor-theme="dark"] .pill { background: #2b4234; color: #cce3d3; }
+[data-editor-theme="dark"] .pill.changed { background: #554518; color: #ffe393; }
+[data-editor-theme="dark"] .field-row img { background: #34463a; }
+[data-editor-theme="dark"] #preview-wrap { background: #253d2e; }
+[data-editor-theme="dark"] #preview-empty { color: #c0d8c8; }
+[data-editor-theme="dark"] .rich {
+  --text-muted: #b5cbbd;
+  --text-color: #e4eee7;
+  --type-water: #80bafa;
+  --type-electric: #f2d779;
+  --type-grass: #98dca5;
+  --type-fire: #ffa993;
+  --primary-color: #83d9ae;
+  --glass-border: #42634e;
+  --stat-bar-bg: #2b4234;
+  --glass-bg: #18271f;
+}
+[data-editor-theme="dark"] .rich :is(td,th,.bento-item) { border-color: #42634e; }
+.upload-tools { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 12px 0; }
+.upload-tools p { margin: 0; color: var(--muted); font-size: 12px; }
+#gallery-status { color: var(--muted); font-size: 12px; min-height: 20px; }
+.field-help { margin-bottom: 14px; font-size: 12px; color: var(--muted); line-height: 1.6; }
+#template-list { display: grid; grid-template-columns: repeat(auto-fit,minmax(170px,1fr)); gap: 12px; margin: 18px 0; }
+@media (max-width: 700px) { .top-actions { flex-wrap: wrap; } }

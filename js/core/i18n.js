@@ -1,6 +1,7 @@
 // Idioma ativo e carregamento do dicionario correspondente.
 // Metodos compostos no objeto `app` (js/main.js), por isso `this` continua valido.
 
+import { applyInterface } from '../ui/interface.js';
 import { getTraducoes } from './dataset.js';
 import { playClickSound } from '../ui/sound.js';
 
@@ -41,6 +42,7 @@ export default {
         }
 
         this.state.lang = lang;
+        await applyInterface(lang);
         localStorage.setItem('wiki-lang', lang);
         if (this.dom.langToggle) this.dom.langToggle.textContent = lang === 'pt' ? 'Alternar Idioma USA' : 'Alternar Idioma BRA';
         return true;

@@ -177,10 +177,10 @@ export default {
 
         // --- Categoria e descricao ---
         const traduzidaCat = window.TRANSLATIONS_PT?.genera?.[data.categoria];
-        this.dom.pCat.textContent = traduzidaCat || data.categoria || 'Pokémon';
+        this.dom.pCat.textContent = data.editorTranslations?.[this.state.lang]?.category || traduzidaCat || data.categoria || 'Pokémon';
 
         const traduzidaDesc = window.TRANSLATIONS?.pokedex?.[data.id];
-        this.dom.pDesc.textContent = (traduzidaDesc && traduzidaDesc.trim())
+        this.dom.pDesc.textContent = data.editorTranslations?.[this.state.lang]?.description || (traduzidaDesc && traduzidaDesc.trim())
             || data.descricao
             || 'Sem descrição';
 

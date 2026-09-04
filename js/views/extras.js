@@ -64,7 +64,7 @@ function renderExtrasTab(tabName) {
     }
 
     if (!dataList || dataList.length === 0) {
-        grid.innerHTML = '<p>Nenhum dado encontrado.</p>';
+        grid.innerHTML = '<p data-ui=labels.text_7511e35f6e>Nenhum dado encontrado.</p>';
         return;
     }
 
@@ -80,9 +80,9 @@ function renderExtrasTab(tabName) {
         }
 
         let detailsHtml = '';
-        if (p.level) detailsHtml += `<div><strong>Nível:</strong> ${p.level}</div>`;
-        if (p.ability) detailsHtml += `<div><strong>Hab:</strong> ${p.ability}</div>`;
-        if (p.item) detailsHtml += `<div><strong>Item:</strong> ${p.item}</div>`;
+        if (p.level) detailsHtml += `<div><strong data-ui=labels.text_30eff74c8a>Nível:</strong> ${p.level}</div>`;
+        if (p.ability) detailsHtml += `<div><strong data-ui=labels.text_17d2a6ed1e>Hab:</strong> ${p.ability}</div>`;
+        if (p.item) detailsHtml += `<div><strong data-ui=labels.text_ab12e73f5e>Item:</strong> ${p.item}</div>`;
 
         let movesHtml = '';
         if (p.moves && p.moves.length > 0) {

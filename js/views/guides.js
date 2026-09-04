@@ -27,7 +27,7 @@ export default {
                 this.initWeaknessGuide();
             }
         } else {
-            container.innerHTML = '<p>Guia não encontrado.</p>';
+            container.innerHTML = '<p data-ui=labels.text_0c63647006>Guia não encontrado.</p>';
         }
     },
 

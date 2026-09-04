@@ -149,7 +149,7 @@ export async function renderEvolutions(evolucoes, versionGroup) {
     if (!alvo) return;
 
     if (!evolucoes || evolucoes.length === 0) {
-        alvo.innerHTML = '<span>Sem evolução.</span>';
+        alvo.innerHTML = '<span data-ui=labels.text_a50c4abca2>Sem evolução.</span>';
         return;
     }
 
@@ -263,14 +263,14 @@ export function renderEncounters(id, locais, versionGroup) {
     if (EVENTOS[id]) {
         alvo.innerHTML = `
             <div class="encounter-item" style="display:block; line-height: 1.5;">
-                <strong style="color: var(--type-psychic);">⭐ Evento Especial ⭐</strong><br><br>
+                <strong style="color: var(--type-psychic);" data-ui=labels.text_1f8aecf622>⭐ Evento Especial ⭐</strong><br><br>
                 <span style="color: var(--text-color);">${EVENTOS[id]}</span>
             </div>`;
         return;
     }
 
     if (!locais || Object.keys(locais).length === 0) {
-        alvo.innerHTML = '<span>Não pode ser encontrado na natureza (selvagem).</span>';
+        alvo.innerHTML = '<span data-ui=labels.text_41814836f2>Não pode ser encontrado na natureza (selvagem).</span>';
         return;
     }
 
@@ -289,7 +289,7 @@ export function renderEncounters(id, locais, versionGroup) {
     });
 
     if (Object.keys(juntos).length === 0) {
-        alvo.innerHTML = '<span>Não encontrado nesta versão específica.</span>';
+        alvo.innerHTML = '<span data-ui=labels.text_7cc343500e>Não encontrado nesta versão específica.</span>';
         return;
     }
 

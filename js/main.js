@@ -4,6 +4,7 @@
 // `this` dentro deles continua apontando para o app inteiro. Isso permitiu
 // separar o arquivo de 1.700 linhas sem reescrever a logica.
 
+import { initCustomPages } from './views/custom-pages.js';
 import state from './core/state.js';
 import storage from './core/storage.js';
 import router from './core/router.js';
@@ -61,6 +62,7 @@ window.renderExtras = renderExtras;
 window.renderKeyItems = renderKeyItems;
 
 document.addEventListener('DOMContentLoaded', () => {
+    initCustomPages();
     initFrontier();
     initExtras();
     initTraining();

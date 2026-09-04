@@ -14,7 +14,7 @@ export default {
         grid.innerHTML = '<div class="spinner"></div>';
         
         if (this.state.team.length === 0) {
-            grid.innerHTML = '<p style="color:var(--text-muted); width: 100%; text-align: center;">Sua equipe está vazia. Volte à Pokédex e adicione alguns Pokémon!</p>';
+            grid.innerHTML = '<p style="color:var(--text-muted); width: 100%; text-align: center;" data-ui=labels.text_1c3092060c>Sua equipe está vazia. Volte à Pokédex e adicione alguns Pokémon!</p>';
             analysis.innerHTML = '';
             for (let i = 0; i < 6; i++) {
                 grid.innerHTML += `<div class="team-slot empty" onclick="window.location.hash=''"></div>`;

@@ -19,10 +19,11 @@ dados_comuns = [
     'data/i18n/pt.json', 'data/gyms.json', 'data/tutors.json',
     'data/guides.json', 'data/machines.json', 'data/key-items.json',
     'data/extras.json', 'data/frontier.json',
+    'data/pages.json', 'data/interface.json', 'data/pokemon-overrides.json',
 ]
 
 lista = (
-    ['./', './index.html', './manifest.json', './css/style.css', './css/layout.css']
+    ['./', './index.html', './manifest.json', './css/style.css', './css/layout.css', './css/custom-pages.css']
     + [f'./{m}' for m in modulos]
     + [f'./{d}' for d in dados_comuns]
     + ['./images/miss.png', './favicons/favicon-16x16.png',

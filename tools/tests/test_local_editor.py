@@ -147,6 +147,65 @@ class EditorTest(unittest.TestCase):
         self.assertEqual(sorted(results), [200, 409])
         self.assertEqual(len(list((self.root / "backups").glob("*.json"))), 1)
 
+    def test_import_image_and_reject_invalid_files(self):
+        import base64, struct, zlib
+        def chunk(kind, body):
+            return struct.pack(">I", len(body)) + kind + body + struct.pack(">I", zlib.crc32(kind+body) & 0xffffffff)
+        png = b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", struct.pack(">IIBBBBB", 1, 1, 8, 6, 0, 0, 0)) + chunk(b"IDAT", zlib.compress(b"\0\x20\x80\x40\xff")) + chunk(b"IEND", b"")
+        body = {"name":"../../nova imagem.png","png":base64.b64encode(png).decode()}
+        code, raw = self.request("/api/upload", body)
+        self.assertEqual(code, 200, raw)
+        response = json.loads(raw)
+        path = (self.root / response["path"]).resolve()
+        self.assertTrue(path.is_relative_to(self.root / "img/uploads"))
+        self.assertEqual(path.read_bytes(), png)
+        self.assertEqual(json.loads(self.request("/api/upload",body)[1])["path"], response["path"])
+        body["png"] = base64.b64encode(b"<svg onload='alert(1)'></svg>").decode()
+        self.assertEqual(self.request("/api/upload",body)[0], 400)
+        body["png"] = base64.b64encode(png[:-1]+b"X").decode()
+        self.assertEqual(self.request("/api/upload",body)[0], 400)
+        self.assertEqual(self.request("/api/upload",body,headers={"X-Editor-Token":""})[0],403)
+        body = {"name":"falha.png","png":base64.b64encode(png).decode()}
+        with patch("editor_extensions.os.replace",side_effect=OSError("Falha simulada")):
+            self.assertEqual(self.request("/api/upload",body)[0],400)
+        self.assertEqual(len(list((self.root/"img/uploads").glob("*.png"))),1)
+        self.assertFalse(list((self.root/"img/uploads").glob(".upload-*.tmp")))
+
+    def test_custom_pages_and_template_preview(self):
+        body = self.payload("pages.json")
+        card = body["data"]["templates"][0]
+        page = {"slug":"guia-teste","title":"Guia de teste","menuLabel":"Meu guia",
+                "description":"Introdução","visible":True,"versions":[],"cards":[card],
+                "en":{"title":"","menuLabel":"","description":""}}
+        body["data"]["pages"].append(page)
+        self.assertEqual(self.request("/api/save",body)[0],200)
+        duplicate = self.payload("pages.json")
+        duplicate["data"]["pages"].append(copy.deepcopy(page))
+        self.assertEqual(self.request("/api/save",duplicate)[0],400)
+        body = self.payload("pages.json")
+        body["context"] = {"templateIndex":0}
+        code,raw = self.request("/api/preview",body)
+        self.assertEqual(code,200)
+        prefix=json.loads(raw)["url"].removesuffix("index.html")
+        snapshot=json.loads(self.request(prefix+"data/pages.json")[1])
+        self.assertEqual(snapshot["pages"][-1]["slug"],"modelo-preview")
+        self.assertEqual(len(json.loads((self.root/"data/pages.json").read_bytes())["pages"]),1)
+
+    def test_pokemon_corrections_do_not_change_generated_files(self):
+        body = self.payload("pokemon-overrides.json")
+        original = (self.root/"data/pokemon/1.json").read_bytes()
+        body["data"]["corrections"] = [{"pokemonId":1,"changes":{"stats":{"hp":80}},
+            "translations":{"pt":{"description":"Descrição corrigida","category":""},
+                            "en":{"description":"","category":""}}}]
+        self.assertEqual(self.request("/api/save",body)[0],200)
+        self.assertEqual((self.root/"data/pokemon/1.json").read_bytes(),original)
+        body=self.payload("pokemon-overrides.json")
+        body["data"]["corrections"][0]["changes"]["tipos"]=["fairy"]
+        self.assertEqual(self.request("/api/save",body)[0],400)
+        body=self.payload("pokemon-overrides.json")
+        body["data"]["corrections"].append(copy.deepcopy(body["data"]["corrections"][0]))
+        self.assertEqual(self.request("/api/save",body)[0],400)
+
     def test_write_failure_preserves_original(self):
         body = self.payload()
         target = self.root / "data/key-items.json"

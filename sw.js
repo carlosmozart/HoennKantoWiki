@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pokewiki-v15';
+const CACHE_NAME = 'pokewiki-v16';
 const API_CACHE_NAME = 'pokewiki-api-cache';
 
 // Os <script>/<link> do index usam querystring (?v=1.0.2) para cache busting.
@@ -19,9 +19,11 @@ const ASSETS_TO_CACHE = [
   './manifest.json',
   './css/style.css',
   './css/layout.css',
+  './css/custom-pages.css',
   './js/app/events.js',
   './js/app/lifecycle.js',
   './js/core/dataset.js',
+  './js/core/editorial.js',
   './js/core/i18n.js',
   './js/core/router.js',
   './js/core/sprites.js',
@@ -30,9 +32,11 @@ const ASSETS_TO_CACHE = [
   './js/core/types.js',
   './js/main.js',
   './js/ui/dom.js',
+  './js/ui/interface.js',
   './js/ui/layout.js',
   './js/ui/sound.js',
   './js/ui/theme.js',
+  './js/views/custom-pages.js',
   './js/views/extras.js',
   './js/views/frontier.js',
   './js/views/guides.js',
@@ -58,6 +62,9 @@ const ASSETS_TO_CACHE = [
   './data/key-items.json',
   './data/extras.json',
   './data/frontier.json',
+  './data/pages.json',
+  './data/interface.json',
+  './data/pokemon-overrides.json',
   './images/miss.png',
   './favicons/favicon-16x16.png',
   './favicons/icon-192.png',

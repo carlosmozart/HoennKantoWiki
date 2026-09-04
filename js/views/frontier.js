@@ -54,8 +54,8 @@ function renderFrontierTab(tabName) {
     } 
     else if (tabName === 'facilities') {
         FRONTIER_DATA.facilities.forEach(fac => {
-            let silverHtml = fac.silverTeam.length === 0 ? '<p style="color:var(--text-muted);font-style:italic;text-align:center;margin-top:10px;">Pokémon Alugados (Rental)</p>' : '';
-            let goldHtml = fac.goldTeam.length === 0 ? '<p style="color:var(--text-muted);font-style:italic;text-align:center;margin-top:10px;">Pokémon Alugados (Rental)</p>' : '';
+            let silverHtml = fac.silverTeam.length === 0 ? '<p style="color:var(--text-muted);font-style:italic;text-align:center;margin-top:10px;" data-ui=labels.text_3e1bcbf86a>Pokémon Alugados (Rental)</p>' : '';
+            let goldHtml = fac.goldTeam.length === 0 ? '<p style="color:var(--text-muted);font-style:italic;text-align:center;margin-top:10px;" data-ui=labels.text_3e1bcbf86a>Pokémon Alugados (Rental)</p>' : '';
 
             // Renderizando Cards Detalhados dos Pokémon
             const renderPokeCard = (p) => {
@@ -72,8 +72,8 @@ function renderFrontierTab(tabName) {
                         <div style="margin-bottom:5px;">${typesHtml}</div>
                         <div style="font-size:0.8rem; color:var(--text-color); margin-bottom:5px;">Nv. ${p.level}</div>
                         <div style="font-size:0.8rem; background:rgba(0,0,0,0.2); padding: 4px 8px; border-radius:6px; width:100%; text-align:left; margin-bottom:5px;">
-                            <div style="margin-bottom:2px;">🛡️ <strong>Item:</strong> <span style="color:var(--type-electric);">${p.item}</span></div>
-                            <div>✨ <strong>Hab:</strong> ${p.ability}</div>
+                            <div style="margin-bottom:2px;">🛡️ <strong data-ui=labels.text_ab12e73f5e>Item:</strong> <span style="color:var(--type-electric);">${p.item}</span></div>
+                            <div>✨ <strong data-ui=labels.text_17d2a6ed1e>Hab:</strong> ${p.ability}</div>
                         </div>
                         <div style="width:100%; text-align:center; margin-top:5px;">
                             ${movesHtml}
@@ -108,7 +108,7 @@ function renderFrontierTab(tabName) {
                             <h3 style="margin:5px 0 0 0; font-size:2rem; font-weight:800;">${fac.brain}</h3>
                             
                             <div style="background:var(--stat-bar-bg); padding:12px; border-radius:10px; margin-top:20px; text-align:center; font-size:1.1rem;">
-                                <strong>Símbolo (Badge):</strong> <span style="color:#FFF;">${fac.symbol}</span>
+                                <strong data-ui=labels.text_fafe707127>Símbolo (Badge):</strong> <span style="color:#FFF;">${fac.symbol}</span>
                             </div>
                         </div>
                         
@@ -119,14 +119,14 @@ function renderFrontierTab(tabName) {
                             <div style="display:flex; flex-direction:column; gap:20px;">
                                 <div style="background:rgba(192,192,192,0.1); border:1px solid #C0C0C0; border-radius:12px; padding:20px; width:100%;">
                                     <div style="text-align:center;">
-                                        <strong style="color:#C0C0C0; font-size:1.2rem; text-transform:uppercase;">🥈 Desafio de Prata</strong><br>
+                                        <strong style="color:#C0C0C0; font-size:1.2rem; text-transform:uppercase;" data-ui=labels.text_8c47ad6702>🥈 Desafio de Prata</strong><br>
                                         <span style="font-size:0.95rem; color:var(--text-muted); display:inline-block; margin-top:5px;">${fac.silverReq}</span>
                                     </div>
                                     ${silverHtml}
                                 </div>
                                 <div style="background:rgba(255,215,0,0.1); border:1px solid #FFD700; border-radius:12px; padding:20px; width:100%;">
                                     <div style="text-align:center;">
-                                        <strong style="color:#FFD700; font-size:1.2rem; text-transform:uppercase;">🥇 Desafio de Ouro</strong><br>
+                                        <strong style="color:#FFD700; font-size:1.2rem; text-transform:uppercase;" data-ui=labels.text_4f8458c2cb>🥇 Desafio de Ouro</strong><br>
                                         <span style="font-size:0.95rem; color:var(--text-muted); display:inline-block; margin-top:5px;">${fac.goldReq}</span>
                                     </div>
                                     ${goldHtml}

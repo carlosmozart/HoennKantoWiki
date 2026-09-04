@@ -5,6 +5,8 @@
 // (ate ~130) e uma por habilidade. Agora e um unico arquivo de ~6 KB, servido
 // junto com o site e cacheavel pelo Service Worker.
 
+import { correctedPokemon } from './editorial.js';
+
 const VERSAO = (typeof window !== 'undefined' && window.ASSET_VERSION) || '1';
 const BASE = new URL('../../data/', import.meta.url);
 
@@ -31,10 +33,19 @@ function carregar(caminho) {
 
 // --- Pokedex -----------------------------------------------------------
 /** Indice leve: [{ id, nome, tipos, stats }] — grade, busca e filtros. */
-export const getIndice = () => carregar('pokedex.json');
+export const getIndice = async () => {
+    const [index, editorial] = await Promise.all([carregar('pokedex.json'), getPokemonOverrides()]);
+    return index.map(pokemon => {
+        const corrected = correctedPokemon(pokemon, editorial.corrections);
+        return { ...pokemon, nome: corrected.nome, tipos: corrected.tipos, stats: corrected.stats };
+    });
+};
 
 /** Ficha completa de um Pokemon, com evolucoes e locais ja embutidos. */
-export const getPokemon = (id) => carregar(`pokemon/${id}.json`);
+export const getPokemon = async (id) => {
+    const [pokemon, editorial] = await Promise.all([carregar(`pokemon/${id}.json`), getPokemonOverrides()]);
+    return correctedPokemon(pokemon, editorial.corrections);
+};
 
 /** Todos os golpes da Gen 3: { nome: { tipo, poder, precisao, pp, classe } }. */
 export const getGolpes = () => carregar('moves.json');
@@ -50,6 +61,9 @@ export const getMaquinas = () => carregar('machines.json');
 export const getItensChave = () => carregar('key-items.json');
 export const getExtras = () => carregar('extras.json');
 export const getFrontier = () => carregar('frontier.json');
+export const getPages = () => carregar('pages.json');
+export const getInterface = () => carregar('interface.json');
+export const getPokemonOverrides = () => carregar('pokemon-overrides.json');
 
 // --- Traducoes ---------------------------------------------------------
 /** So o idioma em uso e baixado. */

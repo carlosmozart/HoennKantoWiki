@@ -16,14 +16,14 @@ export default {
             modal.innerHTML = `
                 <div class="ios-modal-card" role="dialog" aria-modal="true" aria-labelledby="ios-modal-titulo">
                     <button class="ios-modal-fechar" aria-label="Fechar">&times;</button>
-                    <h3 id="ios-modal-titulo">Instalar no iPhone ou iPad</h3>
-                    <p>O Safari não oferece um botão automático. Em três passos:</p>
+                    <h3 id="ios-modal-titulo" data-ui=labels.text_6929dfbf80>Instalar no iPhone ou iPad</h3>
+                    <p data-ui=labels.text_5373b22b02>O Safari não oferece um botão automático. Em três passos:</p>
                     <ol>
-                        <li>Toque em <strong>Compartilhar</strong> <span class="ios-icone">&#xFE0E;⬆️</span> na barra do Safari.</li>
-                        <li>Role e escolha <strong>Adicionar à Tela de Início</strong>.</li>
-                        <li>Confirme em <strong>Adicionar</strong>.</li>
+                        <li>Toque em <strong data-ui=labels.text_dfb5114283>Compartilhar</strong> <span class="ios-icone">&#xFE0E;⬆️</span> na barra do Safari.</li>
+                        <li>Role e escolha <strong data-ui=labels.text_01b0a3d6d8>Adicionar à Tela de Início</strong>.</li>
+                        <li>Confirme em <strong data-ui=labels.text_fadcf2d5a3>Adicionar</strong>.</li>
                     </ol>
-                    <p class="ios-obs">Precisa ser o <strong>Safari</strong> — Chrome e Firefox no iOS não conseguem instalar.</p>
+                    <p class="ios-obs">Precisa ser o <strong data-ui=labels.text_424dd4565e>Safari</strong> — Chrome e Firefox no iOS não conseguem instalar.</p>
                 </div>`;
             document.body.appendChild(modal);
 
