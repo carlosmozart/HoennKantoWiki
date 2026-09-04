@@ -1,14 +1,16 @@
 {
-  "name": "hoenn-kanto-wiki",
+  "name": "hoenn-kanto-wiki-android",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Wiki Gen 3 e app Android de teste",
+  "description": "Aplicativo Android da Hoenn Kanto Wiki",
   "scripts": {
-    "android:web": "python -B tools/build_android_web.py",
+    "android:web": "python -B tools/build_web.py",
     "android:sync": "npm run android:web && cap sync android",
     "android:debug": "python -B tools/build_apk.py",
-    "android:open": "cap open android"
+    "android:open": "cap open android",
+    "android:java": "python -B tools/setup_java.py",
+    "test:navigation": "node tests/native_navigation_test.cjs"
   },
   "engines": {
     "node": ">=22"

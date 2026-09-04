@@ -117,6 +117,6 @@ Para editar cards, times e textos sem alterar os arquivos manualmente, abra **In
 
 Consulte o [guia do editor local](docs/EDITOR-LOCAL.md).
 
-## Preparação para Android
+## Aplicativo Android
 
-Os 386 cries estão em `audio/cries/`, com reprodução local prioritária. O script `python -B tools/build_android_web.py` prepara `dist/android-web` para o futuro empacotamento Android. Para gerar o APK de teste, use `Gerar APK de teste.cmd` ou execute manualmente a tarefa **Android debug APK** no GitHub Actions. Consulte os testes e instruções no [guia Android](docs/ANDROID.md).
+O site permanece na raiz do repositório. Todo o projeto móvel está isolado em `apps/android/`, incluindo Capacitor, Gradle, dependências, código nativo, scripts, testes e documentação. Para gerar o APK, abra `apps/android/Gerar APK de teste.cmd` ou execute manualmente a tarefa **Android debug APK** no GitHub Actions. Consulte o [guia do aplicativo](apps/android/README.md).

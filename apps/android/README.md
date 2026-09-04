@@ -1,13 +1,14 @@
-# Preparação e testes Android
+# Aplicativo Android
 
 ## Estado atual
 
-O site continua publicado pelo GitHub Pages. Foi preparada uma cópia dos arquivos web para o futuro app Android, com dados, sprites e 386 cries locais. O editor e os backups não fazem parte desse pacote.
+Este diretório contém todo o projeto móvel. O site publicado pelo GitHub Pages permanece na raiz do repositório; durante o build, seus dados e recursos são copiados para um pacote Android offline. O editor e os backups não fazem parte do APK.
 
-O script abaixo gera **dist/android-web** e um manifesto com tamanho e SHA-256 de cada arquivo:
+A partir da raiz do repositório, entre neste diretório. O script gera **dist/web** e um manifesto com tamanho e SHA-256 de cada arquivo:
 
 ~~~powershell
-python -B tools/build_android_web.py
+cd apps/android
+python -B tools/build_web.py
 ~~~
 
 A pasta é gerada novamente a partir do projeto. O script substitui somente uma saída identificada como sua própria geração. A saída fica ignorada pelo Git; envie as fontes do projeto, não a pasta dist.
@@ -38,24 +39,29 @@ Os testes no navegador não substituem testes em um aparelho Android/WebView: pe
 Com Python, Node, Playwright e Microsoft Edge disponíveis:
 
 ~~~powershell
-python -B -m unittest discover -s tools/tests -p "test_*.py" -v
+cd apps/android
 $env:WIKI_PLAYWRIGHT = "$env:TEMP/hoenn-editor-browser-tests/node_modules/playwright"
-node tools/tests/editor_browser.cjs
-node tools/tests/mobile_browser.cjs
-node tools/tests/cries_test.cjs
-node tools/tests/native_web_test.cjs
-node tools/tests/native_navigation_test.cjs
+node tests/native_web_test.cjs
+npm run test:navigation
 ~~~
 
 O caminho WIKI_PLAYWRIGHT deve apontar para uma instalação existente do Playwright. Os testes criam cópias temporárias; não salvam dados no projeto real.
 
-## Próxima etapa: primeiro APK
+## Estrutura
 
-O projeto nativo usa Capacitor 8.5.1 e **dist/android-web** como **webDir**. A configuração webDir deve apontar para uma pasta que já contenha index.html e os arquivos do app. [Configuração oficial](https://capacitorjs.com/docs/config).
+- `android/`: projeto Gradle aberto pelo Android Studio.
+- `native/`: integração JavaScript e estilos exclusivos do aplicativo.
+- `tools/`: geração do pacote web, configuração do Java e compilação do APK.
+- `tests/`: testes exclusivos do aplicativo.
+- `dist/`: saídas geradas localmente e ignoradas pelo Git.
+
+## Compilação
+
+O projeto nativo usa Capacitor 8.5.1 e **dist/web** como **webDir**. A configuração webDir deve apontar para uma pasta que já contenha index.html e os arquivos do app. [Configuração oficial](https://capacitorjs.com/docs/config).
 
 Antes da compilação, preparar Android Studio e Android SDK compatíveis com a versão do Capacitor adotada. A documentação consultada para Capacitor 8 informa Node 22+ e Android Studio 2025.2.1+; o Android Studio fornece o JDK apropriado. [Requisitos oficiais](https://capacitorjs.com/docs/getting-started/environment-setup).
 
-O Android Studio e o SDK foram detectados neste PC. O projeto requer a plataforma API 36; quando necessário, o Gradle a obtém usando as licenças já aceitas pelo SDK Manager. O JDK 21 do projeto fica em `.local-editor/toolchains` e não altera o Java do sistema.
+O Android Studio e o SDK foram detectados neste PC. O projeto requer a plataforma API 36; quando necessário, o Gradle a obtém usando as licenças já aceitas pelo SDK Manager. O JDK 21 opcional do projeto fica em `.local/toolchains` e não altera o Java do sistema.
 
 O evento nativo Voltar fecha diálogos e a ficha de treinamento, volta pelo histórico quando existe, abre a tela inicial ao partir de um link direto e encerra somente na tela inicial. [API oficial de App](https://capacitorjs.com/docs/apis/app).
 
@@ -69,8 +75,8 @@ O evento nativo Voltar fecha diálogos e a ficha de treinamento, volta pelo hist
 6. Favoritar, montar equipe, fechar e reabrir para verificar persistência.
 7. Instalar uma atualização sobre a anterior e conferir a preservação das preferências e da equipe.
 
-Use **Gerar APK de teste.cmd** ou `npm run android:debug`. O APK e seu SHA-256 são gravados em `dist`. Para abrir o projeto no Android Studio, use `npm run android:open`.
+Dentro de `apps/android`, use **Gerar APK de teste.cmd** ou `npm run android:debug`. O APK e seu SHA-256 são gravados em `dist`. Para abrir o projeto no Android Studio, use `npm run android:open`.
 
 A compilação local deste PC pode falhar com **Unable to establish loopback connection** quando a proteção do sistema bloqueia a comunicação local do processo Java. Permita conexões locais para o Java/JDK usado pelo Gradle ou use a tarefa **Android debug APK** na aba Actions do GitHub. Essa tarefa é manual, não publica uma versão e guarda o APK de teste por 14 dias.
 
-Pendência após a compilação: instalar e executar o roteiro acima em um aparelho físico.
+O APK 0.1.0 foi instalado e validado com sucesso em um aparelho físico.

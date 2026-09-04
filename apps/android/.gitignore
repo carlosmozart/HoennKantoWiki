@@ -1,0 +1,12 @@
+# Dependencias e artefatos do aplicativo Android
+node_modules/
+dist/
+.local/
+
+# Arquivos locais e saídas do Gradle/Android Studio
+android/.gradle/
+android/.idea/
+android/local.properties
+android/**/build/
+*.jks
+*.keystore

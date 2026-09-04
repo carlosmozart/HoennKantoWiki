@@ -8,11 +8,6 @@ tools/__pycache__/
 # Relatorios locais do editor e caches de testes
 .local-editor/
 dist/
-node_modules/
-android/.gradle/
-android/.idea/
 *.jks
 *.keystore
-android/local.properties
-android/**/build/
 **/__pycache__/

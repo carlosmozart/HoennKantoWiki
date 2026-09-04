@@ -16,6 +16,7 @@ jobs:
         with:
           node-version: "22"
           cache: npm
+          cache-dependency-path: apps/android/package-lock.json
       - uses: actions/setup-java@v6
         with:
           distribution: temurin
@@ -23,13 +24,15 @@ jobs:
           cache: gradle
       - uses: gradle/actions/setup-gradle@v6
       - run: npm ci
+        working-directory: apps/android
       - name: Build debug APK
         run: python3 -B tools/build_apk.py
+        working-directory: apps/android
       - uses: actions/upload-artifact@v7
         with:
           name: HoennKantoWiki-debug
           path: |
-            dist/*.apk
-            dist/*.sha256
+            apps/android/dist/*.apk
+            apps/android/dist/*.sha256
           if-no-files-found: error
           retention-days: 14

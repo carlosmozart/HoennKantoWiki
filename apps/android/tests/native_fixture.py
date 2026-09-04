@@ -6,7 +6,7 @@ import json
 import sys
 import threading
 
-root=Path(__file__).resolve().parents[2]/"dist/android-web"
+root=Path(__file__).resolve().parents[1]/"dist/web"
 if not (root/"native.js").is_file(): raise SystemExit("Run npm run android:web first.")
 class Handler(SimpleHTTPRequestHandler):
     def log_message(self,*args): pass

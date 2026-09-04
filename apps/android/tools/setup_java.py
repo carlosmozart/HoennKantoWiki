@@ -5,9 +5,9 @@ import hashlib
 import json
 import zipfile
 
-ROOT=Path(__file__).resolve().parents[1]
+APP_ROOT=Path(__file__).resolve().parents[1]
 def setup():
-    target=ROOT/".local-editor/toolchains"
+    target=APP_ROOT/".local/toolchains"
     target.mkdir(parents=True,exist_ok=True)
     url="https://api.github.com/repos/adoptium/temurin21-binaries/releases/latest"
     headers={"User-Agent":"HoennKantoWiki-build/1.0"}
@@ -28,6 +28,6 @@ def setup():
     homes=[p.parent.parent for p in target.glob("*/bin/java.exe")]
     if len(homes)!=1: raise ValueError("Ambiguous Java installation.")
     home=homes[0].resolve()
-    (ROOT/".local-editor/java-home.txt").write_text(str(home),encoding="utf-8")
+    (APP_ROOT/".local/java-home.txt").write_text(str(home),encoding="utf-8")
     print(str(home),flush=True)
 if __name__=="__main__": setup()

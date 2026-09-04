@@ -5,7 +5,7 @@ const path=require('node:path');
 const os=require('node:os');
 const {chromium}=require(process.env.WIKI_PLAYWRIGHT||'playwright');
 (async()=>{
- const fixture=spawn('python',['-B','tools/tests/native_fixture.py'],{stdio:['pipe','pipe','inherit']});
+ const fixture=spawn('python',['-B','tests/native_fixture.py'],{stdio:['pipe','pipe','inherit']});
  let buffer='',browser;
  const config=await new Promise((resolve,reject)=>{
   fixture.stdout.on('data',b=>{buffer+=b;if(buffer.includes('\n'))resolve(JSON.parse(buffer.split('\n')[0]));});
