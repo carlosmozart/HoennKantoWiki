@@ -416,25 +416,48 @@ export default {
             });
         }
 
-        // PWA Install Logic
+        // --- Instalar como aplicativo ---
+        // Chrome/Edge/Android disparam beforeinstallprompt e permitem chamar o
+        // prompt nativo. O Safari do iOS nunca implementou esse evento: la a
+        // instalacao e manual (Compartilhar > Adicionar a Tela de Inicio), e
+        // sem este caminho o botao simplesmente nunca aparecia no iPhone.
         let deferredPrompt;
         const installBtn = document.getElementById('btn-install-app');
+
+        const jaInstalado = () =>
+            window.matchMedia('(display-mode: standalone)').matches
+            || window.navigator.standalone === true;
+
+        const ehIOS = () =>
+            /iphone|ipad|ipod/i.test(navigator.userAgent)
+            // iPadOS 13+ se identifica como Mac; o toque denuncia o tablet
+            || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
         if (installBtn) {
+            if (ehIOS() && !jaInstalado()) {
+                installBtn.classList.remove('hidden');
+                installBtn.title = 'Como instalar no iPhone/iPad';
+            }
+
             window.addEventListener('beforeinstallprompt', (e) => {
                 e.preventDefault();
                 deferredPrompt = e;
                 installBtn.classList.remove('hidden');
             });
+
             installBtn.addEventListener('click', async () => {
                 if (deferredPrompt) {
                     deferredPrompt.prompt();
                     const { outcome } = await deferredPrompt.userChoice;
-                    if (outcome === 'accepted') {
-                        installBtn.classList.add('hidden');
-                    }
+                    if (outcome === 'accepted') installBtn.classList.add('hidden');
                     deferredPrompt = null;
+                    return;
+                }
+                if (ehIOS()) {
+                    this.mostrarInstrucoesIOS();
                 }
             });
+
             window.addEventListener('appinstalled', () => {
                 installBtn.classList.add('hidden');
                 deferredPrompt = null;

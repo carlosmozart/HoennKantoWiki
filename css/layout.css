@@ -201,7 +201,7 @@ body {
 }
 
 .bento-matchups {
-    grid-column: span 2;
+    grid-column: span 1;
     grid-row: span 1;
 }
 
@@ -472,7 +472,7 @@ body {
     .bento-desc { grid-column: span 2; }
     .bento-info { grid-column: span 1; }
     .bento-stats { grid-column: span 1; }
-    .bento-matchups { grid-column: span 2; }
+    .bento-matchups { grid-column: span 1; }
     .bento-evolutions { grid-column: span 2; }
     .bento-locations { grid-column: span 2; }
     .bento-moves { grid-column: span 2; }

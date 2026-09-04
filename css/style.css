@@ -1194,3 +1194,75 @@ summary:focus-visible,
 }
 
 .guia-galeria-tira a:hover img { transform: scale(1.15); }
+
+/* Fraquezas / Resiste / Vantagem: três bentos separados */
+.matchup-legenda {
+    margin: -6px 0 10px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    line-height: 1.35;
+}
+
+.matchup-vazio {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.bento-matchups .matchups-container {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    max-height: none;
+}
+
+/* Instruções de instalação no iOS (Safari não tem prompt programático) */
+.ios-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    background: rgba(0, 0, 0, 0.65);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.ios-modal-card {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    background: var(--bg-color);
+    color: var(--text-color);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 24px 22px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+}
+
+.ios-modal-card h3 { margin: 0 0 10px; color: var(--primary-color); }
+.ios-modal-card p { margin: 0 0 12px; color: var(--text-muted); line-height: 1.5; }
+.ios-modal-card ol { margin: 0 0 12px 20px; line-height: 1.9; }
+.ios-modal-card strong { color: var(--text-color); }
+
+.ios-obs {
+    font-size: 0.85rem;
+    border-top: 1px solid var(--glass-border);
+    padding-top: 12px;
+}
+
+.ios-icone {
+    display: inline-block;
+    padding: 0 4px;
+}
+
+.ios-modal-fechar {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    width: 40px;
+    height: 40px;
+    background: none;
+    border: none;
+    color: var(--text-color);
+    font-size: 1.8rem;
+    line-height: 1;
+    cursor: pointer;
+}

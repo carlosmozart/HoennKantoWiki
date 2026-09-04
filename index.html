@@ -23,14 +23,21 @@
     <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#121212">
     <link rel="apple-touch-icon" href="./favicons/icon-192.png">
+    <!-- iOS ignora o manifest para alguns comportamentos e nao implementa
+         beforeinstallprompt; estas meta tags fazem o "Adicionar a Tela de
+         Inicio" abrir em tela cheia, sem a barra do Safari. -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="WikiGen3">
+    <meta name="mobile-web-app-capable" content="yes">
 
     <!-- Estilos (com ?v= anti-cache) -->
-    <link rel="stylesheet" href="./css/style.css?v=4.1">
-    <link rel="stylesheet" href="./css/layout.css?v=4.1">
+    <link rel="stylesheet" href="./css/style.css?v=4.2">
+    <link rel="stylesheet" href="./css/layout.css?v=4.2">
     
     <script>
         // Fonte única da versão usada no cache busting (lida por js/api.js).
-        window.ASSET_VERSION = '4.1';
+        window.ASSET_VERSION = '4.2';
 
         // O dicionário do idioma salvo é pedido só depois que o app.js roda.
         // O preload adianta o download e evita essa requisição em cascata.
@@ -50,7 +57,7 @@
 
     <!-- Um unico ponto de entrada; o resto vem por import ES.
          Dados (Pokedex, golpes, ginasios, traducoes) ficam em data/*.json. -->
-    <script type="module" src="./js/main.js?v=4.1"></script>
+    <script type="module" src="./js/main.js?v=4.2"></script>
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
         if ('serviceWorker' in navigator) {
@@ -111,7 +118,7 @@
             <!-- Loading Global -->
             <div id="loading-overlay" class="loading-overlay hidden">
                 <div class="spinner"></div>
-                <p>Carregando dados da PokéAPI...</p>
+                <p>Carregando...</p>
             </div>
 
             <!-- Dashboard Inicial (Lista de Pokémons) -->
@@ -301,12 +308,24 @@
                         </div>
                     </div>
 
-                    <!-- Matchups Box -->
-                    <div class="bento-item bento-matchups">
-                        <h3>Fraquezas e Vantagens</h3>
-                        <div class="matchups-container">
-                            <!-- Preenchido via JS -->
-                        </div>
+                    <!-- Defesa e ataque separados: antes tudo vinha numa lista
+                         so, misturando o que machuca com o que ele resiste. -->
+                    <div class="bento-item bento-matchups bento-fraquezas">
+                        <h3>Fraquezas</h3>
+                        <p class="matchup-legenda">Tipos que causam dano aumentado nele.</p>
+                        <div class="matchups-container" id="matchups-fraquezas"></div>
+                    </div>
+
+                    <div class="bento-item bento-matchups bento-resiste">
+                        <h3>Resiste</h3>
+                        <p class="matchup-legenda">Tipos que causam dano reduzido ou nenhum.</p>
+                        <div class="matchups-container" id="matchups-resiste"></div>
+                    </div>
+
+                    <div class="bento-item bento-matchups bento-vantagem">
+                        <h3>Vantagem</h3>
+                        <p class="matchup-legenda">Tipos contra os quais os golpes dele são super efetivos.</p>
+                        <div class="matchups-container" id="matchups-vantagem"></div>
                     </div>
 
                     <!-- Evolutions Box -->

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pokewiki-v12';
+const CACHE_NAME = 'pokewiki-v13';
 const API_CACHE_NAME = 'pokewiki-api-cache';
 
 // Os <script>/<link> do index usam querystring (?v=1.0.2) para cache busting.

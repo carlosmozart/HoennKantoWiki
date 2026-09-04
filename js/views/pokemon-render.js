@@ -14,7 +14,9 @@ const SPRITE_ITEM = spriteItem;
 
 const el = {
     stats: () => document.querySelector('.pokemon-stats'),
-    matchups: () => document.querySelector('.matchups-container'),
+    fraquezas: () => document.getElementById('matchups-fraquezas'),
+    resiste: () => document.getElementById('matchups-resiste'),
+    vantagem: () => document.getElementById('matchups-vantagem'),
     evolucoes: () => document.querySelector('.evolution-container'),
     locais: () => document.querySelector('.encounters-container'),
     golpes: (tipo) => document.querySelector(`#table-moves-${tipo} tbody`),
@@ -54,30 +56,53 @@ export function renderStats(stats) {
 // FRAQUEZAS E VANTAGENS
 // ==========================================
 export function renderMatchups(tipos) {
-    const alvo = el.matchups();
-    if (!alvo) return;
+    const pilula = (tipo, m) => {
+        const classe = m === 4 ? 'mult-4' : m === 2 ? 'mult-2'
+            : m === 0.5 ? 'mult-05' : m === 0.25 ? 'mult-025' : 'mult-0';
+        return `
+            <div class="matchup-item badge-${tipo} ${classe}">
+                <span>${TYPE_TRANSLATIONS[tipo]}</span>
+                <span class="matchup-mult">x${m}</span>
+            </div>`;
+    };
 
-    const mult = {};
-    GEN3_TYPES.forEach((t) => (mult[t] = 1));
+    const preencher = (alvo, entradas, vazio) => {
+        if (!alvo) return;
+        alvo.innerHTML = entradas.length
+            ? entradas.map(([tipo, m]) => pilula(tipo, m)).join('')
+            : `<span class="matchup-vazio">${vazio}</span>`;
+    };
+
+    // --- Defesa: quanto ele sofre de cada tipo ---
+    const defesa = {};
+    GEN3_TYPES.forEach((t) => (defesa[t] = 1));
     tipos.forEach((t) => {
         const relacoes = TYPE_CHART_GEN3[t];
         if (!relacoes) return;
-        for (const atacante in relacoes) mult[atacante] *= relacoes[atacante];
+        for (const atacante in relacoes) defesa[atacante] *= relacoes[atacante];
     });
 
-    const classe = (m) =>
-        m === 4 ? 'mult-4' : m === 2 ? 'mult-2' : m === 0.5 ? 'mult-05' : m === 0.25 ? 'mult-025' : 'mult-0';
+    const porMultiplicador = (a, b) => b[1] - a[1];
+    const fraquezas = Object.entries(defesa).filter(([, m]) => m > 1).sort(porMultiplicador);
+    const resiste = Object.entries(defesa).filter(([, m]) => m < 1).sort(porMultiplicador);
 
-    const html = Object.entries(mult)
-        .filter(([, m]) => m !== 1)
-        .map(([tipo, m]) => `
-            <div class="matchup-item badge-${tipo} ${classe(m)}">
-                <span>${TYPE_TRANSLATIONS[tipo]}</span>
-                <span class="matchup-mult">x${m}</span>
-            </div>`)
-        .join('');
+    // --- Ataque: contra quem os golpes do tipo dele sao super efetivos.
+    // Cada golpe tem um tipo so, entao aqui vale o melhor caso entre os tipos
+    // do Pokemon (uniao), e nao o produto como na defesa. ---
+    const vantagem = [];
+    GEN3_TYPES.forEach((defensor) => {
+        let melhor = 1;
+        tipos.forEach((atacante) => {
+            const m = (TYPE_CHART_GEN3[defensor] || {})[atacante];
+            if (m !== undefined && m > melhor) melhor = m;
+        });
+        if (melhor > 1) vantagem.push([defensor, melhor]);
+    });
+    vantagem.sort(porMultiplicador);
 
-    alvo.innerHTML = html || '<span>Dano normal para tudo.</span>';
+    preencher(el.fraquezas(), fraquezas, 'Nenhuma fraqueza.');
+    preencher(el.resiste(), resiste, 'Não resiste a nenhum tipo.');
+    preencher(el.vantagem(), vantagem, 'Sem vantagem de tipo.');
 }
 
 // ==========================================
