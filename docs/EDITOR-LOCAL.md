@@ -1,4 +1,4 @@
-# Editor local · WikiGen3 2.1
+# Editor local · WikiGen3 2.2
 
 O editor roda no seu computador. Requer **Python 3.10 ou superior**, sem instalar pacotes, banco de dados ou ferramentas de desenvolvimento adicionais. O site continua sendo publicado como arquivos estáticos no GitHub Pages.
 
@@ -131,6 +131,20 @@ Para mudar de computador:
 4. Antes de voltar ao primeiro PC, repita o fluxo de salvar, commit e Push.
 
 Rascunhos, preferências de tema e backups externos não são sincronizados pelo Git. Para transportar um rascunho sem publicar, exporte ou importe o JSON e transfira também as imagens que ele usa. Evite editar o mesmo arquivo simultaneamente em computadores diferentes.
+
+## Sincronização no editor
+
+O botão **Sincronização** mostra a branch, arquivos alterados (incluindo renomeados e novos) e commits para enviar/receber em relação à referência remota local. A consulta é somente leitura: não faz Fetch, Pull, commit ou Push. A data do último Fetch é exibida quando disponível. Faça **Fetch no GitHub Desktop** antes de confiar na comparação, pois outro PC pode ter enviado mudanças depois dessa data.
+
+Salve ou exporte todos os rascunhos antes de mudar de PC. A lista do Git inclui documentos salvos e imagens importadas; rascunhos do navegador não aparecem como arquivos alterados.
+
+## Biblioteca de imagens
+
+O botão **Imagens** permite pesquisar pelo nome/pasta e filtrar imagens importadas, todas as imagens ou importadas sem referência encontrada. Em **Onde é usada**, consulte os arquivos e campos que mencionam a imagem, incluindo rascunhos deste navegador.
+
+A análise procura referências diretas nos JSONs, HTML, CSS e JavaScript do site. Sprites de Pokémon, itens e outros recursos podem ser montadas por número/nome no código; por isso não são classificadas automaticamente como sem uso. O filtro de possíveis sobras se limita às imagens importadas. Nenhuma imagem é removida. A análise avisa se algum arquivo não pôde ser lido.
+
+São mostrados até 80 resultados; refine a busca para encontrar os demais.
 
 ## Publicação e limites
 

@@ -7,4 +7,5 @@ tools/__pycache__/
 
 # Relatorios locais do editor e caches de testes
 .local-editor/
+dist/
 **/__pycache__/

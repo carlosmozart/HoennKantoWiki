@@ -9,13 +9,14 @@
 <link rel="stylesheet" href="/editor/editor.css">
 <link rel="stylesheet" href="/editor/dark.css">
 <link rel="stylesheet" href="/editor/review.css">
+<link rel="stylesheet" href="/editor/workspace.css">
 <script type="module" src="/editor/editor.js"></script>
 </head>
 <body>
 <header class="topbar">
   <div class="brand"><span class="brand-icon" aria-hidden="true">◒</span><div><strong>WikiGen3</strong><span>Estúdio de conteúdo</span></div></div>
   <span class="local-badge"><i></i> Apenas neste computador</span>
-  <div class="top-actions"><button id="editor-theme" aria-pressed="false">Modo escuro</button><button id="undo" title="Desfazer última alteração" disabled>Desfazer</button><button id="redo" disabled>Refazer</button><button id="save" class="primary" disabled>Salvar no projeto</button></div>
+  <div class="top-actions"><button id="workspace-sync">Sincronização</button><button id="workspace-media">Imagens</button><button id="editor-theme" aria-pressed="false">Modo escuro</button><button id="undo" title="Desfazer última alteração" disabled>Desfazer</button><button id="redo" disabled>Refazer</button><button id="save" class="primary" disabled>Salvar no projeto</button></div>
 </header>
 <div id="status" role="status" aria-live="polite">Conectando ao editor local…</div>
 <div class="workspace">
@@ -51,5 +52,9 @@
 <dialog id="help-dialog"><h2>Seu fluxo de edição</h2><ol><li>Escolha o conteúdo e a seção na biblioteca.</li><li>Edite campos, listas, times ou textos dos guias.</li><li>Use <strong>Atualizar prévia</strong> para conferir o rascunho.</li><li>Clique em <strong>Salvar no projeto</strong>. Uma cópia do arquivo anterior será guardada antes de cada gravação.</li><li>Revise as alterações no GitHub Desktop e faça commit/push quando quiser publicar.</li></ol><p>Rascunhos são recuperáveis neste navegador. Use “Exportar rascunho” para guardar uma cópia independente.</p><p id="backup-help"></p><p>Para recuperar uma versão, use “Histórico de backups”, compare e carregue como rascunho. Confira a prévia e salve.</p><p>O editor também cria páginas e modelos de cards, importa imagens e edita textos da interface. As correções da Pokédex ficam separadas dos dados gerados. Para trocar de PC, salve e envie os arquivos pelo Git; rascunhos podem ser exportados.</p><button id="close-help" class="primary">Entendi</button></dialog>
 <dialog id="review-dialog" aria-labelledby="review-title"><h2 id="review-title">Revisar alterações</h2><p id="review-description"></p><p id="review-count"></p><div id="review-list"></div><div class="dialog-actions"><button id="cancel-review">Voltar à edição</button><button id="confirm-review" class="primary">Confirmar</button></div></dialog>
 <dialog id="backups-dialog" aria-labelledby="backups-title"><h2 id="backups-title">Histórico de backups</h2><p>Escolha uma versão para comparar com o rascunho atual. O arquivo só será substituído quando você salvar no projeto.</p><p id="backup-status" role="status"></p><div id="backup-list"></div><div class="dialog-actions"><button id="close-backups">Fechar</button></div></dialog>
+<dialog id="workspace-dialog" aria-labelledby="workspace-title"><h2 id="workspace-title">Projeto</h2>
+<section id="sync-panel" hidden><p id="sync-status" role="status"></p><p id="sync-fetched"></p><p id="sync-drafts"></p><button id="sync-refresh">Atualizar status local</button><ul id="sync-files"></ul><ol><li>Antes de editar em outro PC: use Fetch e Pull no GitHub Desktop.</li><li>Ao terminar: salve os documentos, revise os arquivos abaixo e faça commit + Push.</li><li>Inclua as imagens importadas. Rascunhos e backups locais não acompanham o Git.</li></ol></section>
+<section id="media-panel" hidden><p>As referências são pesquisadas nos arquivos do site e nos rascunhos deste navegador. Sprites geradas por número/nome podem não ter referência literal. Nenhum arquivo é removido.</p><div class="media-tools"><div><label for="media-search">Buscar pelo nome ou pasta</label><input id="media-search" type="search"></div><div><label for="media-filter">Mostrar</label><select id="media-filter"><option value="uploads">Imagens importadas</option><option value="all">Todas as imagens</option><option value="unreferenced">Importadas sem referência encontrada</option></select></div><button id="media-refresh">Atualizar biblioteca</button></div><p id="media-summary" role="status"></p><div id="media-results"></div></section>
+<div class="dialog-actions"><button id="close-workspace">Fechar</button></div></dialog>
 </body>
 </html>

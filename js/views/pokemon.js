@@ -2,6 +2,7 @@
 // Metodos compostos no objeto `app` (js/main.js), por isso `this` continua valido.
 
 import { getPokemon, getHabilidades } from '../core/dataset.js';
+import { playPokemonCry } from '../ui/cries.js';
 import { TYPE_TRANSLATIONS } from '../core/types.js';
 import { spritePokemon } from '../core/sprites.js';
 import { renderStats, renderMatchups, renderEvolutions, renderEncounters, renderMoves } from './pokemon-render.js';
@@ -50,30 +51,8 @@ export default {
     },
 
     playCry(id) {
-        const atual = this.state.currentPokemon;
-        const cries = (atual && atual.id === id && atual.cries) || {};
-        const BASE = 'https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon';
-
-        // O cry "latest" vem primeiro: e o de melhor qualidade e alguns
-        // arquivos "legacy" nao tocam. Antes a ordem era a inversa e o
-        // fallback nunca disparava, porque play() resolve mesmo quando a
-        // decodificacao falha depois — a falha chega pelo evento 'error'.
-        const fontes = [
-            cries.latest || `${BASE}/latest/${id}.ogg`,
-            cries.legacy || `${BASE}/legacy/${id}.ogg`,
-        ];
-
-        const tentar = (i) => {
-            if (i >= fontes.length) {
-                console.warn(`Nenhum cry disponível para: ${id}`);
-                return;
-            }
-            const audio = new Audio();
-            audio.addEventListener('error', () => tentar(i + 1), { once: true });
-            audio.src = fontes[i];
-            audio.play().catch(() => tentar(i + 1));
-        };
-        tentar(0);
+        const current = this.state.currentPokemon;
+        playPokemonCry(this, id, current?.id === id ? current.cries : {});
     },
 
     /** Sprite local da versao de jogo selecionada. */

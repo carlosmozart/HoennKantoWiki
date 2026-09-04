@@ -13,7 +13,7 @@ from local_editor import EditorServer, ROOT
 with tempfile.TemporaryDirectory(prefix="wiki-editor-browser-") as temp:
     root=Path(temp).resolve()
     assert root.is_relative_to(Path(tempfile.gettempdir()).resolve())
-    for folder in ("data","js","css","img","images","favicons","tools/editor"):
+    for folder in ("data","js","css","img","images","favicons","audio","tools/editor"):
         shutil.copytree(ROOT/folder,root/folder)
     for name in ("index.html","manifest.json","sw.js"):
         shutil.copy2(ROOT/name,root/name)

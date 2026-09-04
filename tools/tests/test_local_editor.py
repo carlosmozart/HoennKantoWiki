@@ -62,6 +62,8 @@ class EditorTest(unittest.TestCase):
             ("/api/catalog", {"Sec-Fetch-Site": "cross-site"}),
         ]:
             self.assertEqual(self.request(route, headers=headers)[0], 403)
+        for route in ("/api/workspace", "/api/media"):
+            self.assertEqual(self.request(route, headers={"X-Editor-Token":""})[0], 403)
         self.assertEqual(self.request("/api/document/../index.html")[0], 400)
         self.assertEqual(self.request("/.git/config")[0], 404)
         self.assertEqual(self.request("/api/save", {"name":"../index.html", "data":{}})[0], 400)

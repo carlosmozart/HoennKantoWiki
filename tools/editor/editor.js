@@ -1,5 +1,6 @@
 import { importImage } from "./media.js";
 import { reviewChanges } from "./review.js";
+import { initWorkspace } from "./workspace.js";
 
 const $ = (id) => document.getElementById(id);
 const clone = (data) => structuredClone(data);
@@ -576,6 +577,17 @@ window.addEventListener('pagehide',()=>{if(doc)persistDraft();});
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&doc)persistDraft();});
 try {
   catalog=await api('catalog');
+  initWorkspace(api,()=>{
+    const prefix='wiki-editor-draft:'+catalog.project+':';
+    const drafts=[];
+    for(const key of Object.keys(localStorage)) {
+      if(key.startsWith(prefix)&&key!==draftKey()) {
+        try{drafts.push({name:key.slice(prefix.length),data:JSON.parse(localStorage.getItem(key)).data});}catch{}
+      }
+    }
+    if(doc&&dirty())drafts.push({name:filename,data:doc});
+    return drafts;
+  });
   $('backup-help').textContent='Backups por gravação: '+catalog.backupDir;
   $('document').replaceChildren(...Object.entries(catalog.documents).map(([value,text])=>el('option',{value},text)));
   $('document').disabled=false;

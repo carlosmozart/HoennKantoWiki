@@ -19,6 +19,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import unquote, urlsplit
 import webbrowser
 from editor_extensions import store_image, check_extensions
+from editor_workspace import git_status, media_library
 
 ROOT = Path(__file__).resolve().parents[1]
 DOCUMENTS = {
@@ -213,7 +214,7 @@ class EditorServer(ThreadingHTTPServer):
 
 
 class EditorHandler(BaseHTTPRequestHandler):
-    server_version = "WikiLocalEditor/2.1"
+    server_version = "WikiLocalEditor/2.2"
 
     def log_message(self, fmt, *args):
         # Nao registrar token, corpo dos documentos ou URLs privadas de previa.
@@ -273,6 +274,10 @@ class EditorHandler(BaseHTTPRequestHandler):
         if not self.allowed(path.startswith("/api/")):
             return
         try:
+            if path == "/api/workspace":
+                return self.respond(200, git_status(self.server.root))
+            if path == "/api/media":
+                return self.respond(200, media_library(self.server.root))
             if path.startswith("/api/backups/"):
                 name = path[len("/api/backups/"):]
                 self.document(name)
@@ -301,7 +306,7 @@ class EditorHandler(BaseHTTPRequestHandler):
                 return self.respond(200, b'<a href="/editor/">Abrir editor local</a>', "text/html; charset=utf-8")
             if path.startswith("/editor/"):
                 leaf = path[len("/editor/"):] or "index.html"
-                if leaf not in ("index.html", "editor.js", "editor.css", "theme.js", "dark.css", "media.js", "review.js", "review.css"):
+                if leaf not in ("index.html", "editor.js", "editor.css", "theme.js", "dark.css", "media.js", "review.js", "review.css", "workspace.js", "workspace.css"):
                     return self.respond(404, {"error": "Não encontrado."})
                 return self.serve_file(self.server.root / "tools/editor" / leaf)
             if path.startswith("/preview/"):
@@ -313,7 +318,7 @@ class EditorHandler(BaseHTTPRequestHandler):
                 if relative == "data/" + snapshot["name"]:
                     return self.respond(200, snapshot["data"])
                 return self.serve_site(relative, snapshot)
-            if path.startswith(("/img/", "/images/", "/favicons/", "/css/")):
+            if path.startswith(("/img/", "/images/", "/favicons/", "/css/", "/audio/")):
                 return self.serve_site(path[1:])
             return self.respond(404, {"error": "Não encontrado."})
         except (ValueError, OSError) as error:
@@ -328,7 +333,7 @@ class EditorHandler(BaseHTTPRequestHandler):
     def serve_site(self, relative, snapshot=None):
         if "\\" in relative or any(p.startswith(".") or p == ".." for p in relative.split("/")):
             return self.respond(403, {"error": "Caminho não autorizado."})
-        if relative != "index.html" and relative != "manifest.json" and relative.split("/")[0] not in ("css", "js", "data", "img", "images", "favicons"):
+        if relative != "index.html" and relative != "manifest.json" and relative.split("/")[0] not in ("css", "js", "data", "img", "images", "favicons", "audio"):
             return self.respond(404, {"error": "Arquivo não disponível na prévia."})
         target = (self.server.root / relative).resolve()
         if not target.is_relative_to(self.server.root):

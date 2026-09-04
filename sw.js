@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pokewiki-v16';
+const CACHE_NAME = 'pokewiki-v17';
 const API_CACHE_NAME = 'pokewiki-api-cache';
 
 // Os <script>/<link> do index usam querystring (?v=1.0.2) para cache busting.
@@ -31,6 +31,7 @@ const ASSETS_TO_CACHE = [
   './js/core/storage.js',
   './js/core/types.js',
   './js/main.js',
+  './js/ui/cries.js',
   './js/ui/dom.js',
   './js/ui/interface.js',
   './js/ui/layout.js',
@@ -75,7 +76,7 @@ const ASSETS_TO_CACHE = [
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      // addAll aborta tudo se um único arquivo falhar; cacheamos um a um.
+      // O shell precisa estar completo: uma falha mantém o worker anterior ativo.
       // cache: 'reload' ignora o cache HTTP do navegador. Sem isso, uma
       // versao nova do Service Worker podia reaproveitar arquivos velhos que
       // ainda estivessem validos ali (o GitHub Pages serve com max-age=600) —
@@ -83,7 +84,7 @@ self.addEventListener('install', event => {
       // versoes diferentes convivendo na mesma pagina.
       .then(cache => Promise.all(
         ASSETS_TO_CACHE.map(url =>
-          cache.add(new Request(url, { cache: 'reload' })).catch(() => null))
+          cache.add(new Request(url, { cache: 'reload' })))
       ))
       .then(() => self.skipWaiting())
   );
@@ -112,7 +113,7 @@ self.addEventListener('fetch', event => {
             return networkResponse;
           }
           const copy = networkResponse.clone();
-          caches.open(API_CACHE_NAME).then(cache => cache.put(request, copy));
+          event.waitUntil(caches.open(API_CACHE_NAME).then(cache => cache.put(request, copy)).catch(() => {}));
           return networkResponse;
         });
       })
@@ -127,7 +128,7 @@ self.addEventListener('fetch', event => {
     fetch(request, { cache: 'no-cache' }).then(networkResponse => {
       if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
         const copy = networkResponse.clone();
-        caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
+        event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.put(request, copy)).catch(() => {}));
       }
       return networkResponse;
     }).catch(() =>
@@ -146,7 +147,7 @@ self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(cacheNames => Promise.all(
       cacheNames
-        .filter(cache => cache !== CACHE_NAME && cache !== API_CACHE_NAME)
+        .filter(cache => cache.startsWith('pokewiki-') && cache !== CACHE_NAME && cache !== API_CACHE_NAME)
         .map(cache => caches.delete(cache))
     )).then(() => self.clients.claim())
   );
