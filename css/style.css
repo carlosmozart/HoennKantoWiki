@@ -198,8 +198,7 @@ body {
     color: var(--text-color);
 }
 .input-select:focus, .input-search:focus {
-    border-color: #fff;
-    box-shadow: 0 0 10px rgba(255,255,255,0.3);
+    border-color: var(--primary-color);
 }
 
 .btn-icon, .btn-search, .btn-nav {
@@ -1018,5 +1017,34 @@ body {
         min-height: 44px;
         padding: 10px 16px;
         font-size: 0.85rem;
+    }
+}
+
+/* ==========================================
+   FOCO VISÍVEL (navegação por teclado)
+   ========================================== */
+/* O projeto não tinha nenhum indicador de foco e ainda zerava o outline nos
+   campos, deixando quem navega por Tab sem saber onde está. :focus-visible
+   mostra o anel só no teclado, sem sujar o clique do mouse. */
+a:focus-visible,
+button:focus-visible,
+select:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+summary:focus-visible,
+[tabindex]:focus-visible,
+.grid-card:focus-visible {
+    outline: 3px solid var(--primary-color);
+    outline-offset: 2px;
+    border-radius: 6px;
+}
+
+/* Respeita quem pediu menos animação no sistema */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
     }
 }

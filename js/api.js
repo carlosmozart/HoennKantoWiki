@@ -118,7 +118,7 @@ const GEN3_TYPES = Object.keys(TYPE_CHART_GEN3);
 // toda visita, mesmo por quem nunca abre a aba Treinadores ou nunca troca de
 // idioma. Este helper busca cada arquivo só quando ele é realmente necessário
 // e reaproveita a mesma Promise em chamadas seguintes.
-const ASSET_VERSION = window.ASSET_VERSION || '3.3';
+const ASSET_VERSION = window.ASSET_VERSION || '3.6';
 const _scriptPromises = new Map();
 
 const loadScript = (src) => {

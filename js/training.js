@@ -72,7 +72,7 @@ class TrainingManager {
         if (!teamMember) return;
 
         document.getElementById('training-modal').style.display = 'flex';
-        document.getElementById('training-modal-name').textContent = translations.getName(pokemonId);
+        document.getElementById('training-modal-name').textContent = this.currentPokemonData.name;
         document.getElementById('training-modal-img').src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonId}.png`;
         
         document.getElementById('training-nature').value = teamMember.nature;
@@ -89,7 +89,7 @@ class TrainingManager {
             } else if (key === 'evs') {
                 app.state.team[idx].evs[stat] = parseInt(value) || 0;
             }
-            localStorage.setItem('wiki-team', JSON.stringify(app.state.team));
+            app.saveScopedData('team', app.state.team);
         }
     }
 
@@ -103,8 +103,8 @@ class TrainingManager {
                 <div style="display:flex; align-items:center; gap:10px; font-size:0.85rem;">
                     <div style="width:60px; font-weight:bold;">${this.statNames[stat]}</div>
                     <input type="range" min="0" max="252" value="${val}" class="ev-slider" data-stat="${stat}" style="flex:1;">
-                    <input type="number" min="0" max="252" value="${val}" class="ev-input" data-stat="${stat}" style="width:50px; background:rgba(0,0,0,0.3); color:white; border:1px solid var(--glass-border); border-radius:4px; padding:2px 5px;">
-                    <div class="calc-stat-display" data-stat="${stat}" style="width:40px; text-align:right; color:var(--type-electric); font-weight:bold;">0</div>
+                    <input type="number" min="0" max="252" value="${val}" class="ev-input" data-stat="${stat}" style="width:50px; background:var(--input-bg); color:var(--text-color); border:1px solid var(--glass-border); border-radius:4px; padding:2px 5px;">
+                    <div class="calc-stat-display" data-stat="${stat}" style="width:40px; text-align:right; color:var(--stat-tm); font-weight:bold;">0</div>
                 </div>
             `;
             container.insertAdjacentHTML('beforeend', html);
@@ -139,6 +139,14 @@ class TrainingManager {
         });
     }
 
+    // A PokéAPI entrega stats como array ([{base_stat, stat:{name:'special-attack'}}]);
+    // aqui as chaves usam underscore.
+    baseStat(stat) {
+        const apiName = stat.replace('_', '-');
+        const found = (this.currentPokemonData.stats || []).find(s => s.stat.name === apiName);
+        return found ? found.base_stat : 0;
+    }
+
     renderCalculatedStats() {
         const teamMember = app.state.team.find(t => t.id === this.currentPokemonId);
         if (!teamMember || !this.currentPokemonData) return;
@@ -150,7 +158,7 @@ class TrainingManager {
         Object.keys(this.statNames).forEach(stat => {
             const ev = teamMember.evs[stat];
             const iv = teamMember.ivs[stat];
-            const base = this.currentPokemonData.stats[stat];
+            const base = this.baseStat(stat);
             totalEvs += ev;
             
             let calc = 0;
@@ -166,7 +174,7 @@ class TrainingManager {
             if (display) display.textContent = calc;
             
             const label = display.parentElement.firstElementChild;
-            label.style.color = (natureData.up === stat) ? 'var(--type-fire)' : ((natureData.down === stat) ? 'var(--type-water)' : 'var(--text-color)');
+            label.style.color = (natureData.up === stat) ? 'var(--stat-fav)' : ((natureData.down === stat) ? 'var(--event-high-tide)' : 'var(--text-color)');
         });
 
         document.getElementById('ev-total').textContent = `${totalEvs}/510`;

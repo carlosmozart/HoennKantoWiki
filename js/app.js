@@ -109,11 +109,21 @@ const app = {
                 }));
             }
             
-            localStorage.setItem('wiki-default-favs', JSON.stringify(oldFavs));
-            ['emerald', 'ruby-sapphire', 'firered-leafgreen'].forEach(vg => {
-                localStorage.setItem(`wiki-default-${vg}-team`, JSON.stringify(oldTeam));
-            });
-            
+            // Migração não destrutiva: só preenche o que ainda não existe.
+            // Antes, uma chave legada residual zerava os favoritos e copiava o
+            // mesmo time para as três versões, apagando o progresso atual.
+            if (oldFavs.length > 0 && localStorage.getItem('wiki-default-favs') === null) {
+                localStorage.setItem('wiki-default-favs', JSON.stringify(oldFavs));
+            }
+            if (oldTeam.length > 0) {
+                ['emerald', 'ruby-sapphire', 'firered-leafgreen'].forEach(vg => {
+                    const chave = `wiki-default-${vg}-team`;
+                    if (localStorage.getItem(chave) === null) {
+                        localStorage.setItem(chave, JSON.stringify(oldTeam));
+                    }
+                });
+            }
+
             localStorage.removeItem('wiki-team');
             localStorage.removeItem('wiki-favs');
         }
@@ -360,10 +370,22 @@ const app = {
         }
 
         if (btnCopySave) {
-            btnCopySave.addEventListener('click', () => {
-                exportOutput.select();
-                document.execCommand('copy');
-                btnCopySave.textContent = '✅ Copiado!';
+            btnCopySave.addEventListener('click', async () => {
+                const ok = await (async () => {
+                    try {
+                        await navigator.clipboard.writeText(exportOutput.value);
+                        return true;
+                    } catch (e) {
+                        // Fallback para navegadores sem Clipboard API ou sem permissão
+                        try {
+                            exportOutput.select();
+                            return document.execCommand('copy');
+                        } catch (e2) {
+                            return false;
+                        }
+                    }
+                })();
+                btnCopySave.textContent = ok ? '✅ Copiado!' : '❌ Copie manualmente';
                 setTimeout(() => btnCopySave.textContent = '📋 Copiar Código', 2000);
             });
         }
@@ -372,6 +394,7 @@ const app = {
             btnImportSave.addEventListener('click', () => {
                 const code = importInput.value.trim();
                 if (!code) return alert('Cole um código primeiro!');
+                if (!confirm('Carregar este save vai substituir o progresso salvo neste navegador (capturas, equipes, favoritos e TMs). Deseja continuar?')) return;
                 try {
                     const jsonStr = decodeURIComponent(escape(atob(code)));
                     const saveData = JSON.parse(jsonStr);
@@ -953,6 +976,7 @@ const app = {
                     if(card) {
                         card.style.opacity = e.target.checked ? '0.5' : '1';
                     }
+                    this.updateDashboardStats();
                 });
             });
         } else {
@@ -1452,8 +1476,11 @@ const app = {
             card.className = 'grid-card';
             card.dataset.id = i;
             card.dataset.name = pName;
+            card.setAttribute('role', 'button');
+            card.setAttribute('tabindex', '0');
+            card.setAttribute('aria-label', `${pName}, número ${i}`);
             card.innerHTML = `
-                <div class="catch-icon ${isCaptured ? 'captured' : ''}" data-id="${i}" title="Marcar como capturado">
+                <div class="catch-icon ${isCaptured ? 'captured' : ''}" data-id="${i}" role="button" tabindex="0" aria-pressed="${isCaptured}" title="Marcar como capturado" aria-label="Marcar ${pName} como capturado">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M22 12h-4c0-3-2-4-4-4s-4 1-4 4H2"></path><circle cx="12" cy="12" r="2"></circle></svg>
                 </div>
                 <span class="grid-card-id">#${String(i).padStart(3, '0')}</span>
@@ -1462,6 +1489,9 @@ const app = {
             `;
             
             const catchBtn = card.querySelector('.catch-icon');
+            catchBtn.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); catchBtn.click(); }
+            });
             catchBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 playClickSound();
@@ -1473,8 +1503,14 @@ const app = {
                     this.state.captures.push(pokeId);
                     catchBtn.classList.add('captured');
                 }
+                catchBtn.setAttribute('aria-pressed', String(this.state.captures.includes(pokeId)));
                 this.saveScopedData('captures', this.state.captures);
                 this.updateDashboardStats();
+            });
+
+            card.addEventListener('keydown', (e) => {
+                // Espaço rolaria a página; Enter/Espaço abrem o Pokémon
+                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); card.click(); }
             });
 
             card.addEventListener('click', () => {
