@@ -1,7 +1,10 @@
 // Ligacao de eventos da interface.
 // Metodos compostos no objeto `app` (js/main.js), por isso `this` continua valido.
 
+import { spriteIcone, spritePokemon } from '../core/sprites.js';
+
 import { playClickSound } from '../ui/sound.js';
+import { resolverBusca } from '../core/dataset.js';
 import { renderEvolutions, renderEncounters, renderMoves } from '../views/pokemon-render.js';
 
 export default {
@@ -214,8 +217,24 @@ export default {
         });
 
         // Formulário de Busca (Impede recarregar)
-        this.dom.searchForm.addEventListener('submit', (e) => {
+        // Enter ou clique na lupa: abre o Pokemon que corresponde ao termo.
+        // Antes o submit era apenas cancelado, entao buscar por nome parcial e
+        // apertar Enter nao fazia absolutamente nada.
+        this.dom.searchForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            const termo = this.dom.searchInput.value.trim();
+            if (!termo) return;
+
+            const id = await resolverBusca(termo);
+            if (id) {
+                this.dom.searchInput.value = '';
+                this.state.searchTerm = '';
+                this.applyFilters();
+                window.location.hash = `pokemon/${id}`;
+            } else {
+                // Sem correspondencia: mantem a grade filtrada e avisa
+                this.updateEmptyState();
+            }
         });
 
         // Busca Parcial Dinâmica no Grid (com Debounce para otimização)
@@ -341,9 +360,9 @@ export default {
                 const id = card.dataset.id;
                 const img = card.querySelector('img');
                 if (this.state.isCompactMode) {
-                    img.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-viii/icons/${id}.png`;
+                    img.src = spriteIcone(id);
                 } else {
-                    img.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
+                    img.src = spritePokemon(id, { versao: this.state.versionGroup });
                 }
             });
         });

@@ -4,13 +4,13 @@
 // Antes cada uma destas secoes disparava requisicoes proprias para a PokeAPI:
 // a tabela de golpes sozinha fazia uma busca por golpe, ate ~130 por ficha.
 
+import { spriteCheio, spriteItem } from '../core/sprites.js';
+
 import { TYPE_TRANSLATIONS, GEN3_TYPE_CATEGORIES, TYPE_CHART_GEN3, GEN3_TYPES, STATS_MAP } from '../core/types.js';
 import { getGolpes, getResumo } from '../core/dataset.js';
 
-const SPRITE = (id) =>
-    `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
-const SPRITE_ITEM = (nome) =>
-    `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${nome}.png`;
+const SPRITE = spriteCheio;
+const SPRITE_ITEM = spriteItem;
 
 const el = {
     stats: () => document.querySelector('.pokemon-stats'),

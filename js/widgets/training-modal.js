@@ -1,5 +1,7 @@
 // Ficha de treinamento (EVs e natureza).
 
+import { spriteCheio } from '../core/sprites.js';
+
 import { getResumo } from '../core/dataset.js';
 
 class TrainingManager {
@@ -77,7 +79,7 @@ class TrainingManager {
 
         document.getElementById('training-modal').style.display = 'flex';
         document.getElementById('training-modal-name').textContent = this.currentPokemonData.nome;
-        document.getElementById('training-modal-img').src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonId}.png`;
+        document.getElementById('training-modal-img').src = `${spriteCheio(pokemonId)}`;
         
         document.getElementById('training-nature').value = teamMember.nature;
 

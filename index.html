@@ -25,12 +25,12 @@
     <link rel="apple-touch-icon" href="./favicons/icon-192.png">
 
     <!-- Estilos (com ?v= anti-cache) -->
-    <link rel="stylesheet" href="./css/style.css?v=4.0">
-    <link rel="stylesheet" href="./css/layout.css?v=4.0">
+    <link rel="stylesheet" href="./css/style.css?v=4.1">
+    <link rel="stylesheet" href="./css/layout.css?v=4.1">
     
     <script>
         // Fonte única da versão usada no cache busting (lida por js/api.js).
-        window.ASSET_VERSION = '4.0';
+        window.ASSET_VERSION = '4.1';
 
         // O dicionário do idioma salvo é pedido só depois que o app.js roda.
         // O preload adianta o download e evita essa requisição em cascata.
@@ -50,7 +50,7 @@
 
     <!-- Um unico ponto de entrada; o resto vem por import ES.
          Dados (Pokedex, golpes, ginasios, traducoes) ficam em data/*.json. -->
-    <script type="module" src="./js/main.js?v=4.0"></script>
+    <script type="module" src="./js/main.js?v=4.1"></script>
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
         if ('serviceWorker' in navigator) {
@@ -544,7 +544,7 @@
             <h2 id="training-modal-title" style="margin-top:0; color:var(--primary-color);">Ficha de Treinamento</h2>
             
             <div style="display:flex; gap:15px; align-items:center; margin-bottom:20px;">
-                <img id="training-modal-img" src="" alt="Sprite" style="width:80px; height:80px; object-fit:contain; filter:drop-shadow(0 4px 6px rgba(0,0,0,0.5));">
+                <img id="training-modal-img" src="./images/miss.png" alt="" style="width:80px; height:80px; object-fit:contain; filter:drop-shadow(0 4px 6px rgba(0,0,0,0.5));">
                 <div>
                     <h3 id="training-modal-name" style="margin:0; font-size:1.5rem;">Pokémon</h3>
                     <button id="btn-training-to-pokedex" class="nav-btn" style="background:var(--type-normal); padding:5px 10px; font-size:0.8rem; margin-top:5px;">Ver na Pokédex</button>

@@ -1,6 +1,7 @@
 // Itens importantes por regiao. Dados em data/key-items.json.
 
 import { getItensChave } from '../core/dataset.js';
+import { imgItem } from '../core/sprites.js';
 
 export async function renderKeyItems(versionGroup) {
     const keyItemsData = await getItensChave().catch(() => ({}));
@@ -25,7 +26,7 @@ export async function renderKeyItems(versionGroup) {
         category.items.forEach(item => {
             html += `
                     <div class="item-card" style="padding: 10px; background: rgba(0,0,0,0.1); border-radius: 8px;">
-                        <h4 style="margin: 0 0 5px 0; color: var(--text-color); font-size: 1.05rem;">📦 ${item.name}</h4>
+                        <h4 style="margin: 0 0 5px 0; color: var(--text-color); font-size: 1.05rem; display:flex; align-items:center; gap:6px;">${imgItem(item.name, { tamanho: 28 }) || '📦'} ${item.name}</h4>
                         <p style="margin: 0; font-size: 0.9rem; color: var(--text-muted); line-height: 1.4;">${item.desc}</p>
                     </div>
             `;

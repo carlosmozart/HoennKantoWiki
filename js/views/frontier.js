@@ -1,6 +1,8 @@
 // Battle Frontier: abas, instalacoes e lojas de BP.
 // Os dados sairam daqui para data/frontier.json.
 
+import { spriteCheio, imgItem } from '../core/sprites.js';
+
 import { getFrontier } from '../core/dataset.js';
 
 let FRONTIER_DATA = null;
@@ -65,7 +67,7 @@ function renderFrontierTab(tabName) {
                 
                 return `
                     <div onclick="playClickSound(); window.location.hash='pokemon/${p.id}'" style="cursor:pointer; display:flex; flex-direction:column; align-items:center; background:rgba(255,255,255,0.03); border-radius:10px; padding:10px; box-shadow:0 2px 6px rgba(0,0,0,0.4); margin-bottom:10px; transition: transform 0.2s, background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.08)'; this.style.transform='scale(1.02)';" onmouseout="this.style.background='rgba(255,255,255,0.03)'; this.style.transform='scale(1)';">
-                        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${p.id}.png" alt="${p.name}" loading="lazy" decoding="async" style="width:80px;height:80px; filter:drop-shadow(2px 2px 4px rgba(0,0,0,0.5));" title="${p.name}">
+                        <img src="${spriteCheio(p.id)}" alt="${p.name}" loading="lazy" decoding="async" style="width:80px;height:80px; filter:drop-shadow(2px 2px 4px rgba(0,0,0,0.5));" title="${p.name}">
                         <strong style="font-size:1.1rem; margin-bottom:5px;">${p.name}</strong>
                         <div style="margin-bottom:5px;">${typesHtml}</div>
                         <div style="font-size:0.8rem; color:var(--text-color); margin-bottom:5px;">Nv. ${p.level}</div>
@@ -141,7 +143,7 @@ function renderFrontierTab(tabName) {
         [...FRONTIER_DATA.shops, ...FRONTIER_DATA.tutors].forEach(shop => {
             let itemsHtml = shop.items.map(i => `
                 <tr style="border-bottom: 1px solid var(--glass-border); transition: 0.2s; cursor:default;" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background='transparent'">
-                    <td style="padding:12px; font-weight:600; font-size:1.05rem;">${i.name}</td>
+                    <td style="padding:12px; font-weight:600; font-size:1.05rem;"><span style="display:flex; align-items:center; gap:6px;">${imgItem(i.name, { tamanho: 24 })}${i.name}</span></td>
                     <td style="padding:12px; text-align:right; color:var(--type-electric); font-weight:bold; font-size:1.05rem;">${i.cost}</td>
                 </tr>
             `).join('');
@@ -159,20 +161,31 @@ function renderFrontierTab(tabName) {
         html += `</div>`;
     }
     else if (tabName === 'pokemon') {
+        // Antes cada Pokemon ocupava um card de largura total, empilhados: numa
+        // tela grande sobrava espaco vazio e no celular a lista ficava enorme.
+        // Agora e uma grade que se ajusta, com o card inteiro clicavel.
+        html += '<div class="frontier-especiais">';
         FRONTIER_DATA.special_pokemon.forEach(sp => {
             html += `
-                <div class="grid-card bento-item" style="padding: 25px; display:flex; align-items:flex-start; gap:25px; flex-wrap:wrap;">
-                    <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${sp.id}.png" alt="${sp.name}" loading="lazy" decoding="async" style="width:100px; height:100px; background:var(--stat-bar-bg); border-radius:15px; box-shadow:0 4px 10px rgba(0,0,0,0.3);">
-                    <div style="flex:1; min-width: 250px;">
-                        <h3 style="margin-bottom:10px; font-size:1.5rem; color:var(--text-color);">${sp.name}</h3>
-                        <p style="text-align:left; font-size:1.05rem; color:var(--text-muted); line-height:1.7;">${sp.desc}</p>
-                    </div>
-                </div>
-            `;
+                <div class="especial-card" role="button" tabindex="0" data-poke="${sp.id}" title="Ver na Pokédex">
+                    <img src="${spriteCheio(sp.id)}" alt="${sp.name}" loading="lazy" decoding="async">
+                    <h3>${sp.name}</h3>
+                    <p>${sp.desc}</p>
+                </div>`;
         });
+        html += '</div>';
     }
 
     grid.innerHTML = html;
+
+    grid.querySelectorAll('.especial-card[data-poke]').forEach(card => {
+        const ir = () => { window.location.hash = `pokemon/${card.dataset.poke}`; };
+        card.addEventListener('click', ir);
+        card.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); ir(); }
+        });
+    });
+
     grid.style.animation = 'none';
     grid.offsetHeight; /* trigger reflow */
     grid.style.animation = 'fadeIn 0.4s ease';

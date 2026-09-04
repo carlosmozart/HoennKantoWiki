@@ -1048,3 +1048,149 @@ summary:focus-visible,
         scroll-behavior: auto !important;
     }
 }
+
+/* ==========================================
+   CARDS DE TREINADOR
+   ========================================== */
+/* Layout unificado entre Ginásios, Elite Four, Rivais, Vilões e os
+   líderes da Battle Frontier — antes cada aba tinha alturas e alinhamentos
+   próprios porque o sprite não tinha tamanho definido. */
+.trainer-card .frontier-brain-sprite,
+.frontier-facility-card .frontier-brain-sprite {
+    height: 160px;
+    width: auto;
+    max-width: 140px;
+    object-fit: contain;
+    align-self: flex-start;
+}
+
+.trainer-portraits {
+    display: flex;
+    gap: 8px;
+    align-items: flex-end;
+    flex-shrink: 0;
+}
+
+/* Sprite de item ao lado do nome, nos times e nas listas */
+.item-sprite {
+    vertical-align: middle;
+    margin-right: 6px;
+    image-rendering: pixelated;
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+.sem-item { color: var(--text-muted); }
+
+/* Regra do inicial do rival */
+.starter-rule,
+.battle-list {
+    background: var(--stat-cell-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-top: 12px;
+    font-size: 0.9rem;
+}
+
+.starter-rule p { margin: 4px 0 10px; color: var(--text-muted); }
+
+.starter-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 4px 0;
+    border-top: 1px solid var(--glass-border);
+}
+.starter-row:first-of-type { border-top: none; }
+
+.starter-seu { font-weight: 700; min-width: 90px; }
+.starter-seta { color: var(--text-muted); }
+.starter-rival { font-weight: 700; color: var(--primary-color); min-width: 90px; }
+.starter-linha { display: flex; gap: 2px; margin-left: auto; }
+.starter-linha img { width: 40px; height: 40px; image-rendering: pixelated; }
+
+.battle-list ol { margin: 6px 0 0 18px; color: var(--text-muted); }
+.battle-list li { padding: 2px 0; }
+
+@media (max-width: 600px) {
+    .trainer-card .frontier-brain-sprite,
+    .frontier-facility-card .frontier-brain-sprite { height: 120px; max-width: 110px; }
+    .starter-linha { margin-left: 0; width: 100%; }
+    .starter-seu, .starter-rival { min-width: 0; }
+}
+
+/* Pokémon especiais da Battle Frontier: grade em vez de lista empilhada */
+.frontier-especiais {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 16px;
+    width: 100%;
+}
+
+.especial-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 14px;
+    padding: 18px 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.especial-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+}
+
+.especial-card img {
+    width: 96px;
+    height: 96px;
+    object-fit: contain;
+    background: var(--stat-bar-bg);
+    border-radius: 12px;
+}
+
+.especial-card h3 { margin: 0; font-size: 1.15rem; }
+
+.especial-card p {
+    margin: 0;
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    text-align: left;
+}
+
+/* Galeria de Pokémon citados nos guias (Safari Zone, Sevii Islands) */
+.guia-galeria {
+    margin-top: 18px;
+    padding: 14px;
+    background: var(--stat-cell-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+}
+
+.guia-galeria-tira {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+}
+
+.guia-galeria-tira img {
+    background: var(--stat-bar-bg);
+    border-radius: 8px;
+    transition: transform 0.2s;
+}
+
+.guia-galeria-tira a:hover img { transform: scale(1.15); }

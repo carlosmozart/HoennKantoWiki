@@ -1,6 +1,8 @@
 // Grade da Pokedex: filtros, busca, estado vazio e painel.
 // Metodos compostos no objeto `app` (js/main.js), por isso `this` continua valido.
 
+import { spriteIcone, spritePokemon } from '../core/sprites.js';
+
 import { getIndice, getEspeciesDoTipo } from '../core/dataset.js';
 import { TYPE_TRANSLATIONS } from '../core/types.js';
 import { playClickSound } from '../ui/sound.js';
@@ -110,9 +112,9 @@ export default {
                     if (!card.dataset.loaded) {
                         const isCompact = document.getElementById('pokedex-grid').classList.contains('compact');
                         if (isCompact) {
-                            card.querySelector('.poke-sprite').src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-viii/icons/${id}.png`;
+                            card.querySelector('.poke-sprite').src = spriteIcone(id);
                         } else {
-                            card.querySelector('.poke-sprite').src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-iii/${app.state.versionGroup}/${id}.png`;
+                            card.querySelector('.poke-sprite').src = spritePokemon(id, { versao: app.state.versionGroup });
                         }
                         card.dataset.loaded = 'true';
                     }

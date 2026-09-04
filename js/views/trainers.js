@@ -1,6 +1,8 @@
 // Lideres de ginasio, Elite Four, rivais e vilaes.
 // Metodos compostos no objeto `app` (js/main.js), por isso `this` continua valido.
 
+import { spriteCheio, spriteInsignia, imgItem } from '../core/sprites.js';
+
 import { getGinasios } from '../core/dataset.js';
 import { TYPE_TRANSLATIONS } from '../core/types.js';
 import { playClickSound } from '../ui/sound.js';
@@ -55,7 +57,7 @@ export default {
                 <div class="frontier-team-grid">`;
             
             for (let poke of teamArr) {
-                const spriteUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${poke.id}.png`;
+                const spriteUrl = `${spriteCheio(poke.id)}`;
                 
                 let typesHtml = '';
                 if (poke.types) {
@@ -65,6 +67,13 @@ export default {
                     });
                 }
                 
+                // Pokemon que seguram item ganham a sprite ao lado do nome
+                const itemHtml = (item) => {
+                    const nome = (item || '').trim();
+                    if (!nome || ['-', 'nenhum', 'none'].includes(nome.toLowerCase())) return '<span class="sem-item">Nenhum</span>';
+                    return `${imgItem(nome, { tamanho: 20 })}<span>${nome}</span>`;
+                };
+
                 let movesHtml = '';
                 if (poke.moves) {
                     poke.moves.forEach(m => {
@@ -83,7 +92,7 @@ export default {
                         </div>
                         <div class="frontier-poke-details">
                             <div class="detail-row"><strong>Habilidade:</strong> ${poke.ability || '-'}</div>
-                            <div class="detail-row"><strong>Item:</strong> ${poke.item || '-'}</div>
+                            <div class="detail-row detail-item"><strong>Item:</strong> ${itemHtml(poke.item)}</div>
                         </div>
                         <div class="frontier-poke-moves">
                             ${movesHtml}
@@ -95,26 +104,58 @@ export default {
             return teamHtml;
         };
 
+        // Blocos extras que so os rivais possuem
+        const regraInicial = (t) => {
+            const r = t.starterRule;
+            if (!r) return '';
+            const linhas = r.variacoes.map(v => `
+                <div class="starter-row">
+                    <span class="starter-seu">${v.seuInicial}</span>
+                    <span class="starter-seta">→</span>
+                    <span class="starter-rival">${v.rival}</span>
+                    <span class="starter-linha">${v.linha.map(id =>
+                        `<img src="${spriteCheio(id)}" alt="" loading="lazy" decoding="async">`).join('')}</span>
+                </div>`).join('');
+            return `<div class="starter-rule">
+                        <strong>${r.titulo}</strong>
+                        <p>${r.regra}</p>
+                        ${linhas}
+                    </div>`;
+        };
+
+        const listaBatalhas = (t) => {
+            if (!t.battleList) return '';
+            return `<div class="battle-list">
+                        <strong>Confrontos ao longo do jogo</strong>
+                        <ol>${t.battleList.map(b => `<li>${b}</li>`).join('')}</ol>
+                    </div>`;
+        };
+
         for (let leader of leaders) {
             let badgeImgHtml = '';
             if (badgeMap[leader.badge]) {
                 if (badgeMap[leader.badge] === 'elite' || badgeMap[leader.badge] === 'champ') {
                     // Sem imagem de insígnia para E4, ou usar genérica
                 } else {
-                    badgeImgHtml = `<img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/badges/${badgeMap[leader.badge]}.png" alt="${leader.badge}" class="frontier-symbol-img" loading="lazy" decoding="async" style="image-rendering: pixelated;">`;
+                    badgeImgHtml = `<img src="${spriteInsignia(badgeMap[leader.badge])}" alt="${leader.badge}" class="frontier-symbol-img" loading="lazy" decoding="async" style="image-rendering: pixelated;">`;
                 }
             }
 
             const tName = typeof TYPE_TRANSLATIONS !== 'undefined' && TYPE_TRANSLATIONS[leader.type] ? TYPE_TRANSLATIONS[leader.type] : leader.type;
             
             html += `
-                <div class="bento-item frontier-facility-card">
+                <div class="bento-item frontier-facility-card trainer-card">
                     <div class="frontier-facility-header">
-                        <img src="${leader.sprite}" alt="${leader.name}" class="frontier-brain-sprite gym-leader-sprite" loading="lazy" decoding="async" style="max-height: 120px; object-fit: contain;">
+                        <div class="trainer-portraits">
+                            <img src="${leader.sprite}" alt="${(leader.spriteLabels || [leader.name])[0]}" class="frontier-brain-sprite gym-leader-sprite" loading="lazy" decoding="async">
+                            ${leader.spriteAlt ? `<img src="${leader.spriteAlt}" alt="${(leader.spriteLabels || ['', leader.name])[1]}" class="frontier-brain-sprite gym-leader-sprite" loading="lazy" decoding="async">` : ''}
+                        </div>
                         <div class="frontier-facility-title">
                             <h3>${leader.name}</h3>
                             <div class="frontier-brain-title">${leader.city || ''}</div>
                             <p class="frontier-desc" style="margin-top:10px;">${leader.desc}</p>
+                            ${regraInicial(leader)}
+                            ${listaBatalhas(leader)}
                             <div class="frontier-symbol-box" style="${(!leader.symbol && !leader.badge) ? 'display:none;' : ''}">
                                 ${badgeImgHtml}
                                 <div>

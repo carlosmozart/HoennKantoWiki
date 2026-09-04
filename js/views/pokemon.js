@@ -3,9 +3,8 @@
 
 import { getPokemon, getHabilidades } from '../core/dataset.js';
 import { TYPE_TRANSLATIONS } from '../core/types.js';
+import { spritePokemon } from '../core/sprites.js';
 import { renderStats, renderMatchups, renderEvolutions, renderEncounters, renderMoves } from './pokemon-render.js';
-
-const SPRITES = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon';
 
 const GRUPOS_OVO = {
     monster: 'Monstro', water1: 'Água 1', water2: 'Água 2', water3: 'Água 3',
@@ -53,26 +52,33 @@ export default {
     playCry(id) {
         const atual = this.state.currentPokemon;
         const cries = (atual && atual.id === id && atual.cries) || {};
-        const legacy = cries.legacy
-            || `https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/legacy/${id}.ogg`;
-        const latest = cries.latest
-            || `https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/${id}.ogg`;
+        const BASE = 'https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon';
 
-        new Audio(legacy).play().catch(() => {
-            new Audio(latest).play().catch(() => {
+        // O cry "latest" vem primeiro: e o de melhor qualidade e alguns
+        // arquivos "legacy" nao tocam. Antes a ordem era a inversa e o
+        // fallback nunca disparava, porque play() resolve mesmo quando a
+        // decodificacao falha depois — a falha chega pelo evento 'error'.
+        const fontes = [
+            cries.latest || `${BASE}/latest/${id}.ogg`,
+            cries.legacy || `${BASE}/legacy/${id}.ogg`,
+        ];
+
+        const tentar = (i) => {
+            if (i >= fontes.length) {
                 console.warn(`Nenhum cry disponível para: ${id}`);
-            });
-        });
+                return;
+            }
+            const audio = new Audio();
+            audio.addEventListener('error', () => tentar(i + 1), { once: true });
+            audio.src = fontes[i];
+            audio.play().catch(() => tentar(i + 1));
+        };
+        tentar(0);
     },
 
-    /**
-     * URL do sprite. O dataset local nao guarda esses caminhos porque eles sao
-     * deterministas a partir do id e da versao do jogo.
-     */
+    /** Sprite local da versao de jogo selecionada. */
     getSprite(id, shiny) {
-        const vg = this.state.versionGroup;
-        const pasta = shiny ? 'shiny/' : '';
-        return `${SPRITES}/versions/generation-iii/${vg}/${pasta}${id}.png`;
+        return spritePokemon(id, { versao: this.state.versionGroup, shiny });
     },
 
     async loadPokemon(query) {
