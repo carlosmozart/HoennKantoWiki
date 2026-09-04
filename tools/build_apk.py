@@ -25,10 +25,11 @@ def find_java():
     candidates=[os.environ.get("JAVA_HOME")]
     if local.is_file(): candidates.append(local.read_text(encoding="utf-8").strip())
     candidates.append(str(Path(os.environ.get("ProgramFiles","C:/Program Files"))/"Android/Android Studio/jbr"))
+    java_binary="java.exe" if os.name == "nt" else "java"
     for value in candidates:
         if not value: continue
         path=Path(value)
-        if not (path/"bin/java.exe").is_file() or not (path/"release").is_file(): continue
+        if not (path/"bin"/java_binary).is_file() or not (path/"release").is_file(): continue
         match=re.search(r'JAVA_VERSION="(\d+)',(path/"release").read_text())
         if match and 21<=int(match[1])<=24: return path.resolve()
     raise SystemExit("JDK 21 compativel nao encontrado. Execute: python -B tools/setup_android_java.py")
