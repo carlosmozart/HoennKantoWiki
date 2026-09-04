@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<base href="/">
+<title>Editor local · WikiGen3</title>
+<link rel="stylesheet" href="/editor/editor.css">
+<script type="module" src="/editor/editor.js"></script>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><span class="brand-icon" aria-hidden="true">◒</span><div><strong>WikiGen3</strong><span>Estúdio de conteúdo</span></div></div>
+  <span class="local-badge"><i></i> Apenas neste computador</span>
+  <div class="top-actions"><button id="undo" title="Desfazer última alteração" disabled>Desfazer</button><button id="redo" disabled>Refazer</button><button id="save" class="primary" disabled>Salvar no projeto</button></div>
+</header>
+<div id="status" role="status" aria-live="polite">Conectando ao editor local…</div>
+<div class="workspace">
+  <aside class="sidebar">
+    <p class="eyebrow">BIBLIOTECA</p>
+    <label for="document">Conteúdo</label><select id="document" disabled></select>
+    <label for="section">Seção / versão</label><select id="section" disabled></select>
+    <label for="search">Buscar nesta lista</label><input id="search" type="search" placeholder="Nome ou texto do card" autocomplete="off">
+    <div class="list-heading"><span id="count">0 entradas</span><button id="add" disabled>+ Adicionar</button></div>
+    <nav id="entries" aria-label="Cards e textos"></nav>
+    <footer><strong>Seu projeto, seus arquivos.</strong><p>Salvar altera os arquivos locais. A publicação continua pelo GitHub Desktop ou Git.</p><a href="#" id="help">Como usar e recuperar backups</a></footer>
+  </aside>
+  <main>
+    <div class="content-heading"><div><p class="eyebrow" id="breadcrumb">EDITOR LOCAL</p><h1 id="title">Preparando sua biblioteca</h1></div><span id="dirty" class="pill">Sem alterações</span></div>
+    <div class="toolbar">
+      <button id="duplicate" disabled>Duplicar</button><button id="move-up" disabled>↑ Mover</button><button id="move-down" disabled>↓ Mover</button><button id="remove" class="danger" disabled>Remover</button>
+      <span class="spacer"></span><button id="export" disabled>Exportar rascunho</button><button id="import" disabled>Importar JSON</button><button id="reload" disabled>Reabrir arquivo</button>
+      <input id="import-file" type="file" accept=".json,application/json" hidden>
+    </div>
+    <div class="editor-layout">
+      <section class="form-panel"><div class="panel-heading"><h2>Conteúdo</h2><span>Alterações ficam em rascunho até salvar</span></div><form id="form"><p>Inicie pelo arquivo <strong>Iniciar editor.cmd</strong> na pasta do projeto.</p></form></section>
+      <section class="preview-panel">
+        <div class="panel-heading"><h2>Prévia do site</h2><button id="preview" disabled>Atualizar prévia</button></div>
+        <div class="preview-options"><label for="preview-version">Jogo</label><select id="preview-version"><option value="emerald">Emerald</option><option value="ruby-sapphire">Ruby / Sapphire</option><option value="firered-leafgreen">FireRed / LeafGreen</option></select><button id="mobile" aria-pressed="false">Celular</button><button id="wide">Abrir ampla</button></div>
+        <p class="hint">Mostra o rascunho com o layout real, sem gravar no projeto. Atualize após editar.</p>
+        <div id="preview-wrap"><iframe id="preview-frame" title="Prévia do rascunho no site" sandbox="allow-scripts allow-same-origin"></iframe><div id="preview-empty">Sua prévia aparecerá aqui.<br>Escolha um conteúdo para começar.</div></div>
+      </section>
+    </div>
+  </main>
+</div>
+<dialog id="gallery"><div class="dialog-heading"><h2>Escolher imagem local</h2><button id="close-gallery" aria-label="Fechar seleção de imagens">✕</button></div><label for="gallery-search">Buscar imagem ou Pokémon</label><input id="gallery-search" type="search"><div id="gallery-items"></div></dialog>
+<dialog id="help-dialog"><h2>Seu fluxo de edição</h2><ol><li>Escolha o conteúdo e a seção na biblioteca.</li><li>Edite campos, listas, times ou textos dos guias.</li><li>Use <strong>Atualizar prévia</strong> para conferir o rascunho.</li><li>Clique em <strong>Salvar no projeto</strong>. Uma cópia do arquivo anterior será guardada antes de cada gravação.</li><li>Revise as alterações no GitHub Desktop e faça commit/push quando quiser publicar.</li></ol><p>Rascunhos são recuperáveis neste navegador. Use “Exportar rascunho” para guardar uma cópia independente.</p><p id="backup-help"></p><p>Para recuperar uma versão, selecione o conteúdo correspondente e use “Importar JSON” com o backup desse arquivo. Confira a prévia e salve.</p><p>Esta primeira versão edita os conteúdos listados na biblioteca. O código das páginas, os títulos fixos da navegação e os dados gerados da Pokédex permanecem fora do editor.</p><button id="close-help" class="primary">Entendi</button></dialog>
+</body>
+</html>

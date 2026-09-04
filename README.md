@@ -110,3 +110,9 @@ This project is hosted and optimized for GitHub Pages.
 ## License
 
 This project is open-source. Pokémon data and images belong to Nintendo / The Pokémon Company and are fetched via [PokéAPI](https://pokeapi.co/).
+
+## Editor local
+
+Para editar cards, times e textos sem alterar os arquivos manualmente, abra **Iniciar editor.cmd** (Python 3.10+). O editor oferece previsualizacao, rascunhos e backup antes de salvar. A publicacao continua pelo GitHub Desktop/Git.
+
+Consulte o [guia do editor local](docs/EDITOR-LOCAL.md).

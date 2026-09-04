@@ -4,3 +4,7 @@
 # Cache do build de dados (fica fora do repo, mas por segurança)
 tools/__pycache__/
 *.pyc
+
+# Relatorios locais do editor e caches de testes
+.local-editor/
+**/__pycache__/
