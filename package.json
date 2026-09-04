@@ -1,0 +1,32 @@
+{
+  "name": "hoenn-kanto-wiki",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Wiki Gen 3 e app Android de teste",
+  "scripts": {
+    "android:web": "python -B tools/build_android_web.py",
+    "android:sync": "npm run android:web && cap sync android",
+    "android:debug": "python -B tools/build_apk.py",
+    "android:open": "cap open android"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@capacitor/android": "8.5.1",
+    "@capacitor/app": "8.1.1",
+    "@capacitor/core": "8.5.1",
+    "@capacitor/filesystem": "8.1.3",
+    "@capacitor/share": "8.0.1"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "8.5.1",
+    "esbuild": "0.28.2"
+  },
+  "overrides": {
+    "xcode": {
+      "uuid": "11.1.1"
+    }
+  }
+}

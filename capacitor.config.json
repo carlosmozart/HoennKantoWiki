@@ -1,0 +1,8 @@
+{
+  "appId": "io.github.carlosmozart.hoennkantowiki",
+  "appName": "Hoenn Kanto Wiki",
+  "webDir": "dist/android-web",
+  "android": {
+    "backgroundColor": "#121212"
+  }
+}

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;500;600;700;800&display=swap');
+@font-face { font-family: 'Oxanium'; font-style: normal; font-weight: 200 800; font-display: swap; src: url('../fonts/Oxanium.ttf') format('truetype'); }
 
 /* Utilitário global de visibilidade (usado por .hidden no HTML e no JS) */
 .hidden {

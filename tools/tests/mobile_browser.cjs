@@ -68,11 +68,11 @@ const {chromium}=require(process.env.WIKI_PLAYWRIGHT||'playwright');
     await context.setOffline(false);
     await page.evaluate(async()=>{await caches.open('other-app-cache');await caches.open('pokewiki-obsolete');});
     const worker=path.join(config.root,'sw.js');
-    fs.writeFileSync(worker,fs.readFileSync(worker,'utf8').replace('pokewiki-v17','pokewiki-test-next'));
+    fs.writeFileSync(worker,fs.readFileSync(worker,'utf8').replace('pokewiki-v18','pokewiki-test-next'));
     await page.evaluate(async()=>{await (await navigator.serviceWorker.getRegistration()).update();});
     await page.waitForFunction(async()=>{
       const keys=await caches.keys();
-      return keys.includes('pokewiki-test-next')&&!keys.includes('pokewiki-obsolete')&&!keys.includes('pokewiki-v17');
+      return keys.includes('pokewiki-test-next')&&!keys.includes('pokewiki-obsolete')&&!keys.includes('pokewiki-v18');
     });
     assert.ok((await page.evaluate(()=>caches.keys())).includes('other-app-cache'));
     await page.waitForFunction(async()=>{const r=await navigator.serviceWorker.getRegistration();return r.active?.state==='activated'&&!r.installing&&!r.waiting;});

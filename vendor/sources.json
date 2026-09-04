@@ -1,0 +1,26 @@
+[
+  {
+    "path": "vendor/html2canvas/html2canvas.min.js",
+    "url": "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js",
+    "sha256": "e87e550794322e574a1fda0c1549a3c70dae5a93d9113417a429016838eab8cb",
+    "bytes": 198689
+  },
+  {
+    "path": "vendor/html2canvas/LICENSE",
+    "url": "https://raw.githubusercontent.com/niklasvh/html2canvas/v1.4.1/LICENSE",
+    "sha256": "86200ce4e92d9a22c41c8647a55f7a5fddff304ff89b4d36ecc699ed8c123d2c",
+    "bytes": 1061
+  },
+  {
+    "path": "fonts/Oxanium.ttf",
+    "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/oxanium/Oxanium%5Bwght%5D.ttf",
+    "sha256": "2ce01d946e1e1ffc8d7eecfffbda8623bedd63eaf811a20488c4b69af45babb0",
+    "bytes": 43536
+  },
+  {
+    "path": "fonts/OFL.txt",
+    "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/oxanium/OFL.txt",
+    "sha256": "fe17c0f2581d71b4e1ea7e636e7f4877c29223e11bb1dd1a871e8c3f2a86336b",
+    "bytes": 4384
+  }
+]

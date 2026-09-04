@@ -130,10 +130,14 @@ export default {
                         
                         teamGrid.style.cssText = originalStyle;
                         
-                        const link = document.createElement('a');
-                        link.download = 'minha-equipe-hoenn.png';
-                        link.href = canvas.toDataURL('image/png');
-                        link.click();
+                        const image = canvas.toDataURL('image/png');
+                        if (window.wikiNative) await window.wikiNative.shareTeam(image);
+                        else {
+                            const link = document.createElement('a');
+                            link.download = 'minha-equipe-hoenn.png';
+                            link.href = image;
+                            link.click();
+                        }
                     } catch (err) {
                         console.error('Erro ao exportar equipe:', err);
                         alert('Houve um erro ao gerar a imagem da equipe.');

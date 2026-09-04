@@ -119,4 +119,4 @@ Consulte o [guia do editor local](docs/EDITOR-LOCAL.md).
 
 ## Preparação para Android
 
-Os 386 cries estão em `audio/cries/`, com reprodução local prioritária. O script `python -B tools/build_android_web.py` prepara `dist/android-web` para o futuro empacotamento Android. Essa pasta não é um APK. Consulte os testes, limites offline e próximas etapas no [guia Android](docs/ANDROID.md).
+Os 386 cries estão em `audio/cries/`, com reprodução local prioritária. O script `python -B tools/build_android_web.py` prepara `dist/android-web` para o futuro empacotamento Android. Para gerar o APK de teste, use `Gerar APK de teste.cmd` ou execute manualmente a tarefa **Android debug APK** no GitHub Actions. Consulte os testes e instruções no [guia Android](docs/ANDROID.md).

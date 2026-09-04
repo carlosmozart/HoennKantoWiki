@@ -215,7 +215,7 @@ const NOMES_METODO = {
     'pokemon-channel-pal': '📺 Pokémon Channel (PAL)',
 };
 
-function formatarLocal(bruto) {
+export function formatarLocal(bruto) {
     const partes = bruto.split(' ');
     const principal = [];
     let prefixo = '';

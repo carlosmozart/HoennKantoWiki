@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pokewiki-v17';
+const CACHE_NAME = 'pokewiki-v18';
 const API_CACHE_NAME = 'pokewiki-api-cache';
 
 // Os <script>/<link> do index usam querystring (?v=1.0.2) para cache busting.
@@ -66,6 +66,9 @@ const ASSETS_TO_CACHE = [
   './data/pages.json',
   './data/interface.json',
   './data/pokemon-overrides.json',
+  './data/map-encounters.json',
+  './fonts/Oxanium.ttf',
+  './vendor/html2canvas/html2canvas.min.js',
   './images/miss.png',
   './favicons/favicon-16x16.png',
   './favicons/icon-192.png',

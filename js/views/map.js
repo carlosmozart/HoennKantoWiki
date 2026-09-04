@@ -1,5 +1,6 @@
-// Explorador de regiao. Encontros vem da PokeAPI so nesta tela.
+// Explorador de regiao com encontros locais da Gen 3.
 
+import { formatarLocal } from './pokemon-render.js';
 import { spriteCheio } from '../core/sprites.js';
 
 class MapExplorer {
@@ -42,109 +43,70 @@ class MapExplorer {
         this.loadRegionData();
     }
 
+    async localData() {
+        if (!this.dataPromise) {
+            this.dataPromise = fetch(new URL('../../data/map-encounters.json', import.meta.url))
+                .then(response => {
+                    if (!response.ok) throw new Error('Map data: '+response.status);
+                    return response.json();
+                }).catch(error => {this.dataPromise=null;throw error;});
+        }
+        return this.dataPromise;
+    }
+
     async loadRegionData() {
-        const select = document.getElementById('map-location-select');
-        if (!select) return;
-
-        select.innerHTML = '<option value="">Carregando locais da PokéAPI...</option>';
-        select.disabled = true;
-
+        const select=document.getElementById('map-location-select');
+        if(!select)return;
+        const request=this.loadSequence=(this.loadSequence||0)+1;
+        const region=this.currentRegion;
+        const group=window.app?.state.versionGroup;
+        const versions=region==='kanto'?['firered','leafgreen']:
+            group==='ruby-sapphire'?['ruby','sapphire']:['emerald'];
+        const en=window.app?.state.lang==='en';
+        select.replaceChildren(new Option(en?'Loading...':'Carregando...',''));
+        select.disabled=true;
         try {
-            const regionId = this.currentRegion === 'hoenn' ? 3 : 1; // Hoenn = 3, Kanto = 1
-            const res = await fetch(`https://pokeapi.co/api/v2/region/${regionId}`);
-            const data = await res.json();
-            
-            this.locations = data.locations;
-            
-            // Sort alphabetically by format Name (e.g. Route 119)
-            const sortedLocs = this.locations.map(l => {
-                let name = l.name.replace(this.currentRegion + '-', '').replace(/-/g, ' ');
-                name = name.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-                return { name, url: l.url };
-            }).sort((a, b) => a.name.localeCompare(b.name));
-
-            let optionsHtml = '<option value="">Selecione um local...</option>';
-            sortedLocs.forEach(loc => {
-                optionsHtml += `<option value="${loc.url}">${loc.name}</option>`;
-            });
-            
-            select.innerHTML = optionsHtml;
-            select.disabled = false;
-        } catch (err) {
-            console.error("Error loading region data", err);
-            select.innerHTML = '<option value="">Erro ao carregar locais.</option>';
+            const data=await this.localData();
+            if(request!==this.loadSequence)return;
+            this.activeVersions=versions;
+            this.locations=[...new Set(versions.flatMap(version=>Object.keys(data[version]||{})))];
+            const locations=this.locations.map(value=>({
+                value,name:en?value.replaceAll('-',' ').replace(/\b\w/g,c=>c.toUpperCase()):formatarLocal(value)
+            })).sort((a,b)=>a.name.localeCompare(b.name));
+            select.replaceChildren(new Option(en?'Select a location...':'Selecione um local...',''),
+                ...locations.map(location=>new Option(location.name,location.value)));
+            select.disabled=false;
+        } catch(error) {
+            console.error('Error loading local map',error);
+            select.replaceChildren(new Option(en?'Unable to load locations.':'Erro ao carregar locais.',''));
         }
     }
 
     async exploreLocation() {
-        const select = document.getElementById('map-location-select');
-        const container = document.getElementById('map-encounters-container');
-        if (!select || !container || !select.value) return;
-
-        const locUrl = select.value;
-        container.innerHTML = '<div class="spinner"></div><p style="text-align:center;" data-ui=labels.text_886f6d44c2>Mapeando área...</p>';
-
-        try {
-            // Fetch Location details to get Areas
-            const locRes = await fetch(locUrl);
-            const locData = await locRes.json();
-            
-            if (!locData.areas || locData.areas.length === 0) {
-                container.innerHTML = '<p style="text-align:center; color:var(--type-fire);" data-ui=labels.text_a89e8098b0>Nenhum Pokémon selvagem encontrado neste local.</p>';
-                return;
+        const select=document.getElementById('map-location-select');
+        const container=document.getElementById('map-encounters-container');
+        if(!select?.value||!container)return;
+        const area=select.value;
+        const request=this.loadSequence;
+        const data=await this.localData();
+        if(request!==this.loadSequence||select.value!==area)return;
+        const grouped={};
+        for(const version of this.activeVersions||[]) {
+            for(const [method,pokemon] of Object.entries(data[version]?.[area]||{})) {
+                grouped[method] ||= new Map();
+                for(const entry of pokemon) {
+                    const existing=grouped[method].get(entry.name);
+                    if(!existing)grouped[method].set(entry.name,{...entry});
+                    else {
+                        existing.minLevel=Math.min(existing.minLevel,entry.minLevel);
+                        existing.maxLevel=Math.max(existing.maxLevel,entry.maxLevel);
+                        // Alternative game versions are not independent encounters.
+                        existing.chance=Math.max(existing.chance,entry.chance);
+                    }
+                }
             }
-
-            // For simplicity, we just fetch the first Area (usually the main one)
-            // Or we can fetch all areas and merge them. Let's merge all areas.
-            let allEncounters = [];
-            for (let area of locData.areas) {
-                const areaRes = await fetch(area.url);
-                const areaData = await areaRes.json();
-                allEncounters = allEncounters.concat(areaData.pokemon_encounters);
-            }
-
-            // Deduplicate and group by method
-            const groupedEncounters = {};
-            const versionAllowed = this.currentRegion === 'hoenn' ? ['emerald', 'ruby', 'sapphire'] : ['firered', 'leafgreen'];
-
-            allEncounters.forEach(enc => {
-                // Filter by active version (simplified check for any Gen 3 version allowed in region)
-                const validDetails = enc.version_details.filter(vd => versionAllowed.includes(vd.version.name));
-                if (validDetails.length === 0) return;
-
-                const pokemonName = enc.pokemon.name;
-                const pId = enc.pokemon.url.split('/').filter(Boolean).pop();
-
-                validDetails.forEach(vd => {
-                    vd.encounter_details.forEach(detail => {
-                        const method = detail.method.name;
-                        if (!groupedEncounters[method]) groupedEncounters[method] = new Map();
-                        
-                        // We store the highest level and max chance for simplicity
-                        if (!groupedEncounters[method].has(pokemonName)) {
-                            groupedEncounters[method].set(pokemonName, {
-                                id: pId,
-                                name: pokemonName,
-                                minLevel: detail.min_level,
-                                maxLevel: detail.max_level,
-                                chance: detail.chance
-                            });
-                        } else {
-                            const existing = groupedEncounters[method].get(pokemonName);
-                            existing.maxLevel = Math.max(existing.maxLevel, detail.max_level);
-                            existing.minLevel = Math.min(existing.minLevel, detail.min_level);
-                            existing.chance += detail.chance; // aggregate chances roughly
-                        }
-                    });
-                });
-            });
-
-            this.renderEncounters(groupedEncounters, container);
-
-        } catch (err) {
-            console.error(err);
-            container.innerHTML = '<p style="text-align:center; color:red;" data-ui=labels.text_034c23337f>Erro ao processar os encontros.</p>';
         }
+        this.renderEncounters(grouped,container);
     }
 
     renderEncounters(groupedEncounters, container) {

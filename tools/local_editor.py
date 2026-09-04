@@ -318,7 +318,7 @@ class EditorHandler(BaseHTTPRequestHandler):
                 if relative == "data/" + snapshot["name"]:
                     return self.respond(200, snapshot["data"])
                 return self.serve_site(relative, snapshot)
-            if path.startswith(("/img/", "/images/", "/favicons/", "/css/", "/audio/")):
+            if path.startswith(("/img/", "/images/", "/favicons/", "/css/", "/audio/", "/fonts/", "/vendor/")):
                 return self.serve_site(path[1:])
             return self.respond(404, {"error": "Não encontrado."})
         except (ValueError, OSError) as error:
@@ -333,7 +333,7 @@ class EditorHandler(BaseHTTPRequestHandler):
     def serve_site(self, relative, snapshot=None):
         if "\\" in relative or any(p.startswith(".") or p == ".." for p in relative.split("/")):
             return self.respond(403, {"error": "Caminho não autorizado."})
-        if relative != "index.html" and relative != "manifest.json" and relative.split("/")[0] not in ("css", "js", "data", "img", "images", "favicons", "audio"):
+        if relative != "index.html" and relative != "manifest.json" and relative.split("/")[0] not in ("css", "js", "data", "img", "images", "favicons", "audio", "fonts", "vendor"):
             return self.respond(404, {"error": "Arquivo não disponível na prévia."})
         target = (self.server.root / relative).resolve()
         if not target.is_relative_to(self.server.root):
