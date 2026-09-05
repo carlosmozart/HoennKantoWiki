@@ -32,13 +32,13 @@
     <meta name="mobile-web-app-capable" content="yes">
 
     <!-- Estilos (com ?v= anti-cache) -->
-    <link rel="stylesheet" href="./css/style.css?v=5.0">
-    <link rel="stylesheet" href="./css/layout.css?v=5.0">
-    <link rel="stylesheet" href="./css/custom-pages.css?v=5.0">
+    <link rel="stylesheet" href="./css/style.css?v=5.1">
+    <link rel="stylesheet" href="./css/layout.css?v=5.1">
+    <link rel="stylesheet" href="./css/custom-pages.css?v=5.1">
     
     <script>
         // Fonte única da versão usada no cache busting (lida por js/api.js).
-        window.ASSET_VERSION = '5.0';
+        window.ASSET_VERSION = '5.1';
 
         // O dicionário do idioma salvo é pedido só depois que o app.js roda.
         // O preload adianta o download e evita essa requisição em cascata.
@@ -58,7 +58,7 @@
 
     <!-- Um unico ponto de entrada; o resto vem por import ES.
          Dados (Pokedex, golpes, ginasios, traducoes) ficam em data/*.json. -->
-    <script type="module" src="./js/main.js?v=5.0"></script>
+    <script type="module" src="./js/main.js?v=5.1"></script>
     <script defer src="./vendor/html2canvas/html2canvas.min.js"></script>
     <script>
         if ('serviceWorker' in navigator) {
@@ -565,39 +565,39 @@
         </main>
     </div>
     <!-- Modal de Treinamento (EV/IV) -->
-    <div id="training-modal" class="modal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:9999; display:none; justify-content:center; align-items:center;">
-        <div class="glass" style="width:90%; max-width:500px; background:var(--glass-bg); padding:25px; border-radius:20px; border:1px solid var(--glass-border); position:relative;">
-            <button id="btn-close-training" class="btn-icon" style="position:absolute; top:15px; right:15px; font-size:1.5rem; background:none; border:none; color:white; cursor:pointer;" data-ui="labels.text_67fba2f357">&times;</button>
-            <h2 id="training-modal-title" style="margin-top:0; color:var(--primary-color);">Ficha de Treinamento</h2>
-            
-            <div style="display:flex; gap:15px; align-items:center; margin-bottom:20px;">
-                <img id="training-modal-img" src="./images/miss.png" alt="" style="width:80px; height:80px; object-fit:contain; filter:drop-shadow(0 4px 6px rgba(0,0,0,0.5));">
-                <div>
-                    <h3 id="training-modal-name" style="margin:0; font-size:1.5rem;">Pokémon</h3>
-                    <button id="btn-training-to-pokedex" class="nav-btn" style="background:var(--type-normal); padding:5px 10px; font-size:0.8rem; margin-top:5px;">Ver na Pokédex</button>
+    <div id="training-modal" class="modal training-modal" aria-hidden="true">
+        <section class="glass training-card" aria-labelledby="training-modal-title">
+            <button id="btn-close-training" class="btn-icon training-close" aria-label="Fechar" data-ui="labels.text_67fba2f357">&times;</button>
+            <h2 id="training-modal-title">Ficha de Treinamento</h2>
+
+            <header class="training-pokemon-header">
+                <div class="training-sprite-wrap">
+                    <img id="training-modal-img" src="./images/miss.png" alt="">
+                    <span id="training-shiny-badge" class="training-shiny-badge" hidden>✨ Shiny</span>
                 </div>
+                <div class="training-pokemon-info">
+                    <h3 id="training-modal-name">Pokémon</h3>
+                    <div class="training-actions">
+                        <button id="btn-training-to-pokedex" class="nav-btn">Ver na Pokédex</button>
+                        <button id="btn-training-shiny" class="nav-btn training-shiny-toggle" type="button" aria-pressed="false">✨ Shiny</button>
+                    </div>
+                </div>
+            </header>
+
+            <div class="training-nature-field">
+                <label for="training-nature" data-ui="labels.text_1bf78eb91b">Natureza (Nature):</label>
+                <select id="training-nature" class="input-select"></select>
             </div>
 
-            <div style="margin-bottom:15px;">
-                <label style="display:block; font-size:0.9rem; color:var(--text-muted); margin-bottom:5px;" data-ui="labels.text_1bf78eb91b">Natureza (Nature):</label>
-                <select id="training-nature" class="input-select" style="width:100%;"></select>
-            </div>
+            <section class="training-ev-panel">
+                <h4><span data-ui="labels.text_76079f4558">Esforço (EVs)</span><span id="ev-total">0/510</span></h4>
+                <div id="ev-sliders-container"></div>
+            </section>
 
-            <div style="background:rgba(0,0,0,0.3); border-radius:10px; padding:15px;">
-                <h4 style="margin:0 0 10px 0; color:var(--text-color); display:flex; justify-content:space-between;">
-                    <span data-ui="labels.text_76079f4558">Esforço (EVs)</span>
-                    <span id="ev-total" style="color:var(--text-muted); font-size:0.8rem;">0/510</span>
-                </h4>
-                
-                <div id="ev-sliders-container" style="display:flex; flex-direction:column; gap:8px;">
-                    <!-- Injetado via JS -->
-                </div>
-            </div>
-            
-            <p style="font-size:0.75rem; color:var(--text-muted); text-align:center; margin-top:15px;" data-ui="sections.text_52d58d00c8">
+            <p class="training-note" data-ui="sections.text_52d58d00c8">
                 *Os Status calculados são baseados no Nível 50 com IVs perfeitos (31).
             </p>
-        </div>
+        </section>
     </div>
 
     <!-- Botão Voltar ao Topo -->

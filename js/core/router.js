@@ -8,7 +8,8 @@ export default {
         const hash = window.location.hash.replace('#', '');
         if (hash.startsWith('page/')) {
             this.switchView('custom');
-            renderCustomPage(hash.slice(5));
+            const [slug, tabId = ''] = hash.slice(5).split('/');
+            renderCustomPage(slug, tabId);
         } else if (hash.startsWith('pokemon/')) {
             const id = parseInt(hash.split('/')[1]);
             if (!isNaN(id)) {

@@ -7,11 +7,13 @@ const clone = (data) => structuredClone(data);
 const TYPES = ['normal','fire','water','electric','grass','ice','fighting','poison','ground','flying','psychic','bug','rock','ghost','dragon','dark','steel'];
 const labels = {
   pages:'Páginas',templates:'Modelos de cards',slug:'Endereço da página',menuLabel:'Nome no menu',
-  description:'Descrição',visible:'Publicar página',versions:'Jogos (vazio = todos)',cards:'Cards',
+  description:'Descrição',visible:'Publicar',versions:'Jogos (vazio = todos)',cards:'Cards',tabs:'Abas',
+  entries:'Itens do menu',children:'Submenus',menuId:'Identificador do menu',tabId:'Identificador da aba',
+  pageSlug:'Página vinculada',
   layout:'Disposição',accent:'Cor de destaque',fields:'Campos adicionais',label:'Rótulo',value:'Valor',
   link:'Link',linkLabel:'Texto do link',en:'Inglês (opcional)',pt:'Português',pokemonId:'Número do Pokémon',
   corrections:'Correções',changes:'Dados a corrigir',translations:'Textos por idioma',
-  navigation:'Navegação',sections:'Títulos e textos',labels:'Rótulos',placeholders:'Campos de pesquisa',
+  navigation:'Menus personalizados',sections:'Títulos e textos',labels:'Rótulos',placeholders:'Campos de pesquisa',
   nome:'Nome identificador',tipos:'Tipos',altura:'Altura (decímetros)',peso:'Peso (hectogramas)',
   stats:'Status base',evs:'EVs concedidos',habilidades:'Habilidades',gruposOvo:'Grupos de ovo',
   golpes:'Golpes por jogo',evolucoes:'Evoluções',locais:'Encontros',cries:'Áudios',oculta:'Oculta',
@@ -30,6 +32,7 @@ const labels = {
   shops:'Lojas',tutors:'Tutores',special_pokemon:'Pokémon especiais',stones:'Itens e pedras',
   safari:'Safari Zone',sevii:'Sevii Islands',weakness:'Calculadora de tipos',natures:'Naturezas',
   berries:'Berries / Feebas',ev:'Treinamento de EVs',frontier:'Battle Frontier',bases:'Bases secretas',
+  contentByVersion:'Conteúdo por jogo',titleByVersion:'Título por jogo',
 };
 const label = (key) => labels[key] || key;
 const token = location.hash.slice(1) || sessionStorage.getItem('wiki-editor-token') || '';
@@ -131,7 +134,22 @@ function activeSection() { return sections.find(s => JSON.stringify(s.path) === 
 function entryName(value, key) {
   if (typeof value === 'string') return String(key) + ' · ' + value.replace(/<[^>]+>/g,'').slice(0,50);
   if (value?.pokemonId && filename === 'pokemon-overrides.json') return '#'+value.pokemonId+' · '+(catalog.pokemon.find(p=>p.id===value.pokemonId)?.nome || 'Pokémon');
-  return value?.name || value?.title || value?.category || value?.move || label(String(key));
+  return value?.name || value?.title || value?.label || value?.category || value?.move || label(String(key));
+}
+
+function uniqueIdentifier(list, key, base) {
+  const used = new Set(list.map(entry => entry?.[key]).filter(Boolean));
+  let value = base, number = 2;
+  while (used.has(value)) value = base + '-' + number++;
+  return value;
+}
+
+function newArrayEntry(list, itemSchema, key) {
+  const value = fallback(itemSchema, ['types','tipos'].includes(key) ? 'type' : '');
+  if (filename !== 'pages.json' || !value || typeof value !== 'object') return value;
+  if (key === 'tabs') value.tabId = uniqueIdentifier(list, 'tabId', 'nova-aba');
+  if (key === 'entries' || key === 'children') value.menuId = uniqueIdentifier(list, 'menuId', key === 'children' ? 'novo-submenu' : 'novo-item');
+  return value;
 }
 function entries() {
   const value = at(sectionPath), sec = activeSection();
@@ -258,7 +276,7 @@ function renderValue(parent, path, s, key) {
   const value = at(path);
   if (Array.isArray(value)) {
     const box = el('fieldset'), head = el('div',{className:'array-header'});
-    head.append(el('label',{},label(key)),button('+ Adicionar', () => change(() => value.push(fallback(s.items,['types','tipos'].includes(key) ? 'type' : '')), true)));
+    head.append(el('label',{},label(key)),button('+ Adicionar', () => change(() => value.push(newArrayEntry(value,s.items,key)), true)));
     if (filename === 'pages.json' && key === 'cards') {
       head.append(button('Adicionar de modelo', () => {
         $('template-list').replaceChildren(...doc.templates.map(template => button(template.title, () => {
@@ -275,7 +293,12 @@ function renderValue(parent, path, s, key) {
       actions.append(
         button('↑', () => change(() => {[value[i-1],value[i]]=[value[i],value[i-1]];},true),{disabled:i===0,'aria-label':'Mover para cima'}),
         button('↓', () => change(() => {[value[i+1],value[i]]=[value[i],value[i+1]];},true),{disabled:i===value.length-1,'aria-label':'Mover para baixo'}),
-        button('Duplicar', () => change(() => value.splice(i+1,0,clone(item)),true)),
+        button('Duplicar', () => change(() => {
+          const copy = clone(item);
+          if (filename === 'pages.json' && key === 'tabs') copy.tabId = uniqueIdentifier(value,'tabId',(copy.tabId || 'aba')+'-copia');
+          if (filename === 'pages.json' && (key === 'entries' || key === 'children')) copy.menuId = uniqueIdentifier(value,'menuId',(copy.menuId || 'item')+'-copia');
+          value.splice(i+1,0,copy);
+        },true)),
         button('Remover', () => {if(confirm('Remover esta entrada da lista?')) change(() => value.splice(i,1),true);},{className:'danger'}),
       );
       if (filename === 'pages.json' && key === 'cards') actions.append(button('Guardar como modelo', () => change(() => doc.templates.push(clone(item)), true)));
@@ -310,7 +333,7 @@ function renderValue(parent, path, s, key) {
   }
   const field = el('div',{className:'field'}), id = 'field-' + path.map(String).join('-');
   field.append(el('label',{htmlFor:id},(s.label || label(key))));
-  if (key === 'content' || key === 'desc') {
+  if (key === 'content' || key === 'desc' || path.at(-2) === 'contentByVersion') {
     richField(field,path,value || '');parent.append(field);return;
   }
   let input;
@@ -473,9 +496,10 @@ function uniquePageSlug(base) {
 $('add').onclick=()=>change(()=>{
   const list=at(sectionPath),value=fallback(schemaAt(sectionPath).items);
   if(filename==='pages.json' && sectionPath[0]==='pages')value.slug=uniquePageSlug('nova-pagina');
+  if(filename==='pages.json' && sectionPath[0]==='navigation')value.menuId=uniqueIdentifier(list,'menuId','novo-menu');
   list.push(value);selected=[...sectionPath,list.length-1];$('search').value='';
 },true);
-$('duplicate').onclick=()=>change(()=>{const e=currentEntry(),list=at(sectionPath);const value=clone(e.value);if(filename==='pages.json'&&sectionPath[0]==='pages')value.slug=uniquePageSlug(value.slug+'-copia');list.splice(e.key+1,0,value);selected=[...sectionPath,e.key+1];},true);
+$('duplicate').onclick=()=>change(()=>{const e=currentEntry(),list=at(sectionPath);const value=clone(e.value);if(filename==='pages.json'&&sectionPath[0]==='pages')value.slug=uniquePageSlug(value.slug+'-copia');if(filename==='pages.json'&&sectionPath[0]==='navigation')value.menuId=uniqueIdentifier(list,'menuId',value.menuId+'-copia');list.splice(e.key+1,0,value);selected=[...sectionPath,e.key+1];},true);
 for(const [id,offset] of [['move-up',-1],['move-down',1]]) $(id).onclick=()=>change(()=>{const e=currentEntry(),list=at(sectionPath),next=e.key+offset;[list[e.key],list[next]]=[list[next],list[e.key]];selected=[...sectionPath,next];},true);
 $('remove').onclick=()=>{const e=currentEntry();if(confirm('Remover “'+entryName(e.value,e.key)+'”? Você poderá desfazer antes de salvar.'))change(()=>{at(sectionPath).splice(e.key,1);selected=entries()[Math.max(0,e.key-1)]?.path||null;},true);};
 $('undo').onclick=()=>{if(!undoStack.length)return;redoStack.push(clone(doc));doc=undoStack.pop();if(!currentEntry())selected=entries()[0]?.path||null;render();};

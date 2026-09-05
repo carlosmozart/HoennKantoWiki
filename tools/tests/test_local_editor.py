@@ -234,13 +234,20 @@ class EditorTest(unittest.TestCase):
         initial_count = len(body["data"]["pages"])
         card = body["data"]["templates"][0]
         page = {"slug":"guia-teste","title":"Guia de teste","menuLabel":"Meu guia",
-                "description":"Introdução","visible":True,"versions":[],"cards":[card],
+                "description":"Introdução","visible":True,"versions":[],
+                "tabs":[{"tabId":"conteudo","label":"Conteúdo","visible":True,"cards":[card],"en":{"label":""}}],
                 "en":{"title":"","menuLabel":"","description":""}}
         body["data"]["pages"].append(page)
         self.assertEqual(self.request("/api/save",body)[0],200)
         duplicate = self.payload("pages.json")
         duplicate["data"]["pages"].append(copy.deepcopy(page))
         self.assertEqual(self.request("/api/save",duplicate)[0],400)
+        invalid_tab = self.payload("pages.json")
+        invalid_tab["data"]["pages"][0]["tabs"].append(copy.deepcopy(invalid_tab["data"]["pages"][0]["tabs"][0]))
+        self.assertEqual(self.request("/api/save",invalid_tab)[0],400)
+        invalid_link = self.payload("pages.json")
+        invalid_link["data"]["navigation"][0]["entries"][0]["children"][0]["pageSlug"] = "pagina-inexistente"
+        self.assertEqual(self.request("/api/save",invalid_link)[0],400)
         body = self.payload("pages.json")
         body["context"] = {"templateIndex":0}
         code,raw = self.request("/api/preview",body)

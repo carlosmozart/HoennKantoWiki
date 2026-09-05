@@ -1,6 +1,6 @@
 // Ficha de treinamento (EVs e natureza).
 
-import { spriteCheio } from '../core/sprites.js';
+import { spritePokemon } from '../core/sprites.js';
 
 import { getResumo } from '../core/dataset.js';
 
@@ -48,11 +48,19 @@ class TrainingManager {
 
     bindEvents() {
         document.getElementById('btn-close-training').addEventListener('click', () => {
-            document.getElementById('training-modal').style.display = 'none';
+            this.close();
         });
         document.getElementById('btn-training-to-pokedex').addEventListener('click', () => {
-            document.getElementById('training-modal').style.display = 'none';
+            this.close();
             window.location.hash = `pokemon/${this.currentPokemonId}`;
+        });
+        document.getElementById('btn-training-shiny').addEventListener('click', () => {
+            const member = app.state.team.find(t => t.id === this.currentPokemonId);
+            if (!member) return;
+            member.shiny = !Boolean(member.shiny);
+            this.updateTeamData('shiny', member.shiny);
+            this.renderPokemonIdentity(member);
+            app.renderTeam?.();
         });
         
         const natureSelect = document.getElementById('training-nature');
@@ -69,6 +77,24 @@ class TrainingManager {
         });
     }
 
+    close() {
+        const modal = document.getElementById('training-modal');
+        modal.style.display = 'none';
+        modal.setAttribute('aria-hidden', 'true');
+    }
+
+    renderPokemonIdentity(teamMember) {
+        const shiny = Boolean(teamMember.shiny);
+        const name = this.currentPokemonData.nome || 'Pokémon';
+        document.getElementById('training-modal-name').textContent = name.charAt(0).toUpperCase() + name.slice(1);
+        const image = document.getElementById('training-modal-img');
+        image.src = spritePokemon(this.currentPokemonId, { versao: app.state.versionGroup, shiny });
+        image.alt = `${name}${shiny ? ' shiny' : ''}`;
+        document.querySelector('.training-card').classList.toggle('is-shiny', shiny);
+        document.getElementById('training-shiny-badge').hidden = !shiny;
+        document.getElementById('btn-training-shiny').setAttribute('aria-pressed', String(shiny));
+    }
+
     async openTrainingCard(pokemonId) {
         this.currentPokemonId = pokemonId;
         this.currentPokemonData = await getResumo(pokemonId);
@@ -77,9 +103,10 @@ class TrainingManager {
         const teamMember = app.state.team.find(t => t.id === pokemonId);
         if (!teamMember) return;
 
-        document.getElementById('training-modal').style.display = 'flex';
-        document.getElementById('training-modal-name').textContent = this.currentPokemonData.nome;
-        document.getElementById('training-modal-img').src = `${spriteCheio(pokemonId)}`;
+        const modal = document.getElementById('training-modal');
+        modal.style.display = 'flex';
+        modal.setAttribute('aria-hidden', 'false');
+        this.renderPokemonIdentity(teamMember);
         
         document.getElementById('training-nature').value = teamMember.nature;
 
@@ -94,6 +121,8 @@ class TrainingManager {
                 app.state.team[idx].nature = value;
             } else if (key === 'evs') {
                 app.state.team[idx].evs[stat] = parseInt(value) || 0;
+            } else if (key === 'shiny') {
+                app.state.team[idx].shiny = Boolean(value);
             }
             app.saveScopedData('team', app.state.team);
         }
@@ -106,11 +135,11 @@ class TrainingManager {
         Object.keys(this.statNames).forEach(stat => {
             const val = teamMember.evs[stat];
             const html = `
-                <div style="display:flex; align-items:center; gap:10px; font-size:0.85rem;">
-                    <div style="width:60px; font-weight:bold;">${this.statNames[stat]}</div>
-                    <input type="range" min="0" max="252" value="${val}" class="ev-slider" data-stat="${stat}" style="flex:1;">
-                    <input type="number" min="0" max="252" value="${val}" class="ev-input" data-stat="${stat}" style="width:50px; background:var(--input-bg); color:var(--text-color); border:1px solid var(--glass-border); border-radius:4px; padding:2px 5px;">
-                    <div class="calc-stat-display" data-stat="${stat}" style="width:40px; text-align:right; color:var(--stat-tm); font-weight:bold;">0</div>
+                <div class="training-stat-row">
+                    <div class="training-stat-label">${this.statNames[stat]}</div>
+                    <input type="range" min="0" max="252" value="${val}" class="ev-slider" data-stat="${stat}" aria-label="EV de ${this.statNames[stat]}">
+                    <input type="number" min="0" max="252" value="${val}" class="ev-input" data-stat="${stat}" aria-label="Valor de EV de ${this.statNames[stat]}">
+                    <div class="calc-stat-display" data-stat="${stat}">0</div>
                 </div>
             `;
             container.insertAdjacentHTML('beforeend', html);
@@ -158,7 +187,7 @@ class TrainingManager {
 
         const level = 50;
         let totalEvs = 0;
-        const natureData = this.natures[teamMember.nature];
+        const natureData = this.natures[teamMember.nature] || this.natures.hardy;
 
         Object.keys(this.statNames).forEach(stat => {
             const ev = teamMember.evs[stat];

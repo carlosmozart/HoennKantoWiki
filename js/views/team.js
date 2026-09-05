@@ -29,15 +29,18 @@ export default {
         // Render Slots
         grid.innerHTML = '';
         teamData.forEach((p, idx) => {
+            const member = this.state.team.find(item => item.id === p.id);
+            const shiny = Boolean(member?.shiny);
             const slot = document.createElement('div');
             const primaryType = p.tipos[0];
-            slot.className = `team-slot badge-${primaryType}`;
-            const sprite = this.getSprite(p.id, false);
+            slot.className = `team-slot badge-${primaryType}${shiny ? ' team-slot-shiny' : ''}`;
+            const sprite = this.getSprite(p.id, shiny);
 
             slot.innerHTML = `
                 <button class="remove-btn" title="Remover" data-id="${p.id}">X</button>
                 <img src="${sprite}" alt="${p.nome}" loading="lazy" decoding="async">
                 <span class="team-name">${p.nome}</span>
+                ${shiny ? '<span class="team-shiny-marker" aria-label="Shiny" title="Shiny">✨</span>' : ''}
             `;
             
             // Go to pokemon profile when clicking the slot

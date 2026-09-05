@@ -111,6 +111,48 @@ def check_extensions(name, data):
             if coverage & slugs.get(slug, set()):
                 raise ValueError("O mesmo endereço não pode aparecer duas vezes na mesma versão de jogo.")
             slugs.setdefault(slug, set()).update(coverage)
+            tab_ids = set()
+            if not page["tabs"]:
+                raise ValueError("Mantenha pelo menos uma aba em cada página.")
+            for tab in page["tabs"]:
+                tab_id = tab["tabId"]
+                if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", tab_id) or tab_id in tab_ids:
+                    raise ValueError("Cada aba deve ter um identificador único, como 'dicas-avancadas'.")
+                if not tab["label"].strip():
+                    raise ValueError("Preencha o nome de todas as abas.")
+                tab_ids.add(tab_id)
+
+        page_slugs = set(slugs)
+        menu_ids = set()
+
+        def check_menu_entry(entry, sibling_ids):
+            entry_id = entry["menuId"]
+            if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", entry_id) or entry_id in sibling_ids:
+                raise ValueError("Use identificadores únicos nos menus e submenus.")
+            sibling_ids.add(entry_id)
+            if not entry["label"].strip():
+                raise ValueError("Preencha o nome de todos os itens de navegação.")
+            if not set(entry["versions"]).issubset(VERSIONS):
+                raise ValueError("Versão de jogo inválida em um item de navegação.")
+            target = entry["pageSlug"]
+            if target and target not in page_slugs:
+                raise ValueError(f"A página vinculada '{target}' não existe.")
+            child_ids = set()
+            for child in entry.get("children", []):
+                check_menu_entry(child, child_ids)
+
+        for menu in data["navigation"]:
+            menu_id = menu["menuId"]
+            if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", menu_id) or menu_id in menu_ids:
+                raise ValueError("Use um identificador único para cada menu.")
+            menu_ids.add(menu_id)
+            if not menu["label"].strip():
+                raise ValueError("Preencha o nome de todos os menus.")
+            if not set(menu["versions"]).issubset(VERSIONS):
+                raise ValueError("Versão de jogo inválida em um menu.")
+            sibling_ids = set()
+            for entry in menu["entries"]:
+                check_menu_entry(entry, sibling_ids)
     if name == "pokemon-overrides.json":
         ids = set()
         for correction in data["corrections"]:

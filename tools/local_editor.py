@@ -418,7 +418,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         data["pages"] = []
                         data["pages"].append({"slug":"modelo-preview","title":card["title"],
                             "description":"Prévia do modelo de card","menuLabel":"Modelo",
-                            "visible":True,"versions":[],"cards":[card],"en":{}})
+                            "visible":True,"versions":[],"tabs":[{"tabId":"conteudo","label":"Conteúdo",
+                            "visible":True,"cards":[card],"en":{"label":""}}],"en":{}})
                     for page in data["pages"]:
                         if page["slug"] == context.get("pageSlug"):
                             page["visible"] = True

@@ -32,6 +32,27 @@ const {chromium}=require(process.env.WIKI_PLAYWRIGHT||'playwright');
     await page.waitForFunction(()=>!!navigator.serviceWorker.controller);
     await page.reload();
     await page.waitForFunction(()=>window.app?.state.currentPokemon?.id===5);
+    // Touch feedback stays transparent while keyboard focus remains visible.
+    await page.evaluate(()=>location.hash='');
+    await page.locator('#pokedex-grid .grid-card').first().waitFor();
+    const tapHighlight=await page.locator('#pokedex-grid .grid-card').first().evaluate(card=>getComputedStyle(card).webkitTapHighlightColor);
+    assert.ok(tapHighlight === 'rgba(0, 0, 0, 0)' || tapHighlight === 'transparent');
+    // Training cards align on mobile and preserve each member's shiny form.
+    await page.evaluate(()=>{
+      app.state.team=[{id:5,shiny:true,nature:'hardy',evs:{hp:0,attack:0,defense:0,special_attack:0,special_defense:0,speed:0},ivs:{hp:31,attack:31,defense:31,special_attack:31,special_defense:31,speed:31}}];
+      app.saveScopedData('team',app.state.team);
+      location.hash='team';
+    });
+    await page.locator('#team-grid .team-slot-shiny').click();
+    await page.locator('#training-modal[aria-hidden="false"] .training-card.is-shiny').waitFor();
+    assert.equal(await page.locator('#training-modal-name').innerText(),'Charmeleon');
+    assert.ok((await page.locator('#training-modal-img').getAttribute('src')).includes('/emerald/shiny/5.png'));
+    assert.equal(await page.locator('#training-shiny-badge').isVisible(),true);
+    assert.ok(await page.locator('.training-card').evaluate(card=>card.scrollWidth<=card.clientWidth));
+    await page.locator('#btn-training-shiny').click();
+    assert.equal(await page.locator('.training-card').evaluate(card=>card.classList.contains('is-shiny')),false);
+    assert.ok((await page.locator('#training-modal-img').getAttribute('src')).endsWith('/emerald/5.png'));
+    await page.locator('#btn-close-training').click();
     // TM/HM and tutor cards reuse the Pokédex type pill and stay readable on mobile.
     await page.evaluate(()=>location.hash='tms');
     await page.locator('#tms-grid .machine-card').first().waitFor();
