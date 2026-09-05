@@ -17,7 +17,7 @@ export default {
             grid.innerHTML = '<p style="color:var(--text-muted); width: 100%; text-align: center;" data-ui=labels.text_1c3092060c>Sua equipe está vazia. Volte à Pokédex e adicione alguns Pokémon!</p>';
             analysis.innerHTML = '';
             for (let i = 0; i < 6; i++) {
-                grid.innerHTML += `<div class="team-slot empty" onclick="window.location.hash=''"></div>`;
+                grid.innerHTML += `<a class="team-slot empty" href="#" aria-label="Adicionar Pokémon à equipe"></a>`;
             }
             return;
         }
@@ -32,6 +32,9 @@ export default {
             const member = this.state.team.find(item => item.id === p.id);
             const shiny = Boolean(member?.shiny);
             const slot = document.createElement('div');
+            slot.setAttribute('role', 'button');
+            slot.setAttribute('tabindex', '0');
+            slot.setAttribute('aria-label', `${p.nome}: abrir ficha de treinamento`);
             const primaryType = p.tipos[0];
             slot.className = `team-slot badge-${primaryType}${shiny ? ' team-slot-shiny' : ''}`;
             const sprite = this.getSprite(p.id, shiny);
@@ -43,6 +46,11 @@ export default {
                 ${shiny ? '<span class="team-shiny-marker" aria-label="Shiny" title="Shiny">✨</span>' : ''}
             `;
             
+            slot.addEventListener('keydown', (e) => {
+                // Espaço rolaria a página; Enter/Espaço abrem a ficha
+                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); slot.click(); }
+            });
+
             // Go to pokemon profile when clicking the slot
             slot.addEventListener('click', (e) => {
                 if (e.target.tagName !== 'BUTTON') {
@@ -69,9 +77,10 @@ export default {
 
         // Add empty slots
         for (let i = teamData.length; i < 6; i++) {
-            const slot = document.createElement('div');
+            const slot = document.createElement('a');
             slot.className = 'team-slot empty';
-            slot.addEventListener('click', () => { window.location.hash = ''; });
+            slot.href = '#';
+            slot.setAttribute('aria-label', 'Adicionar Pokémon à equipe');
             grid.appendChild(slot);
         }
 

@@ -66,7 +66,7 @@ function renderFrontierTab(tabName) {
                 let movesHtml = p.moves.map(m => `<span style="display:inline-block; background:rgba(0,0,0,0.2); padding:2px 6px; border-radius:4px; font-size:0.75rem; margin:2px;">${m}</span>`).join('');
                 
                 return `
-                    <div onclick="playClickSound(); window.location.hash='pokemon/${p.id}'" style="cursor:pointer; display:flex; flex-direction:column; align-items:center; background:rgba(255,255,255,0.03); border-radius:10px; padding:10px; box-shadow:0 2px 6px rgba(0,0,0,0.4); margin-bottom:10px; transition: transform 0.2s, background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.08)'; this.style.transform='scale(1.02)';" onmouseout="this.style.background='rgba(255,255,255,0.03)'; this.style.transform='scale(1)';">
+                    <a href="#pokemon/${p.id}" onclick="playClickSound()" title="Ver na Pokédex" style="cursor:pointer; text-decoration:none; color:inherit; display:flex; flex-direction:column; align-items:center; background:rgba(255,255,255,0.03); border-radius:10px; padding:10px; box-shadow:0 2px 6px rgba(0,0,0,0.4); margin-bottom:10px; transition: transform 0.2s, background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.08)'; this.style.transform='scale(1.02)';" onmouseout="this.style.background='rgba(255,255,255,0.03)'; this.style.transform='scale(1)';">
                         <img src="${spriteCheio(p.id)}" alt="${p.name}" loading="lazy" decoding="async" style="width:80px;height:80px; filter:drop-shadow(2px 2px 4px rgba(0,0,0,0.5));" title="${p.name}">
                         <strong style="font-size:1.1rem; margin-bottom:5px;">${p.name}</strong>
                         <div style="margin-bottom:5px;">${typesHtml}</div>
@@ -78,12 +78,12 @@ function renderFrontierTab(tabName) {
                         <div style="width:100%; text-align:center; margin-top:5px;">
                             ${movesHtml}
                         </div>
-                    </div>
+                    </a>
                 `;
             };
 
             if (fac.silverTeam.length > 0) {
-                silverHtml = `<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:15px; margin-top:15px;">`;
+                silverHtml = `<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap:15px; margin-top:15px;">`;
                 fac.silverTeam.forEach(p => {
                     silverHtml += renderPokeCard(p);
                 });
@@ -91,7 +91,7 @@ function renderFrontierTab(tabName) {
             }
 
             if (fac.goldTeam.length > 0) {
-                goldHtml = `<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:15px; margin-top:15px;">`;
+                goldHtml = `<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap:15px; margin-top:15px;">`;
                 fac.goldTeam.forEach(p => {
                     goldHtml += renderPokeCard(p);
                 });
@@ -102,7 +102,7 @@ function renderFrontierTab(tabName) {
                 <div class="grid-card bento-item" style="padding: 30px;">
                     <div style="display:flex; flex-wrap:wrap; gap:40px; align-items:center;">
                         
-                        <div style="text-align:center; min-width: 250px; flex: 1;">
+                        <div style="text-align:center; min-width: min(100%, 250px); flex: 1 1 250px;">
                             <img src="${fac.brainSprite}" alt="${fac.brain}" loading="lazy" decoding="async" style="height: 220px; object-fit: contain; filter: drop-shadow(4px 6px 8px rgba(0,0,0,0.5)); margin-bottom:20px;">
                             <h4 style="color:var(--type-fire); margin:0; font-size:1.3rem; text-transform:uppercase; letter-spacing:1px;">${fac.brainTitle}</h4>
                             <h3 style="margin:5px 0 0 0; font-size:2rem; font-weight:800;">${fac.brain}</h3>
@@ -112,7 +112,7 @@ function renderFrontierTab(tabName) {
                             </div>
                         </div>
                         
-                        <div style="flex:2; min-width: 300px;">
+                        <div style="flex: 2 1 300px; min-width: min(100%, 300px);">
                             <h3 style="color:var(--type-electric); margin-bottom:10px; font-size:1.5rem;">${fac.name} <span style="font-size:1.1rem; color:var(--text-muted);">(${fac.ptName})</span></h3>
                             <p style="text-align:justify; font-size:1.05rem; line-height:1.7; margin-bottom:20px; color:var(--text-color);">${fac.desc}</p>
                             
@@ -139,7 +139,7 @@ function renderFrontierTab(tabName) {
         });
     }
     else if (tabName === 'shops') {
-        html += `<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px;">`;
+        html += `<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr)); gap: 20px;">`;
         [...FRONTIER_DATA.shops, ...FRONTIER_DATA.tutors].forEach(shop => {
             let itemsHtml = shop.items.map(i => `
                 <tr style="border-bottom: 1px solid var(--glass-border); transition: 0.2s; cursor:default;" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background='transparent'">
@@ -152,7 +152,7 @@ function renderFrontierTab(tabName) {
                 <div class="grid-card bento-item" style="padding: 25px;">
                     <h3 style="color:var(--type-electric); margin-bottom:10px; font-size:1.3rem;">${shop.title}</h3>
                     <p style="text-align:justify; font-size:1rem; color:var(--text-muted); margin-bottom:20px; line-height:1.5;">${shop.desc}</p>
-                    <table style="width:100%; border-collapse:collapse;">
+                    <table class="frontier-shop-table" style="width:100%; border-collapse:collapse;">
                         ${itemsHtml}
                     </table>
                 </div>

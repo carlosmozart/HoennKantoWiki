@@ -48,7 +48,7 @@ function renderExtrasTab(tabName) {
     grid.innerHTML = '';
     
     grid.style.display = 'grid';
-    grid.style.gridTemplateColumns = 'repeat(auto-fit, minmax(280px, 1fr))';
+    grid.style.gridTemplateColumns = 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))';
     grid.style.gap = '20px';
 
     const version = app.state.versionGroup || 'emerald';
@@ -90,7 +90,7 @@ function renderExtrasTab(tabName) {
         }
 
         return `
-            <div class="bento-item frontier-facility-card" style="padding: 15px; cursor: pointer; transition: transform 0.2s;" onclick="playClickSound(); window.location.hash='pokemon/${p.id}'" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+            <a class="bento-item frontier-facility-card" href="#pokemon/${p.id}" onclick="playClickSound()" title="Ver na Pokédex" style="padding: 15px; cursor: pointer; text-decoration:none; color:inherit; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
                 <div style="display:flex; align-items:center; gap: 15px;">
                     <img src="${spriteCheio(p.id)}" alt="${p.name}" loading="lazy" decoding="async" style="width:96px; height:96px; filter:drop-shadow(2px 2px 4px rgba(0,0,0,0.5));">
                     <div>
@@ -105,7 +105,7 @@ function renderExtrasTab(tabName) {
                 <div style="margin-top: 15px; padding-top: 10px; border-top: 1px solid var(--glass-border); font-size: 0.9rem; line-height: 1.4; color: var(--text-color);">
                     ${p.desc}
                 </div>
-            </div>
+            </a>
         `;
     };
 

@@ -5,6 +5,19 @@
     display: none !important;
 }
 
+/* Rótulo visível só para leitor de tela */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
 :root {
     /* Tema Claro Padrão */
     --bg-color: #f4f5f7; /* Um cinza-azulado muito claro e suave, melhor aos olhos */
@@ -16,6 +29,14 @@
     --btn-bg: rgba(255, 255, 255, 1);
     --btn-hover: #e2e6ea;
     --card-bg: #ffffff;
+    /* Separação do card em relação ao fundo da página. A sombra de 8% que
+       existia funcionava no tema claro e sumia no escuro (#1b1b1b sobre
+       #121212 dava 1,09:1), então cada tema tem a sua. */
+    --card-shadow: 0 5px 16px rgba(0, 0, 0, 0.12);
+    --card-border: rgba(0, 0, 0, 0.16);
+    /* Fundo das pastilhas (nomes de Pokémon nos guias). Antes usavam
+       --glass-bg, que no claro é branco sobre card branco: 1,00:1. */
+    --chip-bg: #eceff4;
     --stat-bar-bg: rgba(0, 0, 0, 0.08);
     --sidebar-solid: #fcfcfd; /* --bg-color sob a camada .glass, para o degradê do menu */
 
@@ -93,7 +114,12 @@
     --input-bg: rgba(0, 0, 0, 0.6);
     --btn-bg: rgba(0, 0, 0, 0.7);
     --btn-hover: rgba(0, 0, 0, 0.9);
-    --card-bg: #1b1b1b;
+    /* #1b1b1b dava 1,09:1 contra a página (#121212): o card não se destacava
+       do fundo. #242424 sobe para ~1,3:1 sem clarear a ponto de brilhar. */
+    --card-bg: #242424;
+    --card-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+    --card-border: rgba(255, 255, 255, 0.16);
+    --chip-bg: rgba(255, 255, 255, 0.09);
     --stat-bar-bg: rgba(255, 255, 255, 0.2);
     --sidebar-solid: #090909;
     /* No escuro o vermelho precisa clarear para continuar legível como texto */
@@ -193,7 +219,6 @@ body {
     font-size: 1rem;
     font-weight: 600;
     outline: none;
-    backdrop-filter: blur(5px);
     transition: all 0.3s;
 }
 .input-select option {
@@ -215,7 +240,6 @@ body {
     align-items: center;
     justify-content: center;
     transition: all 0.2s;
-    backdrop-filter: blur(5px);
 }
 .btn-search {
     padding: 0 20px;
@@ -497,9 +521,9 @@ body {
 /* TABS */
 .tabs-container { margin-top: 10px; }
 .tabs-header { display: flex; gap: 5px; margin-bottom: 10px; border-bottom: 2px solid var(--glass-border); padding-bottom: 5px; }
-.tab-btn { flex: 1; background: transparent; border: none; color: var(--text-color); font-weight: 700; cursor: pointer; padding: 5px; opacity: 0.6; transition: 0.3s; font-size: 0.9rem; }
-.tab-btn:hover { opacity: 1; }
-.tab-btn.active { opacity: 1; border-bottom: 3px solid var(--text-color); }
+.tab-btn { flex: 1; background: transparent; border: none; color: var(--text-muted); font-weight: 700; cursor: pointer; padding: 5px; transition: 0.3s; font-size: 0.9rem; }
+.tab-btn:hover { color: var(--text-color); }
+.tab-btn.active { color: var(--text-color); border-bottom: 3px solid var(--text-color); }
 .tab-content { display: none; }
 .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -515,13 +539,25 @@ body {
 /* Type Matchups */
 .matchups-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; max-height: 200px; overflow-y: auto; padding-right: 5px; }
 .matchup-item { display: flex; justify-content: space-between; align-items: center; padding: 5px 15px; border-radius: 10px; font-weight: 700; font-size: 0.8rem; }
-.matchup-mult { background: rgba(0,0,0,0.15); color: inherit; padding: 2px 6px; border-radius: 5px; }
+/* O véu rgba(0,0,0,0.15) escurecia o fundo do tipo sob o texto e deixava o
+   "x2" em 4,17:1. Sem preenchimento, o multiplicador herda exatamente o par
+   cor/fundo já calibrado da linha; o contorno de currentColor separa. */
+.matchup-mult { background: none; color: inherit; padding: 2px 6px; border: 1px solid currentColor; border-radius: 5px; font-weight: 800; }
 
 /* Type Filters na Home */
+/* A opacidade de 0.55 compunha fundo e texto juntos em direção à cor da
+   página e derrubava o contraste de ~6:1 para 1,7-3,0:1 — 17 dos 18 botões
+   reprovavam AA no estado inativo. Só a partir de 0,95 todos passariam, e aí
+   o escurecimento nem é perceptível. O estado ativo passa a ser marcado por
+   anel e escala, que não mexem na legibilidade. */
 .type-filters-container { display: flex; flex-wrap: wrap; gap: 8px; margin: 15px 0; justify-content: center; }
-.type-filter-btn { padding: 8px 14px; min-height: 36px; border: none; border-radius: 18px; font-size: 0.8rem; font-weight: bold; cursor: pointer; opacity: 0.55; transition: 0.3s; }
+.type-filter-btn { padding: 8px 14px; min-height: 36px; border: none; border-radius: 18px; font-size: 0.8rem; font-weight: bold; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
 .type-filter-btn.type-all { background-color: #6b6b78; color: var(--ink-light); }
-.type-filter-btn:hover, .type-filter-btn.active { opacity: 1; transform: scale(1.1); box-shadow: 0 2px 5px rgba(0,0,0,0.4); }
+.type-filter-btn:hover { transform: scale(1.06); box-shadow: 0 2px 5px rgba(0,0,0,0.4); }
+.type-filter-btn.active {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 3px var(--bg-color), 0 0 0 5px var(--text-color), 0 2px 5px rgba(0,0,0,0.4);
+}
 
 /* Team Builder */
 .team-grid { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; margin-top: 15px; }
@@ -529,8 +565,23 @@ body {
 .team-slot:hover { border-color: rgba(255,255,255,0.8); background: rgba(255,255,255,0.1); }
 .team-slot img { max-width: 80px; max-height: 80px; }
 .team-slot .team-name { font-size: 0.75rem; text-transform: capitalize; color: white; margin-top: 5px; font-weight: bold; }
-.team-slot .remove-btn { position: absolute; top: -5px; right: -5px; background: #e74c3c; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; font-weight: bold; display: none; }
-.team-slot:hover .remove-btn { display: flex; align-items: center; justify-content: center; }
+/* O botão era display:none e só aparecia no :hover. Em aparelho de toque não
+   existe hover, então não havia como tirar um Pokémon da equipe pelo celular:
+   o toque no slot abre a ficha de treinamento. Agora ele existe sempre e só
+   fica escondido onde há mouse de verdade. */
+.team-slot .remove-btn { position: absolute; top: -5px; right: -5px; background: #e74c3c; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.2s; z-index: 2; }
+.team-slot:hover .remove-btn,
+.team-slot:focus-within .remove-btn { opacity: 1; pointer-events: auto; }
+
+@media (hover: none) {
+    .team-slot .remove-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 1rem;
+        opacity: 1;
+        pointer-events: auto;
+    }
+}
 .team-slot.empty::after { content: "+"; font-size: 2rem; color: rgba(255,255,255,0.3); }
 
 .team-analysis { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; margin-top: 15px; }
@@ -880,7 +931,7 @@ body {
 
 .frontier-team-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
     gap: 10px;
 }
 
@@ -977,10 +1028,11 @@ body {
     position: fixed;
     bottom: 30px;
     right: 30px;
-    z-index: 9999;
+    /* Estava em 9999, o mesmo do modal de treinamento, e vinha depois no DOM:
+       o botão flutuava por cima do modal, bem onde ficam os sliders de EV. */
+    z-index: 400;
     background: var(--primary-surface);
     color: var(--primary-on);
-    color: white;
     width: 50px;
     height: 50px;
     border-radius: 50%;
@@ -1160,6 +1212,126 @@ body {
     }
 }
 
+/* Tabela das lojas da Battle Frontier: com 12px de padding em cada célula, a
+   largura mínima do conteúdo passava do card em telas de ~320px. O nome do
+   item pode quebrar linha e o padding aperta. */
+@media (max-width: 480px) {
+    .frontier-shop-table td { padding: 8px 5px !important; font-size: 0.92rem !important; }
+    .frontier-shop-table td span { flex-wrap: wrap; }
+}
+
+/* ==========================================
+   BARRA DE ABAS ROLÁVEL
+   ========================================== */
+/* A barra dos Guias tem 9 botões: quebrando linha, ocupava 338px de altura no
+   celular — 41% da tela antes de qualquer conteúdo. Vira uma pista horizontal,
+   como o menu principal. No desktop continua em linha única centralizada. */
+.tabs-scroller {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 900px) {
+    .tabs-scroller {
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        overflow-x: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        padding-bottom: 6px;
+        scroll-snap-type: x proximity;
+        -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 40px), transparent);
+        mask-image: linear-gradient(to right, #000 calc(100% - 40px), transparent);
+    }
+    .tabs-scroller::-webkit-scrollbar { display: none; }
+    .tabs-scroller > .nav-btn {
+        flex: 0 0 auto;
+        scroll-snap-align: start;
+        padding: 11px 13px;
+        font-size: 0.92rem;
+    }
+}
+
+/* ==========================================
+   BOTÕES E SELECTS DAS CONFIGURAÇÕES
+   ========================================== */
+/* .btn-primary e .custom-select eram usadas em cinco controles da tela de
+   Configurações e não tinham nenhuma regra: caíam no visual padrão do
+   navegador, com 22px de altura nos botões e 16px no select. */
+.btn-primary {
+    min-height: 44px;
+    padding: 11px 18px;
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    background: var(--btn-bg);
+    color: var(--text-color);
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.btn-primary:hover { background: var(--btn-hover); transform: translateY(-2px); }
+
+.custom-select {
+    min-height: 44px;
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    background: var(--input-bg);
+    color: var(--text-color);
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.custom-select option { background: var(--glass-bg); color: var(--text-color); }
+
+/* ==========================================
+   ALVOS DE TOQUE
+   ========================================== */
+/* Os checkboxes do checklist diário mediam 13x13px e os filtros de status
+   34px de altura — abaixo do mínimo confortável no dedo. */
+.daily-task-chk {
+    width: 22px;
+    height: 22px;
+    flex: 0 0 auto;
+    accent-color: var(--primary-surface);
+    cursor: pointer;
+}
+
+#daily-checklist-container label { min-height: 44px; }
+
+.btn-filter-status {
+    min-height: 44px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.filtros-titulo { min-height: 44px; }
+
+/* Selects que dividem a linha com botões ficavam espremidos: no Mapa o nome
+   da rota precisava de 172px e sobravam 125px; no perfil, 123px em 75px.
+   A linha quebra e o select ocupa a largura toda quando não cabe ao lado. */
+.linha-controles {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.linha-controles > select { flex: 1 1 12rem; min-width: 0; }
+.linha-controles > button { flex: 0 0 auto; }
+
+#calc-type-1,
+#calc-type-2 { min-width: 0; }
+
 /* ==========================================
    FOCO VISÍVEL (navegação por teclado)
    ========================================== */
@@ -1298,16 +1470,36 @@ summary:focus-visible,
 .guide-card {
     min-width: 0;
     padding: 16px;
-    border: 1px solid var(--glass-border);
+    border: 1px solid var(--card-border);
+    /* A barra de acento existia só em .guide-regis; as outras quatro abas de
+       card ficavam sem. Agora vale para todas, com o tipo sobrescrevendo. */
+    border-top: 4px solid var(--primary-color);
     border-radius: 15px;
     background: var(--card-bg);
-    box-shadow: 0 5px 16px rgba(0,0,0,.08);
+    box-shadow: var(--card-shadow);
 }
 
+/* Acento por tipo quando o card fala de um Pokémon específico. */
+.guide-card[data-tipo="rock"] { border-top-color: var(--type-rock); }
+.guide-card[data-tipo="ice"] { border-top-color: var(--type-ice); }
+.guide-card[data-tipo="steel"] { border-top-color: var(--type-steel); }
+.guide-card[data-tipo="water"] { border-top-color: var(--type-water); }
+.guide-card[data-tipo="grass"] { border-top-color: var(--type-grass); }
+.guide-card[data-tipo="fire"] { border-top-color: var(--type-fire); }
+
 .guide-card ul { margin: 8px 0 0 20px; padding: 0; }
-.guide-card-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+
+/* Cabeçalho do card: as abas usam ou <h4> ou .guide-card-head. Os dois
+   recebem o mesmo tratamento para que os cards não pareçam de famílias
+   diferentes ao trocar de aba. */
+.guide-card > h4,
+.guide-card-head {
+    margin: 0 0 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--card-border);
+}
+.guide-card-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
 .guide-card-head > span:last-child { color: var(--text-muted); font-size: .82rem; text-align: right; }
-.guide-regis .guide-card { border-top: 4px solid var(--primary-color); }
 
 .guide-pokemon {
     display: inline-flex;
@@ -1315,29 +1507,42 @@ summary:focus-visible,
     gap: 5px;
     margin: 3px;
     padding: 3px 8px 3px 3px;
-    border: 1px solid var(--glass-border);
+    border: 1px solid var(--card-border);
     border-radius: 999px;
-    background: var(--glass-bg);
+    background: var(--chip-bg);
+    color: var(--text-color);
+    text-decoration: none;
     vertical-align: middle;
     white-space: nowrap;
 }
+
+/* As pastilhas viraram links para a ficha do Pokémon, como no resto do app. */
+a.guide-pokemon { cursor: pointer; transition: background 0.2s, transform 0.2s; }
+a.guide-pokemon:hover { background: var(--btn-hover); transform: translateY(-2px); }
 
 .guide-pokemon img { width: 42px; height: 42px; object-fit: contain; image-rendering: pixelated; }
 .guide-sprite-row, .guide-duo { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px; }
 .guide-duo > span { color: var(--primary-color); font-size: 1.7rem; font-weight: 900; }
 
+/* A mistura de 10% deixava o aviso a 1,01:1 contra a página no tema claro —
+   invisível como superfície. Com 22% e uma borda completa ele se lê como
+   bloco mesmo quem não percebe a faixa lateral colorida. */
 .guide-callout {
     margin: 15px 0;
     padding: 13px 15px;
+    border: 1px solid var(--card-border);
     border-left: 4px solid var(--primary-color);
     border-radius: 10px;
-    background: color-mix(in srgb, var(--primary-color) 10%, var(--card-bg));
+    background: color-mix(in srgb, var(--primary-color) 22%, var(--card-bg));
 }
-.guide-callout.warning { border-left-color: #e1a400; background: color-mix(in srgb, #e1a400 10%, var(--card-bg)); }
+.guide-callout.warning { border-left-color: #e1a400; background: color-mix(in srgb, #e1a400 22%, var(--card-bg)); }
 
 .guide-steps { list-style: none; counter-reset: guide-step; margin: 16px 0; padding: 0; }
-.guide-steps li { position: relative; min-height: 48px; margin: 0 0 12px 20px; padding: 11px 14px 11px 42px; border-left: 2px solid var(--primary-color); background: var(--glass-bg); border-radius: 0 12px 12px 0; }
-.guide-steps li::before { counter-increment: guide-step; content: counter(guide-step); position: absolute; left: -20px; top: 9px; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; background: var(--primary-color); color: var(--primary-on); font-weight: 900; }
+.guide-steps li { position: relative; min-height: 48px; margin: 0 0 12px 20px; padding: 11px 14px 11px 42px; border: 1px solid var(--card-border); border-left: 2px solid var(--primary-color); background: var(--card-bg); border-radius: 0 12px 12px 0; }
+/* --primary-color é o token de TEXTO (clareado no escuro): usá-lo como fundo
+   com --primary-on por cima dava 3,44:1 no tema escuro. O par de superfície
+   é --primary-surface/--primary-on. */
+.guide-steps li::before { counter-increment: guide-step; content: counter(guide-step); position: absolute; left: -20px; top: 9px; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; background: var(--primary-surface); color: var(--primary-on); font-weight: 900; }
 .guide-steps li > b, .guide-steps li > span { display: block; }
 .guide-steps li > span { color: var(--text-muted); margin-top: 3px; }
 
@@ -1557,30 +1762,6 @@ summary:focus-visible,
     line-height: 1.5;
     text-align: left;
 }
-
-/* Galeria de Pokémon citados nos guias (Safari Zone, Sevii Islands) */
-.guia-galeria {
-    margin-top: 18px;
-    padding: 14px;
-    background: var(--stat-cell-bg);
-    border: 1px solid var(--glass-border);
-    border-radius: 12px;
-}
-
-.guia-galeria-tira {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-top: 10px;
-}
-
-.guia-galeria-tira img {
-    background: var(--stat-bar-bg);
-    border-radius: 8px;
-    transition: transform 0.2s;
-}
-
-.guia-galeria-tira a:hover img { transform: scale(1.15); }
 
 /* Fraquezas / Resiste / Vantagem: três bentos separados */
 .matchup-legenda {
