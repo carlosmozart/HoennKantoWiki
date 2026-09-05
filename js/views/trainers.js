@@ -82,7 +82,7 @@ export default {
                 }
 
                 teamHtml += `
-                    <div class="frontier-poke-card" onclick="playClickSound(); window.location.hash='pokemon/${poke.id}'" title="Ver Pokédex">
+                    <a class="frontier-poke-card" href="#pokemon/${poke.id}" onclick="playClickSound()" title="Ver Pokédex">
                         <div class="frontier-poke-header">
                             <img src="${spriteUrl}" alt="${poke.name}" loading="lazy">
                             <div class="frontier-poke-info">
@@ -97,7 +97,7 @@ export default {
                         <div class="frontier-poke-moves">
                             ${movesHtml}
                         </div>
-                    </div>
+                    </a>
                 `;
             }
             teamHtml += `</div></div>`;

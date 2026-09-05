@@ -15,7 +15,11 @@ export function spritePokemon(id, { versao = 'emerald', shiny = false } = {}) {
 /** Arte frontal padrao (usada em evolucoes, listas e equipe). */
 export const spriteCheio = (id) => `${BASE}/pokemon/full/${id}.png`;
 
-/** Icone pequeno do modo compacto da Pokedex. */
+/**
+ * Icone pequeno (arte da Gen 8). Sem uso: o modo compacto da Pokedex passou a
+ * usar o sprite da geracao do jogo, como o resto do app. Mantido porque os
+ * 386 arquivos continuam em img/pokemon/icons/.
+ */
 export const spriteIcone = (id) => `${BASE}/pokemon/icons/${id}.png`;
 
 /**

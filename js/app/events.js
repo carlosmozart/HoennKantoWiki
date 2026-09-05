@@ -1,7 +1,7 @@
 // Ligacao de eventos da interface.
 // Metodos compostos no objeto `app` (js/main.js), por isso `this` continua valido.
 
-import { spriteIcone, spritePokemon } from '../core/sprites.js';
+import { spritePokemon } from '../core/sprites.js';
 
 import { playClickSound } from '../ui/sound.js';
 import { resolverBusca } from '../core/dataset.js';
@@ -374,11 +374,7 @@ export default {
             loadedCards.forEach(card => {
                 const id = card.dataset.id;
                 const img = card.querySelector('img');
-                if (this.state.isCompactMode) {
-                    img.src = spriteIcone(id);
-                } else {
-                    img.src = spritePokemon(id, { versao: this.state.versionGroup });
-                }
+                img.src = spritePokemon(id, { versao: this.state.versionGroup });
             });
         });
 

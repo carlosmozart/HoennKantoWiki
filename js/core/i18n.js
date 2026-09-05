@@ -42,6 +42,9 @@ export default {
         }
 
         this.state.lang = lang;
+        // O <html lang> ficava fixo em pt-BR: leitor de tela seguia lendo
+        // conteudo em ingles com pronuncia portuguesa.
+        document.documentElement.lang = lang === 'pt' ? 'pt-BR' : 'en';
         await applyInterface(lang);
         localStorage.setItem('wiki-lang', lang);
         if (this.dom.langToggle) this.dom.langToggle.textContent = lang === 'pt' ? 'Alternar Idioma USA' : 'Alternar Idioma BRA';

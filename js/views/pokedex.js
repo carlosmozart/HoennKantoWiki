@@ -1,7 +1,7 @@
 // Grade da Pokedex: filtros, busca, estado vazio e painel.
 // Metodos compostos no objeto `app` (js/main.js), por isso `this` continua valido.
 
-import { spriteIcone, spritePokemon } from '../core/sprites.js';
+import { spritePokemon } from '../core/sprites.js';
 
 import { getIndice, getEspeciesDoTipo } from '../core/dataset.js';
 import { TYPE_TRANSLATIONS } from '../core/types.js';
@@ -142,12 +142,9 @@ export default {
                     const card = entry.target;
                     const id = card.dataset.id;
                     if (!card.dataset.loaded) {
-                        const isCompact = document.getElementById('pokedex-grid').classList.contains('compact');
-                        if (isCompact) {
-                            card.querySelector('.poke-sprite').src = spriteIcone(id);
-                        } else {
-                            card.querySelector('.poke-sprite').src = spritePokemon(id, { versao: app.state.versionGroup });
-                        }
+                        // O modo compacto muda o tamanho do card, nao a geracao
+                        // do sprite: os icones eram da Gen 8.
+                        card.querySelector('.poke-sprite').src = spritePokemon(id, { versao: app.state.versionGroup });
                         card.dataset.loaded = 'true';
                     }
                     observer.unobserve(card);

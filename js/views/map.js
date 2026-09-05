@@ -145,12 +145,12 @@ class MapExplorer {
                 const capChance = p.chance > 100 ? 100 : p.chance; // Prevent overflow from area merging
                 
                 html += `
-                    <div class="bento-item" style="padding:10px; text-align:center; cursor:pointer; display: flex; flex-direction: column; align-items: center;" onclick="playClickSound(); window.location.hash='pokemon/${p.id}'" title="Ver Dex">
+                    <a class="bento-item" href="#pokemon/${p.id}" onclick="playClickSound()" title="Ver na Pokédex" style="padding:10px; text-align:center; cursor:pointer; text-decoration:none; color:inherit; display: flex; flex-direction: column; align-items: center;">
                         <img src="${spriteCheio(p.id)}" alt="${p.name}" loading="lazy" decoding="async" style="width:70px; height:70px; filter:drop-shadow(2px 2px 3px rgba(0,0,0,0.4)); margin: 0 auto;">
                         <strong style="display:block; font-size:0.9rem;">${pokeName}</strong>
                         <div style="font-size:0.75rem; color:var(--text-muted); margin-top:5px;">Lv ${p.minLevel}-${p.maxLevel}</div>
                         <div style="font-size:0.8rem; font-weight:bold; color:var(--primary-color); background:rgba(0,0,0,0.4); border-radius:4px; margin-top:5px; padding:2px;">~${capChance}%</div>
-                    </div>
+                    </a>
                 `;
             });
 

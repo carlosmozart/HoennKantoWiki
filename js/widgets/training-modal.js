@@ -50,6 +50,31 @@ class TrainingManager {
         document.getElementById('btn-close-training').addEventListener('click', () => {
             this.close();
         });
+
+        // O modal nao tinha Escape, nao movia o foco nem prendia o Tab: quem
+        // navega por teclado abria a ficha e continuava tabulando na pagina
+        // atras dela. E a pagina rolava por baixo no celular.
+        const modal = document.getElementById('training-modal');
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) this.close();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (modal.style.display !== 'flex') return;
+            if (e.key === 'Escape') { this.close(); return; }
+            if (e.key !== 'Tab') return;
+            const focaveis = modal.querySelectorAll(
+                'button, [href], select, input, textarea, [tabindex]:not([tabindex="-1"])');
+            if (!focaveis.length) return;
+            const primeiro = focaveis[0];
+            const ultimo = focaveis[focaveis.length - 1];
+            if (e.shiftKey && document.activeElement === primeiro) {
+                e.preventDefault();
+                ultimo.focus();
+            } else if (!e.shiftKey && document.activeElement === ultimo) {
+                e.preventDefault();
+                primeiro.focus();
+            }
+        });
         document.getElementById('btn-training-to-pokedex').addEventListener('click', () => {
             this.close();
             window.location.hash = `pokemon/${this.currentPokemonId}`;
@@ -81,6 +106,9 @@ class TrainingManager {
         const modal = document.getElementById('training-modal');
         modal.style.display = 'none';
         modal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+        this.focoAnterior?.focus?.();
+        this.focoAnterior = null;
     }
 
     renderPokemonIdentity(teamMember) {
@@ -104,8 +132,11 @@ class TrainingManager {
         if (!teamMember) return;
 
         const modal = document.getElementById('training-modal');
+        this.focoAnterior = document.activeElement;
         modal.style.display = 'flex';
         modal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+        document.getElementById('btn-close-training').focus();
         this.renderPokemonIdentity(teamMember);
         
         document.getElementById('training-nature').value = teamMember.nature;
