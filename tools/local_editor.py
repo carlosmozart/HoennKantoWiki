@@ -67,7 +67,7 @@ def infer(values):
 
 
 class SafeHTML(HTMLParser):
-    TAGS = set("div p span strong b em i u s br hr h2 h3 h4 h5 ul ol li table thead tbody tfoot tr th td small a img select option blockquote caption sub sup".split())
+    TAGS = set("div article section p span strong b em i u s br hr h2 h3 h4 h5 ul ol li table thead tbody tfoot tr th td small a img select option blockquote caption sub sup".split())
     ATTRS = set("class id style value colspan rowspan src alt width height loading decoding href title target rel selected".split())
 
     def handle_starttag(self, tag, attrs):

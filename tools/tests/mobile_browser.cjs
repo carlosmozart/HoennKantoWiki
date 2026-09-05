@@ -71,6 +71,46 @@ const {chromium}=require(process.env.WIKI_PLAYWRIGHT||'playwright');
     assert.ok(blueSprites.every(src=>src.includes('/firered-leafgreen/')));
     assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
     await page.screenshot({path:path.join(out,'blue-rival-mobile.png'),animations:'disabled',fullPage:true});
+    // The Elite Four card reuses Blue's verified Champion variants.
+    await page.locator('.btn-gym-tab[data-tab="e4"]').click();
+    await page.locator('.rival-battle').first().waitFor();
+    assert.equal(await page.locator('.rival-battle').count(),2);
+    assert.ok(await page.locator('.rival-variant-panel:not([hidden]) .frontier-poke-name',{hasText:'Charizard'}).count());
+    await page.locator('.rival-starter-btn[data-player-starter="Charmander"]').click();
+    assert.ok(await page.locator('.rival-variant-panel:not([hidden]) .frontier-poke-name',{hasText:'Blastoise'}).count());
+    // May and Brendan expose every Emerald encounter and their species differences.
+    await page.locator('#game-version-select').selectOption('emerald');
+    await page.locator('.btn-gym-tab[data-tab="rivals"]').click();
+    await page.locator('.rival-battle').first().waitFor();
+    assert.equal(await page.locator('.rival-battle').count(),5);
+    await page.locator('.rival-starter-btn[data-player-starter="Torchic"]').click();
+    const secondHoennBattle=page.locator('.rival-battle').nth(1);
+    await secondHoennBattle.locator('summary').click();
+    assert.ok(await secondHoennBattle.locator('.rival-variant-panel:not([hidden]) .frontier-poke-name',{hasText:'Torkoal'}).count());
+    await page.locator('.rival-name-btn[data-rival-name="Brendan"]').click();
+    assert.ok(await secondHoennBattle.locator('.rival-variant-panel:not([hidden]) .frontier-poke-name',{hasText:'Slugma'}).count());
+    // Guide tabs and Safari content follow the selected game.
+    await page.evaluate(()=>location.hash='guides');
+    await page.waitForFunction(()=>!document.querySelector('.btn-guide-tab[data-tab="regis"]').hidden && document.querySelector('.btn-guide-tab[data-tab="sevii"]').hidden);
+    assert.ok(await page.locator('.btn-guide-tab[data-tab="frontier"]:not([hidden])').count());
+    assert.equal(await page.locator('.btn-guide-tab[data-tab="sevii"]:not([hidden])').count(),0);
+    await page.locator('.btn-guide-tab[data-tab="safari"]').click();
+    assert.ok(await page.locator('#guides-container',{hasText:'Área 5 · leste'}).count());
+    await page.locator('#game-version-select').selectOption('firered-leafgreen');
+    await page.waitForFunction(()=>document.querySelector('.btn-guide-tab[data-tab="regis"]').hidden && !document.querySelector('.btn-guide-tab[data-tab="sevii"]').hidden);
+    assert.equal(await page.locator('.btn-guide-tab[data-tab="regis"]:not([hidden])').count(),0);
+    assert.ok(await page.locator('.btn-guide-tab[data-tab="sevii"]:not([hidden])').count());
+    assert.ok(await page.locator('#guides-container',{hasText:'Secret House'}).count());
+    assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+    await page.setViewportSize({width:1366,height:900});
+    await page.locator('#game-version-select').selectOption('emerald');
+    await page.waitForFunction(()=>!document.querySelector('.btn-guide-tab[data-tab="regis"]').hidden);
+    await page.locator('.btn-guide-tab[data-tab="regis"]').click();
+    await page.locator('.guide-regis .guide-card').first().waitFor();
+    assert.equal(await page.locator('.guide-regis .guide-card').count(),3);
+    assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+    await page.screenshot({path:path.join(out,'regis-guide-desktop.png'),animations:'disabled',fullPage:true});
+    await page.setViewportSize({width:390,height:844});
     await page.evaluate(()=>location.hash='pokemon/5');
     await page.waitForFunction(()=>window.app?.state.currentPokemon?.id===5);
     await page.locator('#btn-cry').click();
@@ -108,12 +148,14 @@ const {chromium}=require(process.env.WIKI_PLAYWRIGHT||'playwright');
     await context.setOffline(false);
     await page.evaluate(async()=>{await caches.open('other-app-cache');await caches.open('pokewiki-obsolete');});
     const worker=path.join(config.root,'sw.js');
-    fs.writeFileSync(worker,fs.readFileSync(worker,'utf8').replace('pokewiki-v20','pokewiki-test-next'));
+    const workerSource=fs.readFileSync(worker,'utf8');
+    const originalCache=workerSource.match(/const CACHE_NAME = '([^']+)'/)[1];
+    fs.writeFileSync(worker,workerSource.replace(originalCache,'pokewiki-test-next'));
     await page.evaluate(async()=>{await (await navigator.serviceWorker.getRegistration()).update();});
-    await page.waitForFunction(async()=>{
+    await page.waitForFunction(async(originalCache)=>{
       const keys=await caches.keys();
-      return keys.includes('pokewiki-test-next')&&!keys.includes('pokewiki-obsolete')&&!keys.includes('pokewiki-v20');
-    });
+      return keys.includes('pokewiki-test-next')&&!keys.includes('pokewiki-obsolete')&&!keys.includes(originalCache);
+    },originalCache);
     assert.ok((await page.evaluate(()=>caches.keys())).includes('other-app-cache'));
     await page.waitForFunction(async()=>{const r=await navigator.serviceWorker.getRegistration();return r.active?.state==='activated'&&!r.installing&&!r.waiting;});
     // A failed shell download must not replace the working service worker.
@@ -136,6 +178,6 @@ const {chromium}=require(process.env.WIKI_PLAYWRIGHT||'playwright');
       });
     });
     assert.ok((await page.evaluate(()=>caches.keys())).includes('pokewiki-test-next'));
-    console.log(JSON.stringify({ok:true,checks:['TM/tutor translated type pills and spacing','Blue nine-battle starter variants and item sprite','mobile history back/forward','local cry playback','decode Charmeleon/Pikachu/Deoxys','offline reopen and audio','390px layout','SW update preserves unrelated caches','incomplete update rejected'],decoded},null,2));
+    console.log(JSON.stringify({ok:true,checks:['TM/tutor translated type pills and spacing','Blue nine-battle starter variants and item sprite','Blue Elite Four starter variants','May/Brendan Emerald variants','version-specific guides and Safari','Regis desktop guide layout','mobile history back/forward','local cry playback','decode Charmeleon/Pikachu/Deoxys','offline reopen and audio','390px layout','SW update preserves unrelated caches','incomplete update rejected'],decoded},null,2));
   }finally{if(browser)await browser.close();fixture.stdin.end();await once(fixture,'exit');}
 })().catch(error=>{console.error(error);process.exitCode=1;});

@@ -9,14 +9,34 @@ export default {
         const container = document.getElementById('guides-container');
         if (!container) return;
 
-        const tab = this.state.guideTab || 'stones';
         const GUIDES_DATA = await getGuias().catch(() => ({}));
+        const version = this.state.versionGroup || 'emerald';
+        const disponivel = (guide) => !guide?.versions?.length || guide.versions.includes(version);
+        const botoes = [...document.querySelectorAll('.btn-guide-tab')];
+        botoes.forEach(button => {
+            button.hidden = !disponivel(GUIDES_DATA[button.dataset.tab]);
+        });
+
+        let tab = this.state.guideTab || 'stones';
+        if (!disponivel(GUIDES_DATA[tab])) {
+            tab = botoes.find(button => !button.hidden)?.dataset.tab || 'stones';
+            this.state.guideTab = tab;
+        }
+        botoes.forEach(button => {
+            const active = button.dataset.tab === tab;
+            button.classList.toggle('active', active);
+            button.style.background = active ? 'var(--primary-surface)' : 'var(--glass-bg)';
+            button.style.color = active ? 'var(--primary-on)' : 'var(--text-color)';
+        });
+
         if (GUIDES_DATA[tab]) {
             const data = GUIDES_DATA[tab];
+            const content = data.contentByVersion?.[version] || data.content;
+            const title = data.titleByVersion?.[version] || data.title;
             container.innerHTML = `
-                <h3 style="color:var(--text-color); margin-bottom:15px;">${data.title}</h3>
+                <h3 style="color:var(--text-color); margin-bottom:15px;">${title}</h3>
                 <div style="font-size: 0.95rem; line-height: 1.6;">
-                    ${data.content}
+                    ${content}
                 </div>
             `;
             

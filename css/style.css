@@ -15,6 +15,7 @@
     --input-bg: rgba(255, 255, 255, 1);
     --btn-bg: rgba(255, 255, 255, 1);
     --btn-hover: #e2e6ea;
+    --card-bg: #ffffff;
     --stat-bar-bg: rgba(0, 0, 0, 0.08);
     --sidebar-solid: #fcfcfd; /* --bg-color sob a camada .glass, para o degradê do menu */
 
@@ -92,6 +93,7 @@
     --input-bg: rgba(0, 0, 0, 0.6);
     --btn-bg: rgba(0, 0, 0, 0.7);
     --btn-hover: rgba(0, 0, 0, 0.9);
+    --card-bg: #1b1b1b;
     --stat-bar-bg: rgba(255, 255, 255, 0.2);
     --sidebar-solid: #090909;
     /* No escuro o vermelho precisa clarear para continuar legível como texto */
@@ -113,6 +115,7 @@
 
 body {
     min-height: 100vh;
+    background: var(--bg-color);
     color: var(--text-color);
     overflow-x: hidden;
     position: relative;
@@ -1194,6 +1197,98 @@ summary:focus-visible,
     flex-direction: column;
     gap: 14px;
     width: 100%;
+}
+
+/* ==========================================
+   GUIAS PRÁTICOS
+   ========================================== */
+.guide-hero {
+    display: grid;
+    grid-template-columns: minmax(180px, 320px) 1fr;
+    align-items: center;
+    gap: 22px;
+    margin-bottom: 18px;
+    padding: 18px;
+    border: 1px solid var(--glass-border);
+    border-radius: 18px;
+    background: linear-gradient(135deg, color-mix(in srgb, var(--primary-color) 13%, var(--card-bg)), var(--card-bg));
+}
+.btn-guide-tab[hidden] { display: none !important; }
+
+.guide-hero.compact { grid-template-columns: auto 1fr; }
+.guide-hero img { width: 100%; max-height: 230px; object-fit: contain; image-rendering: pixelated; }
+.guide-hero h4, .guide-card h4, .guide-section h4 { margin: 0 0 8px; color: var(--primary-color); }
+.guide-hero p, .guide-card p { margin: 0 0 8px; }
+
+.guide-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 14px;
+    margin: 16px 0;
+}
+
+.guide-card {
+    min-width: 0;
+    padding: 16px;
+    border: 1px solid var(--glass-border);
+    border-radius: 15px;
+    background: var(--card-bg);
+    box-shadow: 0 5px 16px rgba(0,0,0,.08);
+}
+
+.guide-card ul { margin: 8px 0 0 20px; padding: 0; }
+.guide-card-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+.guide-card-head > span:last-child { color: var(--text-muted); font-size: .82rem; text-align: right; }
+.guide-regis .guide-card { border-top: 4px solid var(--primary-color); }
+
+.guide-pokemon {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin: 3px;
+    padding: 3px 8px 3px 3px;
+    border: 1px solid var(--glass-border);
+    border-radius: 999px;
+    background: var(--glass-bg);
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.guide-pokemon img { width: 42px; height: 42px; object-fit: contain; image-rendering: pixelated; }
+.guide-sprite-row, .guide-duo { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px; }
+.guide-duo > span { color: var(--primary-color); font-size: 1.7rem; font-weight: 900; }
+
+.guide-callout {
+    margin: 15px 0;
+    padding: 13px 15px;
+    border-left: 4px solid var(--primary-color);
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--primary-color) 10%, var(--card-bg));
+}
+.guide-callout.warning { border-left-color: #e1a400; background: color-mix(in srgb, #e1a400 10%, var(--card-bg)); }
+
+.guide-steps { list-style: none; counter-reset: guide-step; margin: 16px 0; padding: 0; }
+.guide-steps li { position: relative; min-height: 48px; margin: 0 0 12px 20px; padding: 11px 14px 11px 42px; border-left: 2px solid var(--primary-color); background: var(--glass-bg); border-radius: 0 12px 12px 0; }
+.guide-steps li::before { counter-increment: guide-step; content: counter(guide-step); position: absolute; left: -20px; top: 9px; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; background: var(--primary-color); color: var(--primary-on); font-weight: 900; }
+.guide-steps li > b, .guide-steps li > span { display: block; }
+.guide-steps li > span { color: var(--text-muted); margin-top: 3px; }
+
+.guide-section { margin: 20px 0; }
+.guide-table-wrap { overflow-x: auto; margin: 16px 0; border: 1px solid var(--glass-border); border-radius: 14px; }
+.guide-table { width: 100%; min-width: 760px; border-collapse: collapse; background: var(--card-bg); }
+.guide-table th, .guide-table td { padding: 10px 12px; border-bottom: 1px solid var(--glass-border); text-align: left; }
+.guide-table th { color: var(--primary-color); background: var(--glass-bg); }
+.guide-sources { margin-top: 18px; color: var(--text-muted); font-size: .82rem; }
+.guide-sources a, .guide-callout a { color: var(--primary-color); font-weight: 700; }
+
+@media (max-width: 680px) {
+    .guide-hero, .guide-hero.compact { grid-template-columns: 1fr; text-align: center; }
+    .guide-hero > img { max-height: 180px; }
+    .guide-card-grid { grid-template-columns: 1fr; }
+    .guide-card-head { align-items: flex-start; flex-direction: column; }
+    .guide-card-head > span:last-child { text-align: left; }
+    .guide-pokemon { font-size: .78rem; }
+    .guide-pokemon img { width: 36px; height: 36px; }
 }
 
 .rival-starter-picker {

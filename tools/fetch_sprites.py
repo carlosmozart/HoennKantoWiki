@@ -131,6 +131,12 @@ def nomes_de_itens():
                 if s:
                     nomes.add(s)
 
+    # sprites citados diretamente nos guias editoriais
+    if os.path.exists('data/guides.json'):
+        import re
+        texto = open('data/guides.json', encoding='utf-8').read()
+        nomes.update(re.findall(r'img/items/([a-z0-9-]+)\.png', texto))
+
     return sorted(n for n in nomes if n)
 
 

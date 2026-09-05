@@ -134,16 +134,27 @@ export default {
 
         const batalhasDoRival = (t) => {
             if (!t.battles?.length) return '';
-            const iniciais = t.battles[0].variants.map(v => v.playerStarter);
+            const iniciais = [...new Set(t.battles[0].variants.map(v => v.playerStarter))];
+            const rivais = [...new Set(t.battles.flatMap(b => b.variants.map(v => v.rivalName).filter(Boolean)))];
+            const nomeRival = (variant) => variant.rivalName || t.name.replace(/\s*\(.*?\)\s*/g, '');
             const itensDaBatalha = (itens) => {
                 if (!itens?.length) return '';
                 return `<div class="rival-battle-items">
-                    <strong>Itens do Blue:</strong>
+                    <strong>Itens de batalha:</strong>
                     ${itens.map(item => `<span>${imgItem(item.name, { tamanho: 24 })}${item.name} ×${item.quantity}</span>`).join('')}
                 </div>`;
             };
 
-            return `<section class="rival-battle-guide" aria-label="Times do Blue por confronto">
+            return `<section class="rival-battle-guide" aria-label="Times de ${t.name} por confronto">
+                ${rivais.length > 1 ? `<div class="rival-starter-picker rival-name-picker">
+                    <div>
+                        <strong>Quem é seu rival?</strong>
+                        <small>Você enfrenta o personagem que não escolheu.</small>
+                    </div>
+                    <div class="rival-starter-buttons" role="group" aria-label="Personagem rival">
+                        ${rivais.map((nome, index) => `<button type="button" class="rival-starter-btn rival-name-btn${index === 0 ? ' active' : ''}" data-rival-name="${nome}" aria-pressed="${index === 0}">${nome}</button>`).join('')}
+                    </div>
+                </div>` : ''}
                 <div class="rival-starter-picker">
                     <div>
                         <strong>Qual foi o seu inicial?</strong>
@@ -165,8 +176,8 @@ export default {
                         <div class="rival-battle-content">
                             ${battle.note ? `<p class="rival-battle-note">${battle.note}</p>` : ''}
                             ${itensDaBatalha(battle.battleItems)}
-                            ${battle.variants.map((variant, variantIndex) => `<div class="rival-variant-panel" data-player-starter="${variant.playerStarter}"${variantIndex === 0 ? '' : ' hidden'}>
-                                ${renderTeam(variant.team, `Seu inicial: ${variant.playerStarter} · Inicial do Blue: ${variant.rivalStarter}`)}
+                            ${battle.variants.map((variant, variantIndex) => `<div class="rival-variant-panel" data-player-starter="${variant.playerStarter}"${variant.rivalName ? ` data-rival-name="${variant.rivalName}"` : ''}${variantIndex === 0 ? '' : ' hidden'}>
+                                ${renderTeam(variant.team, `Seu inicial: ${variant.playerStarter} · Inicial de ${nomeRival(variant)}: ${variant.rivalStarter}`)}
                             </div>`).join('')}
                         </div>
                     </details>`).join('')}
@@ -222,20 +233,27 @@ export default {
         container.innerHTML = html;
 
         container.querySelectorAll('.rival-battle-guide').forEach(guide => {
+            const atualizarVariantes = () => {
+                const starter = guide.querySelector('.rival-starter-btn[data-player-starter].active')?.dataset.playerStarter;
+                const rival = guide.querySelector('.rival-name-btn.active')?.dataset.rivalName;
+                guide.querySelectorAll('.rival-variant-panel').forEach(panel => {
+                    panel.hidden = panel.dataset.playerStarter !== starter || (rival && panel.dataset.rivalName !== rival);
+                });
+            };
             guide.querySelectorAll('.rival-starter-btn').forEach(button => {
                 button.addEventListener('click', () => {
                     playClickSound();
-                    const starter = button.dataset.playerStarter;
-                    guide.querySelectorAll('.rival-starter-btn').forEach(candidate => {
-                        const selected = candidate.dataset.playerStarter === starter;
+                    const attr = button.dataset.rivalName ? 'rivalName' : 'playerStarter';
+                    const value = button.dataset[attr];
+                    guide.querySelectorAll(button.dataset.rivalName ? '.rival-name-btn' : '.rival-starter-btn[data-player-starter]').forEach(candidate => {
+                        const selected = candidate.dataset[attr] === value;
                         candidate.classList.toggle('active', selected);
                         candidate.setAttribute('aria-pressed', String(selected));
                     });
-                    guide.querySelectorAll('.rival-variant-panel').forEach(panel => {
-                        panel.hidden = panel.dataset.playerStarter !== starter;
-                    });
+                    atualizarVariantes();
                 });
             });
+            atualizarVariantes();
         });
     }
 };
