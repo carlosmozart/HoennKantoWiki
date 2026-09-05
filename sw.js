@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pokewiki-v21';
+const CACHE_NAME = 'pokewiki-v22';
 const API_CACHE_NAME = 'pokewiki-api-cache';
 
 // Os <script>/<link> do index usam querystring (?v=1.0.2) para cache busting.
@@ -69,13 +69,19 @@ const ASSETS_TO_CACHE = [
   './data/map-encounters.json',
   './img/Battle_Frontier.png',
   './img/Hoenn_Map.png',
+  './img/Kanto_Map.png',
+  './img/items/aurora-ticket.png',
   './img/items/dragon-scale.png',
+  './img/items/eon-ticket.png',
   './img/items/fire-stone.png',
   './img/items/hondew-berry.png',
   './img/items/kelpsy-berry.png',
   './img/items/leaf-stone.png',
+  './img/items/master-ball.png',
   './img/items/metal-coat.png',
   './img/items/moon-stone.png',
+  './img/items/mystic-ticket.png',
+  './img/items/old-sea-map.png',
   './img/items/pamtre-berry.png',
   './img/items/rainbow-pass.png',
   './img/items/ruby.png',

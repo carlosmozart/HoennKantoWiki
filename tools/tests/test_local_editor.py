@@ -231,6 +231,7 @@ class EditorTest(unittest.TestCase):
 
     def test_custom_pages_and_template_preview(self):
         body = self.payload("pages.json")
+        initial_count = len(body["data"]["pages"])
         card = body["data"]["templates"][0]
         page = {"slug":"guia-teste","title":"Guia de teste","menuLabel":"Meu guia",
                 "description":"Introdução","visible":True,"versions":[],"cards":[card],
@@ -247,7 +248,7 @@ class EditorTest(unittest.TestCase):
         prefix=json.loads(raw)["url"].removesuffix("index.html")
         snapshot=json.loads(self.request(prefix+"data/pages.json")[1])
         self.assertEqual(snapshot["pages"][-1]["slug"],"modelo-preview")
-        self.assertEqual(len(json.loads((self.root/"data/pages.json").read_bytes())["pages"]),1)
+        self.assertEqual(len(json.loads((self.root/"data/pages.json").read_bytes())["pages"]),initial_count+1)
 
     def test_pokemon_corrections_do_not_change_generated_files(self):
         body = self.payload("pokemon-overrides.json")

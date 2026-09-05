@@ -131,11 +131,12 @@ def nomes_de_itens():
                 if s:
                     nomes.add(s)
 
-    # sprites citados diretamente nos guias editoriais
-    if os.path.exists('data/guides.json'):
-        import re
-        texto = open('data/guides.json', encoding='utf-8').read()
-        nomes.update(re.findall(r'img/items/([a-z0-9-]+)\.png', texto))
+    # sprites citados diretamente nos guias e paginas editoriais
+    import re
+    for arquivo in ('data/guides.json', 'data/pages.json'):
+        if os.path.exists(arquivo):
+            texto = open(arquivo, encoding='utf-8').read()
+            nomes.update(re.findall(r'img/items/([a-z0-9-]+)\.png', texto))
 
     return sorted(n for n in nomes if n)
 
@@ -145,8 +146,32 @@ def itens():
     print(f'{len(nomes)} itens citados nos dados')
     falhas = resumo(em_paralelo([(f'{SPRITES}/items/{n}.png', f'img/items/{n}.png')
                                  for n in nomes]), 'Itens')
+    arquivos_bulba = {
+        'aurora-ticket': 'File:Bag AuroraTicket Sprite.png',
+        'mystic-ticket': 'File:Bag MysticTicket Sprite.png',
+    }
+    recuperados = []
+    for destino, _ in falhas:
+        slug_item = os.path.splitext(os.path.basename(destino))[0]
+        pagina = arquivos_bulba.get(slug_item)
+        if not pagina:
+            continue
+        api = ('https://bulbapedia.bulbagarden.net/w/api.php?action=query&titles='
+               + urllib.parse.quote(pagina) + '&prop=imageinfo&iiprop=url&format=json')
+        try:
+            req = urllib.request.Request(api, headers={'User-Agent': UA})
+            resposta = json.load(urllib.request.urlopen(req, timeout=30))
+            info = next(iter(resposta['query']['pages'].values())).get('imageinfo')
+            if info:
+                recuperados.append(baixa(info[0]['url'], destino))
+        except Exception as e:
+            recuperados.append((destino, type(e).__name__))
+    if recuperados:
+        resumo(recuperados, 'Itens via Bulbagarden Archives')
     if falhas:
-        print('  (nomes sem sprite correspondente no repositorio da PokeAPI)')
+        restantes = [f for f in falhas if os.path.splitext(os.path.basename(f[0]))[0] not in arquivos_bulba]
+        if restantes:
+            print('  (nomes sem sprite correspondente nas fontes configuradas)')
 
 
 def treinador(destino, pagina):

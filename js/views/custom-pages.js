@@ -9,7 +9,7 @@ const element = (tag, text, className) => {
     return node;
 };
 const allowedImage = (value) => /^(?:\.\/)?(?:img|images)\/[a-z0-9_./ -]+\.(?:png|gif|jpe?g|webp)$/i.test(value || '') && !value.includes('..');
-const allowedLink = (value) => /^(https?:\/\/|#(?:page|pokemon)\/)/.test(value || '');
+const allowedLink = (value) => /^(?:https?:\/\/|#(?:page|pokemon|guides)\/|#(?:map|guides|gyms|frontier|items|tms|extras)$)/.test(value || '');
 
 function rich(content) {
     const holder = element('div', '', 'custom-rich');
@@ -94,7 +94,7 @@ export async function renderCustomPage(slug) {
             body.append(fields);
         }
         if (allowedLink(card.link)) {
-            const a = element('a',localized(card,'linkLabel',lang) || (lang==='en'?'Read more':'Saiba mais'));
+            const a = element('a',localized(card,'linkLabel',lang) || (lang==='en'?'Read more':'Saiba mais'),'custom-card-link');
             a.href = card.link;
             body.append(a);
         }

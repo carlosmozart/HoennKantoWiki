@@ -98,18 +98,19 @@ def store_image(root, name, payload):
 
 def check_extensions(name, data):
     if name == "pages.json":
-        slugs = set()
+        slugs = {}
         for page in data["pages"]:
             slug = page["slug"]
             if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", slug) or len(slug) > 70:
                 raise ValueError("Use um endereço de página como 'meu-guia' (letras minúsculas, números e hífens).")
-            if slug in slugs:
-                raise ValueError("Cada página precisa de um endereço único.")
-            slugs.add(slug)
             if not page["title"].strip():
                 raise ValueError("Preencha o título da página.")
             if not set(page["versions"]).issubset(VERSIONS):
                 raise ValueError("Versão de jogo inválida.")
+            coverage = set(page["versions"]) or set(VERSIONS)
+            if coverage & slugs.get(slug, set()):
+                raise ValueError("O mesmo endereço não pode aparecer duas vezes na mesma versão de jogo.")
+            slugs.setdefault(slug, set()).update(coverage)
     if name == "pokemon-overrides.json":
         ids = set()
         for correction in data["corrections"]:

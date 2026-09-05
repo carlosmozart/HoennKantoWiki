@@ -30,7 +30,8 @@ export default {
         } else if (hash === 'items') {
             this.switchView('items');
             if (window.renderKeyItems) window.renderKeyItems(this.state.versionGroup);
-        } else if (hash === 'guides') {
+        } else if (hash === 'guides' || hash.startsWith('guides/')) {
+            if (hash.startsWith('guides/')) this.state.guideTab = hash.slice(7);
             this.switchView('guides');
             this.renderGuides();
         } else if (hash === 'map') {

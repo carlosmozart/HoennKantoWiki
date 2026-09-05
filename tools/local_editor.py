@@ -122,8 +122,8 @@ def validate(value, schema, path="conteúdo"):
         key = path.rsplit("/", 1)[-1]
         if not value and schema.get("allowEmpty"):
             return
-        if key == "link" and value and not re.match(r"^(https?://|#(?:page|pokemon)/)", value):
-            raise ValueError("Use um link http(s), #page/endereco ou #pokemon/numero.")
+        if key == "link" and value and not re.match(r"^(?:https?://|#(?:page|pokemon|guides)/|#(?:map|guides|gyms|frontier|items|tms|extras)$)", value):
+            raise ValueError("Use um link http(s) ou uma rota interna válida da wiki.")
         if key in ("sprite", "spriteAlt", "brainSprite", "image"):
             if not re.fullmatch(r"(?:\./)?(?:img|images)/[A-Za-z0-9_./ -]+\.(?:png|gif|jpe?g|webp)", value):
                 raise ValueError(f"{path}: selecione uma imagem local.")
